@@ -1,7 +1,7 @@
 # Content Contract — PRD Astro
 
 > Status: Standar data konten  
-> Versi: 1.0  
+> Versi: 1.1  
 > Format sumber: Markdown + YAML frontmatter
 
 ## 1. Tujuan
@@ -68,7 +68,7 @@ blocks:
     component: service-grid
     title: Layanan kami
     serviceIds: [12, 13, 14]
-updatedDate: 2026-11-26T10:00:00+07:00
+updatedDate: 2026-11-26T03:00:00Z
 ---
 ```
 
@@ -172,7 +172,7 @@ Digunakan untuk artikel, berita, panduan, insight, atau konten editorial. Perbed
 | `description` | Ya | string | Ringkasan artikel |
 | `schema` | Ya | object | Umumnya `Article` atau subtype yang tepat |
 | `seo` | Ya | object | Metadata SEO |
-| `author` | Sesuai kebutuhan | object/ID | Penulis; jika merujuk entitas konten, gunakan ID numerik |
+| `authorId` | Opsional | integer | Relasi ke satu dokumen penulis dengan ID numerik |
 | `categoryIds` | Sesuai kebutuhan | integer[] | Relasi ke kategori |
 | `relatedArticleIds` | Opsional | integer[] | Relasi artikel terkait |
 | `relatedServiceId` | Opsional | integer | Relasi ke layanan utama |
@@ -200,7 +200,7 @@ relatedServiceId: 12
 featuredImage:
   src: /images/persiapan-dokumen.webp
   alt: Dokumen administrasi yang disusun untuk persiapan proses layanan.
-publishedDate: 2026-11-20T08:00:00+07:00
+publishedDate: 2026-11-20T01:00:00Z
 updatedDate: 2026-11-26T10:00:00+07:00
 blocks:
   - id: 1
@@ -231,7 +231,7 @@ Digunakan untuk halaman layanan atau jasa yang ditawarkan oleh organisasi.
 | `description` | Ya | string | Ringkasan layanan |
 | `schema` | Ya | object | Umumnya `Service` |
 | `seo` | Ya | object | Metadata SEO |
-| `providerId` | Sesuai kebutuhan | integer | Relasi ke entitas organisasi/provider bila dikelola sebagai konten |
+| `providerId` | Opsional | integer | Relasi ke satu dokumen organisasi/provider |
 | `categoryIds` | Opsional | integer[] | Relasi kategori layanan |
 | `relatedServiceIds` | Opsional | integer[] | Relasi ke layanan lain |
 | `featuredImage` | Sesuai kebutuhan | object | Gambar layanan dan alt deskriptif |
@@ -375,3 +375,63 @@ Jenis konten lain—misalnya produk, lokasi cabang, anggota tim, testimoni, stud
 ## 12. Catatan implementasi
 
 Dokumen ini menetapkan kontrak konseptual. Nama collection Astro, lokasi file, nama field final, format tanggal, struktur objek SEO, strategi ID registry, serta cara menghasilkan JSON-LD harus dipastikan dalam dokumen arsitektur teknis sebelum implementasi. Perubahan nama field antarproyek tidak boleh dilakukan diam-diam; jika berbeda dari kontrak standar, tuliskan sebagai keputusan proyek dan pastikan tidak melanggar Constitution.
+
+## 12. Kontrak objek bersama
+
+### 12.1 Objek `seo`
+
+Semua dokumen yang menggunakan `seo` wajib memakai object. `title` dan `description` boleh tidak diisi karena memiliki fallback ke field utama dokumen.
+
+| Field | Wajib | Tipe | Aturan |
+|---|---:|---|---|
+| `title` | Tidak | string | Fallback ke `title` dokumen |
+| `description` | Tidak | string | Fallback ke `description` dokumen |
+| `canonical` | Tidak | URL string | URL absolut; fallback ke URL kanonis hasil routing |
+| `robots` | Tidak | object | Instruksi indexing; properti final ditetapkan arsitektur |
+| `openGraph` | Tidak | object | Override Open Graph; properti final ditetapkan arsitektur |
+| `twitter` | Tidak | object | Override Twitter; properti final ditetapkan arsitektur |
+
+Jika fallback juga kosong, validasi gagal. URL canonical harus absolut. Properti nested yang tidak dikenal ditolak oleh validator. Metadata SEO tidak boleh menjadi salinan kedua dari seluruh konten utama.
+
+### 12.2 Objek `featuredImage`
+
+| Field | Wajib | Tipe | Aturan |
+|---|---:|---|---|
+| `src` | Ya | string | Path aset lokal atau URL media yang diizinkan |
+| `alt` | Ya | string | Deskripsi bermakna sesuai konteks gambar dan halaman |
+| `width` | Tidak | integer positif | Lebar intrinsik |
+| `height` | Tidak | integer positif | Tinggi intrinsik |
+| `caption` | Tidak | string | Keterangan yang ditampilkan |
+| `credit` | Tidak | string | Kredit sumber bila diperlukan |
+
+`featuredImage` bukan string tunggal. Gambar dekoratif boleh memakai alt kosong hanya pada field block yang secara eksplisit mendukung dekorasi; gambar utama wajib memiliki alt deskriptif.
+
+## 13. Matriks relasi
+
+Setiap field relasi harus tercantum dalam matriks ini atau matriks khusus proyek yang lebih lengkap. Target yang tidak ditemukan menyebabkan validasi gagal; relasi tidak boleh diam-diam dihapus atau diselesaikan berdasarkan slug.
+
+| Field | Sumber | Target | Kardinalitas | Status | Jika target tidak ditemukan |
+|---|---|---|---|---|---|
+| `pageId` | Item menu | Page/Homepage | 1:1 | Salah satu target menu wajib | Gagal validasi |
+| `authorId` | Article | Author/Person | 0..1 | Opsional; kontrak target harus tersedia | Gagal validasi bila diisi |
+| `categoryIds` | Article/Service | Category | 0..N | Opsional | Gagal validasi |
+| `relatedArticleIds` | Article | Article | 0..N | Opsional | Gagal validasi |
+| `relatedServiceId` | Article | Service | 0..1 | Opsional | Gagal validasi bila diisi |
+| `providerId` | Service | Organization/Provider | 0..1 | Opsional; kontrak target harus tersedia | Gagal validasi bila diisi |
+| `relatedServiceIds` | Service | Service | 0..N | Opsional | Gagal validasi |
+| `serviceIds` | Homepage/block | Service | 0..N | Sesuai kontrak block | Gagal validasi |
+| `parentPageId` | Page | Page | 0..1 | Opsional | Gagal validasi bila diisi |
+| `categoryId` | Content-list block | Category | 1:1 | Wajib untuk block kategori | Gagal validasi |
+
+Relasi internal menu memakai `pageId` dan menunjuk dokumen yang memiliki route. Item menu eksternal memakai `url`, bukan `pageId`. Tepat satu dari `pageId` atau `url` harus diisi. `external: true` hanya sah bersama `url`. URL eksternal harus absolut dan memakai protokol yang diizinkan.
+
+Relasi ke Author/Person atau Organization/Provider belum boleh digunakan sebelum kontrak jenis konten target tersebut tersedia. Jika entitas tidak dimodelkan sebagai dokumen konten, gunakan struktur non-relasional yang didefinisikan secara eksplisit dalam PRD.
+
+## 14. Aturan waktu dan Schema.org
+
+Semua timestamp wajib memakai ISO 8601 UTC presisi detik: `YYYY-MM-DDTHH:mm:ssZ`, misalnya `2026-11-26T03:00:00Z`. Timestamp dengan offset lokal, tanpa zona waktu, atau presisi milidetik ditolak. Timestamp tidak wajib unik secara global; identitas unik ditentukan oleh ID dokumen.
+
+Jika `publishedDate` dan `updatedDate` tersedia, `updatedDate` harus sama dengan atau lebih baru daripada `publishedDate`. `publishedDate` adalah waktu publikasi pertama dan tidak berubah pada pembaruan editorial biasa; `updatedDate` berubah ketika ada pembaruan substantif.
+
+Contoh `FAQPage` dan `HowTo` dalam dokumen ini hanya menunjukkan pemetaan semantik Schema.org. Contoh bukan jaminan kelayakan rich result. Periksa kebijakan mesin pencari yang berlaku saat implementasi dan pastikan markup sesuai dengan konten yang terlihat serta persyaratan tipe terkait.
+
