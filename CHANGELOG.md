@@ -13,6 +13,7 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 - `docs/ANALISIS-POLA-SITUS.md`: catatan non-normatif berisi verifikasi pola artikel 1–3 dan 4–6, footer dinamis, CTA layanan/WhatsApp, serta pagination pada lima repo Astro rujukan.
 
 ### Changed
+- AGENTS.md: mewajibkan agen membaca standar Content & Information Architecture saat menyusun sitemap, route, navigasi, internal linking, listing, atau konversi.
 - Quality Gates 0.2: menambahkan QG-12 untuk review editorial manusia/ahli dan test case untuk konten repetitif, halaman lokasi duplikatif, serta verifikasi klaim.
 - README, AGENTS.md, dan Role System Analyst: mengintegrasikan standar kualitas editorial ke alur kerja PRD dan publikasi.
 - Content Contract 1.2: links the frontmatter templates and requires agents to consult them when creating content documents.
