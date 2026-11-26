@@ -1,7 +1,7 @@
 # Content Quality & Editorial Standard
 
 > Status: Standar kualitas editorial
-> Versi: 1.0
+> Versi: 1.1
 > Berlaku untuk: seluruh jenis konten yang dipublikasikan oleh situs yang mengadopsi PRD Situs Astro
 > Acuan kebijakan diperiksa: 2026-11-26
 
@@ -107,7 +107,7 @@ Jangan membuat profil penulis, foto, jabatan, lisensi, pengalaman, atau endorsem
 | Halaman kategori/arsip | Membantu pembaca memahami cakupan kategori dan menemukan konten; jangan menambahkan esai panjang yang tidak membantu navigasi. |
 | Halaman lokasi | Menjelaskan relevansi layanan di lokasi tersebut dengan informasi yang benar-benar spesifik dan dapat dibuktikan; jangan mengganti nama kota pada template yang sama lalu menerbitkannya massal. |
 | Halaman tentang/kontak | Menyediakan identitas, ruang lingkup, informasi kontak, dan bukti organisasi yang akurat; tidak perlu dipanjangkan dengan copy promosi berulang. |
-| Homepage/menu/navigasi atau dokumen utilitas | Mengutamakan kejelasan fungsi; tidak dinilai dengan ekspektasi panjang artikel. |
+| Dokumen utilitas (homepage, menu, navigasi) | Mengutamakan kejelasan fungsi; tidak dinilai dengan ekspektasi panjang artikel. |
 
 Jenis halaman di atas adalah panduan, bukan kontrak frontmatter baru. Field dan relasinya tetap mengikuti Content Contract atau kontrak proyek.
 

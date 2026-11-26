@@ -2,7 +2,7 @@
 
 > Tanggal tindak lanjut: 2026-11-26
 > Commit awal yang ditinjau: `70c9469`
-> Status: seluruh 12 temuan telah ditindaklanjuti, ditambah 3 koreksi lanjutan pada 2026-11-26; lihat catatan verifikasi di bawah.
+> Status: seluruh 12 temuan telah ditindaklanjuti, ditambah 3 koreksi lanjutan dan 2 koreksi integrasi editorial pada 2026-11-26; lihat catatan verifikasi di bawah.
 
 ## Ringkasan
 
@@ -107,6 +107,17 @@ Perubahan diverifikasi dengan membaca ulang isi file dan pencarian teks terhadap
 - [x] `README.md`, `AGENTS.md`, dan `ROLE-SYSTEM-ANALYST.md` ditautkan ke standar editorial.
 - Bukti: `quality/CONTENT-QUALITY-STANDARD.md`, `quality/QUALITY-GATES.md`, `README.md`, `AGENTS.md`, dan `ROLE-SYSTEM-ANALYST.md`.
 - Batas verifikasi: dokumen standar dan tautan telah diperbarui; belum ada validator atau test runner repository untuk menjalankan gate otomatis. QG-12 memang merupakan review editorial yang harus dicatat oleh reviewer.
+
+## Koreksi integrasi editorial 2026-11-26
+
+- [x] Aturan CI dibedakan dari review editorial QG-12.
+  - Bukti: `quality/QUALITY-GATES.md:55`, `:85`, versi 0.3 pada `:4`.
+  - Verifikasi: teks "Semua gate harus dijalankan" sudah diganti; QG-01 sampai QG-11 disebut sebagai gate otomatis, QG-12 sebagai persetujuan reviewer sebelum rilis.
+- [x] Baris dokumen utilitas tidak lagi menyamakan menu dan navigasi dengan halaman.
+  - Bukti: `quality/CONTENT-QUALITY-STANDARD.md:110`, versi 1.1 pada `:4`.
+  - Verifikasi: tabel kini memakai label "Dokumen utilitas (homepage, menu, navigasi)".
+- Bukti pendukung: `CHANGELOG.md` bagian Fixed, Rationale and impact, serta Compatibility.
+- Batas verifikasi: perubahan ini hanya verifikasi baca dan pencarian teks. Belum ada reviewer nyata atau CI yang menjalankan gate karena repo ini tidak memiliki implementasi validator.
 
 ## Langkah lanjutan
 

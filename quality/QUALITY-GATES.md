@@ -1,7 +1,7 @@
 # Quality Gates & Acceptance Criteria
 
 > Status: Standar verifikasi
-> Versi: 0.2
+> Versi: 0.3
 
 ## 1. Prinsip
 
@@ -52,7 +52,7 @@ Action: gunakan ID layanan yang tersedia atau hapus relasi opsional.
 
 ## 5. Acceptance criteria rilis
 
-Rilis dapat diterima jika seluruh gate wajib berstatus lulus, build produksi sukses, dan tidak ada pengecualian yang belum disetujui. Pengecualian harus dicatat dengan alasan, cakupan, pemilik, dan batas waktu penyelesaian.
+Rilis dapat diterima jika seluruh gate wajib berstatus lulus, build produksi sukses, dan tidak ada pengecualian yang belum disetujui. QG-12 dinyatakan lulus melalui catatan persetujuan reviewer pada PR, issue, atau catatan publikasi; bukan melalui pemeriksaan otomatis. Pengecualian harus dicatat dengan alasan, cakupan, pemilik, dan batas waktu penyelesaian.
 
 ## 6. Test matrix minimum
 
@@ -82,4 +82,4 @@ Rilis dapat diterima jika seluruh gate wajib berstatus lulus, build produksi suk
 
 ## 7. CI dan verifikasi lokal
 
-Semua gate harus dijalankan secara lokal dan pada CI untuk pull/push yang mengubah konten, schema, komponen block, routing, atau konfigurasi SEO. Perintah final ditetapkan oleh implementasi proyek dan didokumentasikan di README proyek.
+Gate otomatis QG-01 sampai QG-11 harus dijalankan secara lokal dan pada CI untuk pull/push yang mengubah konten, schema, komponen block, routing, atau konfigurasi SEO. Perintah final ditetapkan oleh implementasi proyek dan didokumentasikan di README proyek. QG-12 tetap menjadi review manusia: hasilnya dibuktikan dengan catatan persetujuan reviewer pada PR, issue, atau catatan publikasi sebelum rilis, dan tidak diwakili oleh pemeriksaan CI.
