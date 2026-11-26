@@ -45,3 +45,15 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 - Timestamp yang sama pada dua dokumen tetap valid; jangan menggunakannya sebagai primary key.
 - Koreksi ini tidak mengubah perilaku yang dimaksud, hanya menyelaraskan teks aturan dengan keputusan yang sudah berlaku.
 - Proyek turunan perlu menyediakan tempat pencatatan persetujuan QG-12, misalnya checklist PR atau catatan publikasi.
+
+### Added
+- Content Architecture & Information Architecture 0.1: prinsip model konten, jenis halaman, kelompok topik, URL/canonical, internal linking, listing/pagination, halaman lokal, CTA, dan tata kelola konten.
+
+### Changed
+- README: menautkan Content & Information Architecture sebagai standar arsitektur konten dan IA.
+
+### Rationale and impact
+- Menetapkan kerangka IA yang menghubungkan kebutuhan pengguna, model konten, navigasi, route, internal linking, dan konversi tanpa menjadikan pola satu situs sebagai kewajiban universal.
+
+### Compatibility
+- Dokumen IA 0.1 berstatus draft. Setiap proyek tetap harus menetapkan sitemap, route, relasi, listing, pagination, footer, CTA, dan kebijakan lokalnya sendiri. Tidak ada jumlah halaman, kata, atau tautan yang diwajibkan secara global.
