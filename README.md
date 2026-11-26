@@ -4,17 +4,31 @@ Repository ini menyimpan standar reusable untuk analisis kebutuhan, perancangan,
 
 ## Standar inti
 
-- [Website Constitution](constitution/WEBSITE-CONSTITUTION.md) — aturan dasar lintas proyek yang wajib dipatuhi.
-- [Content Contract](content-contract/CONTENT-CONTRACT.md) — kontrak frontmatter Markdown yang dipisahkan berdasarkan jenis konten.
+- [Website Constitution](constitution/WEBSITE-CONSTITUTION.md) — aturan universal lintas proyek.
+- [Content Contract](content-contract/CONTENT-CONTRACT.md) — kontrak Markdown terpisah berdasarkan jenis konten.
+- [Technical Architecture](architecture/TECHNICAL-ARCHITECTURE.md) — panduan penerapan standar pada Astro.
+- [Quality Gates](quality/QUALITY-GATES.md) — acceptance criteria dan verifikasi.
 
-## Keputusan arsitektur yang telah ditetapkan
+## Instruksi dan analisis
 
-1. **Keunikan ID:** global, lintas seluruh jenis/collection konten dalam satu situs.
-2. **Schema block:** opsional, digunakan jika relevan dengan konten block.
-3. **Kontrak Markdown:** terpisah berdasarkan jenis konten; bukan satu skema universal.
+- [AGENTS.md](AGENTS.md) — instruksi agen yang bekerja di repository.
+- [Role System Analyst](ROLE-SYSTEM-ANALYST.md) — pedoman analisis dan penyusunan PRD.
+- [Review Notes](docs/REVIEW-NOTES.md) — audit dan tindak lanjut standar.
+- [Changelog](CHANGELOG.md) — riwayat perubahan standar.
+- [License](LICENSE) — lisensi repository.
 
-## Dokumen lain
+## Keputusan standar
 
-- [Role System Analyst](ROLE-SYSTEM-ANALYST.md) — pedoman analisis komparatif dan penyusunan kebutuhan sistem.
+1. ID dokumen konten unik secara global lintas collection; ID block unik lokal di dokumen pemilik.
+2. Schema block opsional dan hanya digunakan bila relevan.
+3. Kontrak Markdown dipisahkan berdasarkan jenis konten.
+4. Timestamp konten memakai ISO 8601 UTC presisi detik; timestamp tidak harus unik.
+5. Relasi dokumen menggunakan foreign key numerik dengan target dan kardinalitas eksplisit.
 
-Dokumen arsitektur teknis, template implementasi, quality gates, dan PRD spesifik proyek akan ditambahkan secara bertahap dengan mengacu pada standar inti di atas.
+## Struktur pengembangan
+
+Standar global berada di direktori `constitution/`, `content-contract/`, `architecture/`, dan `quality/`. Kebutuhan khusus setiap situs harus disimpan terpisah di bawah `projects/<nama-proyek>/` dan tidak boleh mengubah aturan universal secara diam-diam.
+
+## Prinsip perubahan
+
+Perubahan standar harus memperbarui versi dokumen terkait, mencatat alasan dan dampaknya di `CHANGELOG.md`, serta memperbarui bukti pada `docs/REVIEW-NOTES.md`.
