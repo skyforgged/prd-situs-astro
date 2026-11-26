@@ -6,6 +6,7 @@ Repository ini menyimpan standar reusable untuk analisis kebutuhan, perancangan,
 
 - [Website Constitution](constitution/WEBSITE-CONSTITUTION.md) — aturan universal lintas proyek.
 - [Content Contract](content-contract/CONTENT-CONTRACT.md) — kontrak Markdown terpisah berdasarkan jenis konten.
+- [Frontmatter Templates](content-contract/FRONTMATTER-TEMPLATES.md) — kerangka field kosong untuk setiap jenis konten, sebagai checklist saat membuat dokumen.
 - [Technical Architecture](architecture/TECHNICAL-ARCHITECTURE.md) — panduan penerapan standar pada Astro.
 - [Quality Gates](quality/QUALITY-GATES.md) — acceptance criteria dan verifikasi.
 
