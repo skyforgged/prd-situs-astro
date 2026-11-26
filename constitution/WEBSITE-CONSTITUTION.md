@@ -151,6 +151,7 @@ Situs belum dianggap memenuhi standar hanya karena `astro build` berhasil. Proye
 6. Struktur serta tipe Schema.org pada dokumen dan block yang memilikinya.
 7. Konsistensi sumber metadata, tautan internal, dan aset yang direferensikan.
 8. Build produksi.
+9. Konsistensi sitemap/route manifest, navigasi, breadcrumb, listing, dan kebijakan indexability sesuai keputusan IA proyek.
 
 Validasi harus dapat dijalankan melalui perintah yang terdokumentasi dan menjadi bagian dari pemeriksaan sebelum rilis. Kegagalan validasi wajib menghasilkan pesan yang menunjukkan berkas, field, dan masalah yang ditemukan.
 
