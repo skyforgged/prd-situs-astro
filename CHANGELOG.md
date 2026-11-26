@@ -5,12 +5,15 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 ## 2026-11-26
 
 ### Added
+- Content Quality & Editorial Standard 1.0: menetapkan people-first content, kecukupan konten tanpa target jumlah kata, orisinalitas, akurasi, transparansi, dan review editorial.
 - Blank frontmatter templates for Homepage, Menu, Page, Article, Service, and Category, with explicit agent usage instructions.
 - Technical Architecture Specification untuk implementasi Astro.
 - Quality Gates dan acceptance criteria.
 - Instruksi repository untuk agen melalui `AGENTS.md`.
 
 ### Changed
+- Quality Gates 0.2: menambahkan QG-12 untuk review editorial manusia/ahli dan test case untuk konten repetitif, halaman lokasi duplikatif, serta verifikasi klaim.
+- README, AGENTS.md, dan Role System Analyst: mengintegrasikan standar kualitas editorial ke alur kerja PRD dan publikasi.
 - Content Contract 1.2: links the frontmatter templates and requires agents to consult them when creating content documents.
 - Constitution 1.1: memperjelas bahwa keunikan global hanya berlaku untuk ID dokumen; ID block lokal per dokumen.
 - Constitution 1.1: menetapkan timestamp ISO 8601 UTC presisi detik, relasi waktu publikasi/pembaruan, dan batas konten vs label UI.
@@ -30,6 +33,7 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 - Memisahkan aturan universal dari pilihan fitur setiap proyek.
 - Menyediakan acuan teknis dan quality gates sebelum standar dipakai pada proyek turunan.
 - Menyelaraskan teks aturan yang tertinggal dari rilis sebelumnya agar pembaca tidak menemukan dua bunyi yang bertentangan.
+- Menghindari optimasi berbasis jumlah kata dan mengarahkan penilaian pada manfaat, kelengkapan proporsional, orisinalitas, serta akurasi.
 
 ### Compatibility
 - Proyek turunan perlu memastikan timestamp frontmatter menggunakan UTC `YYYY-MM-DDTHH:mm:ssZ`.
