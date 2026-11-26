@@ -1,7 +1,7 @@
 # Website Constitution — PRD Astro
 
 > Status: Standar dasar proyek  
-> Versi: 1.2
+> Versi: 1.3
 > Bahasa: Indonesia
 
 ## 1. Tujuan dan cakupan
@@ -52,7 +52,7 @@ Pengecualian tidak boleh digunakan untuk menyimpan konten halaman yang seharusny
 6. ID tidak boleh dibuat ulang hanya karena konten dipindahkan, diperbarui, atau diubah statusnya.
 7. Penghapusan konten tidak membuat ID lama bebas dipakai kembali, kecuali ada prosedur migrasi dan keputusan eksplisit.
 
-Satu situs wajib memiliki mekanisme pencatatan atau validasi ID dokumen global agar benturan antar-collection dapat dicegah. ID block divalidasi terpisah di dalam dokumen pemiliknya.
+Satu situs wajib memiliki mekanisme pencatatan atau validasi ID dokumen global agar benturan antar-collection dapat dicegah. Mekanisme ini wajib tersedia; bentuknya boleh berupa registry terpelihara, validator yang mengindeks seluruh dokumen, atau kombinasi keduanya. ID block divalidasi terpisah di dalam dokumen pemiliknya.
 
 ## 5. Relasi antarkonten
 
@@ -160,9 +160,10 @@ Urutan acuan:
 
 1. Constitution ini.
 2. Content Contract standar.
-3. Spesifikasi arsitektur teknis Astro.
-4. PRD dan keputusan khusus proyek.
-5. Implementasi kode.
+3. Content & Information Architecture untuk pemetaan kebutuhan, model halaman, navigasi, route, dan relasi penemuan konten.
+4. Spesifikasi arsitektur teknis Astro untuk penerapan teknis.
+5. PRD dan keputusan khusus proyek.
+6. Implementasi kode.
 
 Dokumen pada tingkat lebih rendah boleh memperinci aturan di atasnya, tetapi tidak boleh bertentangan. Perubahan terhadap aturan global—terutama identitas, relasi, sumber konten, dan schema—harus dicatat sebagai keputusan perubahan standar agar seluruh proyek turunan dapat mengadopsinya secara konsisten.
 
