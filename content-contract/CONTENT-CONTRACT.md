@@ -76,6 +76,8 @@ updatedDate: 2026-11-26T03:00:00Z
 
 Menu merupakan konten terkelola, bukan array tautan yang ditulis langsung di komponen. Menu utama, menu footer, atau menu lain disimpan sebagai dokumen Markdown masing-masing.
 
+Nilai `location` dibatasi pada enum `header`, `footer`, `mobile`, atau `utility`. Setiap item wajib memiliki `label` string non-kosong dan tepat satu target: `pageId` atau `url`. `url` harus URL absolut. `external: true` hanya boleh dipakai bersama `url`; untuk target internal berbasis `pageId`, properti `external` dihilangkan atau bernilai `false`. Item boleh memiliki `children` berupa array item menu dengan aturan target yang sama. Kedalaman maksimum adalah tiga tingkat termasuk item akar; lebih dalam harus ditolak validator.
+
 ### Field
 
 | Field | Wajib | Tipe | Keterangan |
