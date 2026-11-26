@@ -89,3 +89,19 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 - Template tidak mengubah Constitution, Content Contract, atau Quality Gates dan tidak mewajibkan semua fitur.
 - Proyek harus menghapus/menandai bagian yang tidak relevan hanya setelah menilai kebutuhan; keputusan dan field yang belum diketahui tidak boleh diisi dengan asumsi.
 - Template 0.1 belum diuji terhadap implementasi situs Astro nyata; paket ini merupakan artefak dokumentasi, bukan validator.
+
+
+### Added — Project Initialization Workflow 0.1 / Template Pack 0.2
+- Ditambahkan projects/_template/PROJECT-INITIALIZATION-WORKFLOW.md dengan 10 phase dari repository onboarding hingga Implementation Readiness Review.
+- Workflow menetapkan masukan, aktivitas, keluaran, acceptance gate, status, jalur iterasi, aturan AGENT AI, dan format laporan phase.
+- README, AGENTS.md, dan panduan template ditautkan ke workflow.
+
+### Rationale and impact
+- Mengubah template dokumen menjadi proses kerja yang berurutan dan dapat diawasi.
+- Mencegah agen memulai implementasi sebelum kebutuhan, bukti, model konten, IA, kontrak teknis, dan acceptance criteria cukup jelas.
+- Memberi ruang iterasi: temuan baru dapat mengembalikan pekerjaan ke phase terdampak.
+
+### Compatibility
+- Workflow tidak menggantikan Constitution, Content Contract, IA, Technical Architecture, atau Quality Gates.
+- Gate yang tidak relevan hanya boleh berstatus Not applicable dengan alasan dan persetujuan.
+- Workflow 0.1 belum diuji melalui adopsi proyek Astro nyata; evaluasi setelah penerapan pertama tetap diperlukan.
