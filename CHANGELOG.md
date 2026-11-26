@@ -75,3 +75,17 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 - Proyek yang mengadopsi standar harus memiliki mekanisme registry atau validator ID global, tidak cukup hanya menyatakan bahwa ID seharusnya unik.
 - Proyek harus menyediakan artefak IA yang dapat diperiksa (misalnya sitemap/route manifest dan aturan listing). Tidak semua halaman wajib masuk menu utama atau memiliki jumlah tautan tertentu.
 - QG-13 perlu diimplementasikan pada proyek Astro; repository standar ini belum memiliki aplikasi atau validator untuk menjalankannya.
+
+
+### Added — Project Architecture Templates 0.1
+- Paket template proyek di projects/_template/ untuk Project Brief, Information Architecture, Content Model & Relations, Listing & Conversion, Local Coverage, Content Governance, Technical Architecture, dan ADR.
+- Panduan penggunaan membedakan template proyek dari standar universal serta mengizinkan bagian Tidak berlaku dengan alasan.
+
+### Rationale and impact
+- Mengubah daftar keputusan pra-implementasi dalam Content & Information Architecture dan Technical Architecture menjadi artefak kerja yang dapat disalin ke repository situs.
+- Mengurangi keputusan implisit dan membantu agen AI/developer mencatat intent, route, relasi, navigasi, listing, konversi, cakupan lokal, governance, serta pilihan teknis secara konsisten.
+
+### Compatibility
+- Template tidak mengubah Constitution, Content Contract, atau Quality Gates dan tidak mewajibkan semua fitur.
+- Proyek harus menghapus/menandai bagian yang tidak relevan hanya setelah menilai kebutuhan; keputusan dan field yang belum diketahui tidak boleh diisi dengan asumsi.
+- Template 0.1 belum diuji terhadap implementasi situs Astro nyata; paket ini merupakan artefak dokumentasi, bukan validator.
