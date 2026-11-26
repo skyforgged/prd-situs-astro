@@ -59,3 +59,8 @@ Gunakan Draft, Review, Approved, atau Superseded. Dokumen tidak boleh Approved s
 - Schema utama dokumen wajib; schema block opsional dan harus relevan.
 - Tidak ada target jumlah kata, halaman, tautan, kategori, atau lokasi yang berlaku universal.
 - Template tidak boleh digunakan untuk melemahkan Constitution atau Content Contract.
+## Project initialization workflow
+
+Gunakan [PROJECT-INITIALIZATION-WORKFLOW.md](PROJECT-INITIALIZATION-WORKFLOW.md) sebagai urutan operasional dari onboarding repository hingga Implementation Readiness Review. Workflow ini menggunakan phase gates; pembuatan semua dokumen template tidak otomatis berarti proyek siap implementasi.
+
+Paket template saat ini: **0.2** (menambahkan workflow operasional 0.1).
