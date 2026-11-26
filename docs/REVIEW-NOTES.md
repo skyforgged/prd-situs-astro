@@ -152,3 +152,45 @@ Perubahan diverifikasi dengan membaca ulang isi file dan pencarian teks terhadap
 4. Implementasikan validator sesuai Technical Architecture pada proyek Astro pertama yang mengadopsi standar.
 5. Terapkan QG-12 sebagai review editorial pada konten nyata dan evaluasi checklist berdasarkan jenis situs.
 6. Tambahkan ADR jika keputusan arsitektur baru berdampak lintas proyek.
+
+
+## Audit konsistensi silang 2026-11-26
+
+### Temuan dan keputusan
+
+| ID | Temuan | Keputusan/tindakan |
+|---|---|---|
+| IA-01 | Content & Information Architecture belum tercantum dalam hierarki otoritas Constitution. | Selesai: Constitution 1.3 menempatkan IA setelah Content Contract dan sebelum Technical Architecture. |
+| IA-02 | Constitution mewajibkan mekanisme pencatatan/validasi ID global, sedangkan Technical Architecture menyebut registry boleh dipelihara. | Selesai: Technical Architecture 0.2 menegaskan mekanisme wajib; bentuk registry/validator tetap fleksibel. |
+| IA-03 | Technical Architecture belum meminta artefak intent map, sitemap, matriks relasi, navigasi, internal linking, listing, kebijakan lokal, dan CTA. | Selesai: daftar keputusan sebelum implementasi diperluas agar selaras dengan dokumen IA. |
+| IA-04 | Quality Gates belum memiliki gate khusus untuk menguji kesesuaian implementasi dengan keputusan IA. | Selesai: QG-13 ditambahkan untuk route manifest/sitemap, navigasi, breadcrumb, listing, dan indexability. |
+| IA-05 | QG-13 berisiko menilai relevansi semantik secara otomatis. | Diklarifikasi: QG-13 hanya menguji konsistensi terstruktur; intent dan relevansi kontekstual tetap ditinjau manusia melalui QG-12. |
+
+### Pemeriksaan konsistensi yang tidak memerlukan perubahan
+
+- ID dokumen global dan ID block lokal konsisten pada Constitution, Content Contract, Technical Architecture, template frontmatter, dan Quality Gates.
+- Schema utama dokumen wajib, sedangkan schema block opsional; contoh dan aturan rendering tidak mewajibkan JSON-LD per block.
+- Field relasi numerik dan kardinalitas dijabarkan dalam Content Contract; Technical Architecture menjelaskan indeks dan validasinya.
+- Timestamp UTC presisi detik, updatedDate tidak lebih awal dari publishedDate, serta timestamp yang tidak harus unik konsisten pada dokumen terkait.
+- Field SEO nested yang belum ditetapkan secara universal tetap menjadi keputusan implementasi proyek; Technical Architecture meminta schema nested eksplisit dan menolak properti bebas.
+- Panjang konten bukan target universal; QG-12 menggunakan review editorial dan Content Quality Standard.
+- Jenis halaman lokal, FAQ, testimoni, tim, pagination, footer, dan CTA tidak otomatis wajib bagi semua situs.
+
+### Batas dan tindak lanjut
+
+- [x] Baca ulang Constitution, Content Contract, Technical Architecture, Content & Information Architecture, Quality Gates, Content Quality Standard, Frontmatter Templates, dan AGENTS.
+- [x] Perbaiki hierarki standar, kewajiban mekanisme ID global, daftar keputusan IA pra-implementasi, dan gate konsistensi IA.
+- [ ] Implementasikan QG-13 pada proyek Astro yang mengadopsi standar dan uji dengan fixture valid/tidak valid.
+- [ ] Siapkan template artefak proyek: intent map, sitemap/route manifest, matriks relasi, navigasi/breadcrumb, internal linking, listing/pagination, local coverage, dan CTA.
+- [ ] Audit ulang kontrak berdasarkan implementasi pertama; khususnya field yang masih membutuhkan kontrak entitas target (Author/Person dan Organization/Provider).
+
+### Bukti perubahan
+
+- constitution/WEBSITE-CONSTITUTION.md 1.3
+- architecture/TECHNICAL-ARCHITECTURE.md 0.2
+- quality/QUALITY-GATES.md 0.4
+- CHANGELOG.md
+
+### Batas verifikasi
+
+Perubahan standar telah diperbarui melalui GitHub dan dibaca ulang. Repository ini tidak memiliki aplikasi Astro, package.json, validator, atau test runner; karena itu QG-13 dan gate lainnya belum dijalankan sebagai automated tests.
