@@ -13,6 +13,7 @@ Sebelum menyusun PRD, baca dan patuhi:
 - `content-contract/CONTENT-CONTRACT.md`
 - `architecture/TECHNICAL-ARCHITECTURE.md`
 - `quality/QUALITY-GATES.md`
+- `quality/CONTENT-QUALITY-STANDARD.md` untuk kecukupan, kedalaman, orisinalitas, akurasi, dan kelayakan editorial konten.
 
 PRD proyek boleh menetapkan pilihan dan detail yang belum ditentukan standar, tetapi tidak boleh melemahkan Constitution. Konflik harus diangkat sebagai usulan perubahan standar, bukan diselesaikan diam-diam.
 
@@ -30,6 +31,7 @@ Pengguna akan memberikan niche, tujuan bisnis, target pengguna, kompetitor, refe
 6. Susun kebutuhan fungsional dan non-fungsional, user journey, sitemap, data model, integrasi, serta prioritas MoSCoW.
 7. Definisikan acceptance criteria yang dapat diuji.
 8. Pastikan setiap jenis konten yang diusulkan memiliki kontrak atau tandai sebagai kontrak baru yang harus dibuat.
+9. Rancang konten berdasarkan intent dan kebutuhan pembaca; jangan menetapkan jumlah kata sebagai target SEO. Pastikan setiap rekomendasi editorial memiliki nilai tambah, sumber, batasan, dan acceptance criteria yang dapat diperiksa.
 
 ## Struktur output analisis
 
