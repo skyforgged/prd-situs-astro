@@ -1,7 +1,7 @@
 # Quality Gates & Acceptance Criteria
 
 > Status: Standar verifikasi
-> Versi: 0.3
+> Versi: 0.4
 
 ## 1. Prinsip
 
@@ -23,6 +23,7 @@ Website dinyatakan memenuhi standar hanya jika validasi konten, relasi, routing,
 | QG-10 Accessibility | Alt, heading, label, keyboard, contrast | Tidak ada pelanggaran kritis yang diketahui |
 | QG-11 Production build | Build produksi | Exit code sukses |
 | QG-12 Editorial quality | Kecukupan, akurasi, orisinalitas, keterbacaan, dan nilai tambah | Review editorial terdokumentasi dan seluruh kriteria yang relevan lulus; tidak menggunakan target jumlah kata sebagai syarat |
+| QG-13 Information architecture | Konsistensi sitemap/route manifest, navigasi, breadcrumb, listing, dan kebijakan indexability | Artefak IA proyek tersedia; route yang dipublikasikan, navigasi, breadcrumb, dan listing konsisten dengan keputusan IA; pengecualian terdokumentasi |
 
 ## 3. Review editorial
 
@@ -30,7 +31,19 @@ QG-12 merupakan gerbang review manusia/ahli, bukan pemeriksaan otomatis jumlah k
 
 Konten tidak lulus jika memiliki klaim material yang belum diverifikasi, tidak memberi nilai tambah, dibuat massal hanya dengan variasi keyword/lokasi, atau tidak memenuhi tujuan halaman. Panjang konten hanya boleh dipakai sebagai sinyal diagnostik, bukan skor atau target kelulusan.
 
-## 4. Format laporan error
+## 4. Verifikasi Information Architecture
+
+QG-13 memeriksa konsistensi keputusan IA yang dapat dinyatakan secara eksplisit dan diuji. Implementasi proyek harus menentukan artefak mesin yang menjadi acuan (misalnya route manifest atau sitemap configuration) serta menguji:
+
+- Setiap route yang dipublikasikan dipetakan ke jenis dan tujuan halaman dalam sitemap/route manifest.
+- Setiap halaman yang seharusnya indexable tercakup dalam sitemap XML; halaman noindex, utilitas, atau pengecualian lain mengikuti kebijakan tertulis.
+- Target menu dan breadcrumb mengarah ke route yang tersedia dan sesuai pemetaan IA.
+- Listing/related-content menggunakan filter, urutan, batas hasil, dan perilaku empty state yang deterministik sesuai keputusan proyek.
+- Perubahan route memperbarui redirect dan referensi navigasi yang relevan.
+
+QG-13 tidak menilai otomatis apakah dua halaman memiliki intent berbeda atau apakah tautan kontekstual benar-benar relevan secara semantik. Penilaian tersebut tetap bagian dari QG-12 dan review arsitektur manusia. QG-13 tidak mewajibkan semua halaman masuk menu utama atau memiliki jumlah tautan tertentu.
+
+## 5. Format laporan error
 
 Setiap validator harus menampilkan:
 - Kode gate dan jenis error.
@@ -50,11 +63,11 @@ Expected target: services
 Action: gunakan ID layanan yang tersedia atau hapus relasi opsional.
 ```
 
-## 5. Acceptance criteria rilis
+## 6. Acceptance criteria rilis
 
 Rilis dapat diterima jika seluruh gate wajib berstatus lulus, build produksi sukses, dan tidak ada pengecualian yang belum disetujui. QG-12 dinyatakan lulus melalui catatan persetujuan reviewer pada PR, issue, atau catatan publikasi; bukan melalui pemeriksaan otomatis. Pengecualian harus dicatat dengan alasan, cakupan, pemilik, dan batas waktu penyelesaian.
 
-## 6. Test matrix minimum
+## 7. Test matrix minimum
 
 | Skenario | Hasil yang diharapkan |
 |---|---|
@@ -79,7 +92,11 @@ Rilis dapat diterima jika seluruh gate wajib berstatus lulus, build produksi suk
 | Konten singkat tetapi sudah memenuhi tujuan halaman secara memadai | Dapat lulus QG-12 |
 | Halaman lokasi hanya mengganti nama kota tanpa informasi unik | Gagal QG-12 |
 | Klaim regulasi/teknis penting tidak memiliki verifikasi yang memadai | Gagal QG-12 |
+| Route indexable tidak tercatat dalam sitemap/route manifest tanpa pengecualian | Gagal QG-13 |
+| Breadcrumb/menu mengarah ke route yang tidak tersedia | Gagal QG-13 |
+| Listing memiliki urutan atau filter yang tidak deterministik | Gagal QG-13 |
+| Halaman sengaja tidak ditautkan dari menu utama tetapi dapat ditemukan melalui jalur lain yang ditetapkan | Dapat lulus QG-13 |
 
-## 7. CI dan verifikasi lokal
+## 8. CI dan verifikasi lokal
 
-Gate otomatis QG-01 sampai QG-11 harus dijalankan secara lokal dan pada CI untuk pull/push yang mengubah konten, schema, komponen block, routing, atau konfigurasi SEO. Perintah final ditetapkan oleh implementasi proyek dan didokumentasikan di README proyek. QG-12 tetap menjadi review manusia: hasilnya dibuktikan dengan catatan persetujuan reviewer pada PR, issue, atau catatan publikasi sebelum rilis, dan tidak diwakili oleh pemeriksaan CI.
+Gate otomatis QG-01 sampai QG-11 dan QG-13 harus dijalankan secara lokal dan pada CI untuk pull/push yang mengubah konten, schema, komponen block, routing, atau konfigurasi SEO. Perintah final ditetapkan oleh implementasi proyek dan didokumentasikan di README proyek. QG-12 tetap menjadi review manusia: hasilnya dibuktikan dengan catatan persetujuan reviewer pada PR, issue, atau catatan publikasi sebelum rilis, dan tidak diwakili oleh pemeriksaan CI.
