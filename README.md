@@ -8,6 +8,7 @@ Repository ini menyimpan standar reusable untuk analisis kebutuhan, perancangan,
 - [Content Contract](content-contract/CONTENT-CONTRACT.md) — kontrak Markdown terpisah berdasarkan jenis konten.
 - [Frontmatter Templates](content-contract/FRONTMATTER-TEMPLATES.md) — kerangka field kosong untuk setiap jenis konten, sebagai checklist saat membuat dokumen.
 - [Technical Architecture](architecture/TECHNICAL-ARCHITECTURE.md) — panduan penerapan standar pada Astro.
+- [Content & Information Architecture](architecture/CONTENT-AND-INFORMATION-ARCHITECTURE.md) — model konten, sitemap, navigasi, URL, internal linking, listing, halaman lokal, dan konversi.
 - [Quality Gates](quality/QUALITY-GATES.md) — acceptance criteria dan verifikasi.
 - [Content Quality Standard](quality/CONTENT-QUALITY-STANDARD.md) — standar kualitas editorial, kedalaman, akurasi, orisinalitas, dan people-first content.
 
