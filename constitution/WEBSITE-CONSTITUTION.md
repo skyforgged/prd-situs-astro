@@ -1,7 +1,7 @@
 # Website Constitution — PRD Astro
 
 > Status: Standar dasar proyek  
-> Versi: 1.0  
+> Versi: 1.1  
 > Bahasa: Indonesia
 
 ## 1. Tujuan dan cakupan
@@ -23,14 +23,14 @@ Constitution mengatur prinsip konten, identitas data, relasi, Schema.org, pemisa
 
 ### 3.1 Konten situs wajib berbasis Markdown
 
-Seluruh konten substantif yang ditampilkan kepada pengunjung wajib memiliki sumber Markdown dengan frontmatter terstruktur, termasuk namun tidak terbatas pada:
+Seluruh konten substantif yang dikelola sebagai entitas atau bagian halaman wajib memiliki sumber Markdown dengan frontmatter terstruktur, termasuk jenis-jenis berikut **apabila digunakan oleh situs**:
 
 - Homepage.
 - Menu utama, menu sekunder, navigasi, dan konfigurasi tautan footer yang tampil sebagai konten.
 - Halaman statis dan landing page.
 - Artikel, berita, panduan, dan kategori.
 - Layanan, produk, portofolio, studi kasus, dan profil.
-- FAQ, testimoni, tim, lokasi, serta konten terstruktur lain yang dikelola sebagai entitas konten.
+- FAQ, testimoni, tim, lokasi, serta konten terstruktur lain yang dikelola sebagai entitas konten. Daftar ini bukan kewajiban fitur untuk setiap situs; jenis konten hanya perlu dibuat ketika dibutuhkan.
 
 Konten tidak boleh disalin secara terpisah ke komponen Astro, file JSON, atau konfigurasi lain sehingga tercipta dua sumber kebenaran.
 
@@ -40,17 +40,19 @@ Aturan Markdown tidak mewajibkan semua berkas proyek menjadi Markdown. Berkas ko
 
 Pengecualian tidak boleh digunakan untuk menyimpan konten halaman yang seharusnya dikelola melalui sistem konten.
 
+**Batas konten dan UI:** judul section, uraian layanan, FAQ, dan teks promosi spesifik halaman adalah konten dan harus berasal dari Markdown. Label generik antarmuka seperti “Baca selengkapnya”, “Kembali”, status loading, atau pesan validasi boleh berasal dari kamus/config UI karena merupakan bagian dari antarmuka, bukan konten editorial halaman.
+
 ## 4. Identitas konten
 
 1. Setiap dokumen konten wajib memiliki `id` berupa bilangan bulat positif.
-2. **Keunikan ID berlaku secara global dalam satu situs**, lintas seluruh collection dan jenis konten. ID artikel tidak boleh sama dengan ID layanan, halaman, menu, homepage, atau entitas konten lain.
+2. **Keunikan ID dokumen konten berlaku secara global dalam satu situs**, lintas seluruh collection dan jenis konten. ID block bukan ID dokumen dan mengikuti ruang identitas lokal sebagaimana dijelaskan dalam Content Contract.
 3. ID adalah identitas internal yang stabil. Perubahan judul, slug, URL, atau lokasi file tidak boleh otomatis mengubah ID.
 4. Setiap dokumen yang memiliki URL wajib memiliki `slug` berupa string. Slug bukan pengganti ID dan tidak boleh dipakai sebagai foreign key.
 5. Slug harus unik pada ruang URL yang relevan. Aturan keunikan slug mengikuti routing situs; aturan ini terpisah dari keunikan ID.
 6. ID tidak boleh dibuat ulang hanya karena konten dipindahkan, diperbarui, atau diubah statusnya.
 7. Penghapusan konten tidak membuat ID lama bebas dipakai kembali, kecuali ada prosedur migrasi dan keputusan eksplisit.
 
-Satu situs wajib memiliki mekanisme pencatatan atau validasi ID global agar benturan antar-collection dapat dicegah.
+Satu situs wajib memiliki mekanisme pencatatan atau validasi ID dokumen global agar benturan antar-collection dapat dicegah. ID block divalidasi terpisah di dalam dokumen pemiliknya.
 
 ## 5. Relasi antarkonten
 
@@ -58,7 +60,7 @@ Satu situs wajib memiliki mekanisme pencatatan atau validasi ID global agar bent
 2. Relasi tunggal menggunakan satu nilai numerik, misalnya `serviceId: 12`.
 3. Relasi jamak menggunakan daftar ID numerik, misalnya `relatedArticleIds: [102, 103]`.
 4. Relasi tidak boleh menggunakan slug, judul, URL, nama file, atau label tampilan sebagai pengenal utama.
-5. Setiap relasi wajib mendefinisikan collection/jenis konten tujuan, kardinalitas, kewajiban atau opsionalitas, dan perilaku ketika target tidak ditemukan.
+5. Setiap relasi wajib mendefinisikan collection/jenis konten tujuan, kardinalitas, kewajiban atau opsionalitas, dan perilaku ketika target tidak ditemukan. Matriks relasi tersebut harus menjadi bagian Content Contract atau spesifikasi data proyek.
 6. Referensi yang tidak ditemukan, bertipe salah, atau menunjuk ke ID duplikat harus menyebabkan validasi gagal.
 7. Relasi dua arah tidak otomatis diwajibkan. Jika dibutuhkan, aturan sinkronisasi kedua arah harus ditetapkan secara eksplisit.
 
@@ -122,7 +124,17 @@ Contoh block tanpa schema:
 
 ## 8. Metadata dan media
 
-- Metadata yang berkaitan dengan konten harus dikelola dalam frontmatter sesuai kontrak jenis konten.
+### 8.1 Standar waktu
+
+Field tanggal/waktu konten yang merepresentasikan timestamp wajib menggunakan format ISO 8601 UTC dengan presisi detik: `YYYY-MM-DDTHH:mm:ssZ`. Contoh: `2026-11-26T10:00:00Z`. Validator harus menolak nilai tanpa zona waktu, nilai dengan offset lokal, dan nilai yang tidak memiliki presisi detik. Tanggal editorial tanpa waktu (jika suatu kontrak memang membutuhkannya) harus didefinisikan terpisah dan tidak boleh dicampur dengan timestamp.
+
+`publishedDate` adalah waktu publikasi pertama dan stabil setelah publikasi. `updatedDate` adalah waktu perubahan substantif terakhir; jika keduanya tersedia, `updatedDate` harus sama dengan atau lebih baru dari `publishedDate`. Timestamp tidak wajib unik secara global: identitas dan keunikan ditentukan oleh ID dokumen, bukan waktu. Dua dokumen boleh memiliki timestamp yang sama.
+
+### 8.2 Gambar
+
+Objek gambar yang digunakan dalam konten harus memiliki struktur yang ditetapkan Content Contract, sekurang-kurangnya sumber gambar dan alt text deskriptif. Alt bukan tempat menumpuk kata kunci; teks harus relevan dengan topik serta konteks gambar dan halaman.
+
+- Metadata yang berkaitan dengan konten harus dikelola dalam frontmatter sesuai kontrak jenis konten. Kontrak SEO bersama dan aturan fallback harus ditetapkan dalam Content Contract.
 - Setiap gambar konten yang bermakna wajib memiliki teks alternatif (`alt`) deskriptif yang relevan dengan topik dan konteks halaman.
 - Metadata SEO, Open Graph, dan data terstruktur harus bersumber dari data konten atau konfigurasi situs yang ditetapkan; jangan membuat sumber data duplikat.
 - Informasi yang ditampilkan dan structured data tidak boleh saling bertentangan.
@@ -160,7 +172,7 @@ Keputusan berikut bersifat final untuk versi standar ini:
 
 | Area | Keputusan |
 |---|---|
-| Keunikan ID | Global, lintas seluruh jenis/collection konten |
+| Keunikan ID | Global untuk ID dokumen konten; ID block lokal per dokumen |
 | Schema block | Opsional, digunakan jika relevan |
 | Kontrak Markdown | Terpisah berdasarkan jenis konten |
 
