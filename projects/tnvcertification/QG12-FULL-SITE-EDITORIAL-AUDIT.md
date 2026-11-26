@@ -3,12 +3,12 @@
 > Status: Audit editorial seluruh URL indexable; bukan persetujuan teknis/operasional atas klaim organisasi  
 > Tanggal: 2026-11-26  
 > Repository implementasi: `skyforgged/tnvcertification`  
-> Commit konten yang direview: `839da551f2d492f2d14188e298c81e0e35779133`  
+> Commit konten yang direview: `1b5f08ae92d9f2d1d81f2d3bfe142b344590ef2b`  
 > Standar acuan: Content Quality & Editorial Standard 1.1
 
 ## 1. Kesimpulan eksekutif
 
-Audit mencakup **47 URL indexable** pada hasil Information Architecture Audit: 46 halaman berbasis content collection dan satu katalog layanan bahasa Inggris yang dirender secara programatis (`/en/services/`). Konten draft, kategori berstatus planned, dan data jadwal pelatihan yang bukan halaman editorial tidak dihitung sebagai halaman indexable.
+Audit mencakup **47 URL indexable** pada hasil Information Architecture Audit: 46 halaman berbasis content collection dan satu katalog layanan bahasa Inggris yang dirender secara programatis (`/en/services/`). Pada commit terbaru, CI memverifikasi 85 HTML routes, 47 halaman indexable, dan 47 URL sitemap tanpa masalah IA yang memblokir. Konten draft, kategori berstatus planned, dan data jadwal pelatihan yang bukan halaman editorial tidak dihitung sebagai halaman indexable.
 
 Hasil klasifikasi editorial:
 
@@ -189,6 +189,6 @@ Tiga halaman yang sebelumnya dipilih untuk remediasi telah diperbarui:
 - `0003-mengendalikan-risiko-kualitas-di-pabrik`;
 - `pelatihan-auditor-internal-iso-9001`.
 
-Perubahan telah dikirim ke branch `main` pada commit `839da551f2d492f2d14188e298c81e0e35779133`. Pemeriksaan CI untuk commit ini perlu berstatus sukses sebelum remediasi awal dinyatakan tervalidasi. Dua halaman artikel sudah mendapat materi yang lebih aplikatif; halaman training secara sengaja menyatakan rincian penyelenggaraan yang belum tersedia dan menghindari klaim sertifikat kompetensi.
+Perubahan telah dikirim ke branch `main` pada commit `839da551f2d492f2d14188e298c81e0e35779133`. Pemeriksaan CI pada commit `1b5f08ae92d9f2d1d81f2d3bfe142b344590ef2b` telah selesai dengan status **success**. Type/Astro checks, lint, tests, production build, page-image uniqueness, SEO/link audit, Information Architecture audit, dan block-section audit seluruhnya lulus. SEO audit memeriksa 85 HTML pages dan 47 canonical unik; IA audit memeriksa 85 HTML routes, 47 halaman indexable, dan 47 URL sitemap tanpa masalah IA yang memblokir. Dua halaman artikel sudah mendapat materi yang lebih aplikatif; halaman training secara sengaja menyatakan rincian penyelenggaraan yang belum tersedia dan menghindari klaim sertifikat kompetensi.
 
 Audit penuh ini menetapkan backlog yang tersisa; belum ada perubahan massal pada 25 halaman berstatus belum lulus.

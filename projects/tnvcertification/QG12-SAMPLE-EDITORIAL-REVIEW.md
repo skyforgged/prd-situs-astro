@@ -1,10 +1,14 @@
 # QG-12 — Sample Editorial Review: TNV Certification
 
-> Status: Review sampel; belum merupakan persetujuan editorial untuk seluruh situs  
+> Status: Snapshot diagnosis awal; hasil audit terkini dan klasifikasi seluruh situs ada di [QG12-FULL-SITE-EDITORIAL-AUDIT.md](QG12-FULL-SITE-EDITORIAL-AUDIT.md)  
 > Tanggal review: 2026-11-26  
 > Repository: `skyforgged/tnvcertification`  
 > Commit implementasi: `778bac514124d139eac8bf02367ed6c6c3d7362a`  
 > Standar: Content Quality & Editorial Standard 1.1
+
+## Catatan status terkini
+
+Dokumen ini dipertahankan sebagai rekaman kondisi sebelum remediasi pada tiga halaman sampel. Artikel Posisi Kualitas, artikel Pengendalian Risiko Kualitas, dan halaman Pelatihan Auditor Internal ISO 9001 telah diremediasi. Perubahan pada repository implementasi telah lolos seluruh workflow CI pada commit `1b5f08ae92d9f2d1d81f2d3bfe142b344590ef2b`. Gunakan audit penuh untuk status setelah remediasi dan backlog seluruh situs.
 
 ## 1. Ruang lingkup dan metode
 
