@@ -1,12 +1,12 @@
 # Technical Architecture Specification — Astro
 
 > Status: Draft standar teknis
-> Versi: 0.1
+> Versi: 0.2
 > Berlaku untuk: proyek Astro yang mengadopsi PRD Situs Astro
 
 ## 1. Tujuan dan batas
 
-Dokumen ini menjembatani Website Constitution dan Content Contract dengan implementasi Astro. Constitution tetap menjadi aturan tertinggi; spesifikasi proyek boleh memilih detail implementasi selama tidak melanggarnya.
+Dokumen ini menjembatani Website Constitution, Content Contract, dan Content & Information Architecture dengan implementasi Astro. Constitution tetap menjadi aturan tertinggi; Content & Information Architecture menetapkan rancangan informasi yang harus diterapkan secara teknis. Spesifikasi proyek boleh memilih detail implementasi selama tidak melanggar dokumen yang lebih tinggi.
 
 ## 2. Struktur proyek minimum
 
@@ -45,7 +45,7 @@ Nama collection, penempatan file, dan strategi routing harus didaftarkan dalam d
 - Validator mengumpulkan seluruh ID dokumen sebelum pemeriksaan relasi.
 - Konflik ID dokumen harus menghasilkan error yang menyebut kedua file dan jenis kontennya.
 - ID tidak boleh dihasilkan dari urutan file, slug, atau judul saat build.
-- Proyek boleh memelihara `docs/ID-REGISTRY.md` atau registry mesin; registry bukan sumber kebenaran pengganti ID di frontmatter, melainkan alat audit.
+- Setiap proyek wajib memiliki mekanisme pencatatan atau validasi ID dokumen global sebagaimana diwajibkan Constitution. Mekanisme dapat berupa `docs/ID-REGISTRY.md`, registry mesin, validator yang mengindeks seluruh collection, atau kombinasi; registry bukan pengganti ID pada frontmatter.
 
 ## 5. Block registry dan rendering
 
@@ -135,7 +135,13 @@ Setiap penyimpangan atau pilihan yang belum ditetapkan standar harus dicatat dal
 
 ## 14. Hal yang harus ditetapkan sebelum implementasi
 
-- Nama collection dan lokasi file.
+- Peta kebutuhan pengguna/intent dan sitemap yang menghubungkan setiap route dengan tujuan halaman.
+- Nama collection, lokasi file, dan pemetaan collection ke jenis halaman.
+- Matriks entitas/relasi termasuk target, kardinalitas, dan perilaku target hilang.
+- Strategi navigasi, menu, footer, breadcrumb, dan route.
+- Aturan internal linking, related content, listing, filter, sorting, pagination, dan empty state.
+- Kebijakan halaman lokal dan bukti cakupan operasional bila relevan.
+- Jalur konversi dan aturan CTA beserta target yang tervalidasi.
 - Schema final seluruh jenis konten yang dipakai.
 - Block registry dan kontrak props setiap block.
 - Struktur lengkap SEO nested.
