@@ -58,3 +58,20 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 
 ### Compatibility
 - Dokumen IA 0.1 berstatus draft. Setiap proyek tetap harus menetapkan sitemap, route, relasi, listing, pagination, footer, CTA, dan kebijakan lokalnya sendiri. Tidak ada jumlah halaman, kata, atau tautan yang diwajibkan secara global.
+
+
+### Changed
+- Website Constitution 1.3: memasukkan Content & Information Architecture ke hierarki acuan dan memperjelas bahwa mekanisme pencatatan/validasi ID global wajib tersedia.
+- Technical Architecture 0.2: mewajibkan mekanisme ID registry/validator dan menambahkan keputusan IA yang harus ditetapkan sebelum implementasi.
+- Quality Gates 0.4: menambahkan QG-13 untuk konsistensi artefak IA, sitemap, navigasi, breadcrumb, listing, dan indexability.
+
+### Rationale and impact
+- Mencegah ketidakjelasan otoritas antara standar IA dan spesifikasi teknis.
+- Menutup perbedaan redaksi antara kewajiban ID global pada Constitution dan pilihan mekanisme pada Technical Architecture.
+- Membuat keputusan IA yang sebelumnya hanya berupa dokumen perencanaan dapat diverifikasi pada implementasi situs.
+- QG-13 hanya mengotomatisasi konsistensi yang dapat dinyatakan eksplisit; relevansi semantik dan perbedaan intent tetap memerlukan review manusia melalui QG-12.
+
+### Compatibility
+- Proyek yang mengadopsi standar harus memiliki mekanisme registry atau validator ID global, tidak cukup hanya menyatakan bahwa ID seharusnya unik.
+- Proyek harus menyediakan artefak IA yang dapat diperiksa (misalnya sitemap/route manifest dan aturan listing). Tidak semua halaman wajib masuk menu utama atau memiliki jumlah tautan tertentu.
+- QG-13 perlu diimplementasikan pada proyek Astro; repository standar ini belum memiliki aplikasi atau validator untuk menjalankannya.
