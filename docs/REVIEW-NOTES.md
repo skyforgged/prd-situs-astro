@@ -129,7 +129,7 @@ Perubahan diverifikasi dengan membaca ulang isi file dan pencarian teks terhadap
   - Verifikasi: tidak ada versi dokumen standar yang diubah; sesuai `AGENTS.md`, pola referensi tidak dijadikan kewajiban global tanpa dasar Constitution.
 - Batas verifikasi: analisis hanya membaca kode, tanpa build, validator, atau test runner. Klaim "pola ada di setiap repo" tidak diterima apa adanya; tiga dari lima pola ternyata tidak konsisten lintas repo.
 
-## Langkah lanjutan
+## Tindak lanjut standar sebelum penyusunan IA
 
 1. Implementasikan validator sesuai `architecture/TECHNICAL-ARCHITECTURE.md` dan `quality/QUALITY-GATES.md` pada proyek Astro pertama yang mengadopsi standar.
 2. Saat implementasi, validasi ulang detail schema nested SEO dan semua jenis relasi yang benar-benar dipakai proyek.
