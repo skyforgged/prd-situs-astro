@@ -75,6 +75,12 @@
 - [x] Selesai. `CHANGELOG.md` dibuat dengan tanggal, perubahan, alasan, dampak, dan catatan kompatibilitas.
 - Bukti: `CHANGELOG.md`.
 
+## Tambahan: kerangka frontmatter untuk agen AI
+
+- [x] Ditambahkan `content-contract/FRONTMATTER-TEMPLATES.md` berisi kerangka field kosong untuk Homepage, Menu, Page, Article, Service, dan Category.
+- [x] Content Contract 1.2 dan README menautkan template; `AGENTS.md` mewajibkan agen membacanya sebelum membuat atau merevisi dokumen konten.
+- Bukti: `content-contract/FRONTMATTER-TEMPLATES.md`, `content-contract/CONTENT-CONTRACT.md`, `AGENTS.md`, dan `README.md`.
+
 ## Batas verifikasi
 
 Perubahan ini diverifikasi dengan membaca ulang isi file melalui GitHub setelah commit. Repository ini belum memiliki `package.json`, implementasi validator, atau test runner; karena itu belum ada klaim bahwa quality gates telah dijalankan sebagai automated tests. Quality Gates saat ini mendefinisikan kriteria penerimaan yang harus diimplementasikan dan dijalankan pada setiap proyek Astro.
