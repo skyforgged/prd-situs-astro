@@ -59,7 +59,8 @@
 
 | Gate | Perintah | Lokal | CI | Fixture valid/invalid |
 |---|---|---|---|---|
-| QG-01–QG-13 | [ISI] | [Ya/Tidak] | [Ya/Tidak] | [Lokasi] |
+| QG-01–QG-11, QG-13 | [ISI] | [Ya/Tidak] | [Ya/Tidak] | [Lokasi] |
+| QG-12 | Review manusia | Ya | Tidak | Tidak berlaku; lihat catatan persetujuan |
 
 Perintah validasi:
 - Konten: [ISI]
@@ -87,5 +88,5 @@ Perintah validasi:
 - [ ] Schema collection dan block registry eksplisit.
 - [ ] ID global, relasi, route, dan aset tervalidasi.
 - [ ] Nested SEO dan graph JSON-LD terdefinisi.
-- [ ] Seluruh quality gates memiliki perintah dan fixture.
+- [ ] Gate otomatis memiliki perintah dan fixture; QG-12 memiliki tempat pencatatan persetujuan reviewer.
 - [ ] Build dan CI dapat direproduksi.

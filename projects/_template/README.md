@@ -1,7 +1,7 @@
 # Project Architecture Templates
 
 > Status: Template proyek
-> Versi: 0.1
+> Versi: 0.2
 
 ## Tujuan
 

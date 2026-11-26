@@ -122,7 +122,7 @@ Perubahan diverifikasi dengan membaca ulang isi file dan pencarian teks terhadap
 ## Analisis pola situs referensi 2026-11-26
 
 - [x] Pola artikel 1–3, artikel 4–6, footer dinamis, CTA layanan/WhatsApp, dan pagination dicatat dalam berkas analisis tersendiri.
-  - Bukti: `docs/ANALISIS-POLA-SITUS.md`; tautan di `README.md:19`.
+  - Bukti: `docs/ANALISIS-POLA-SITUS.md`; tautan di `README.md:20`.
   - Verifikasi: lima repo dibaca via GitHub API dan `raw.githubusercontent.com`; `skyforgged/konsultan-slf` dipakai sebagai rujukan utama, empat repo `arisciwek/*` sebagai pembanding.
 - [x] Temuan dibedakan menjadi fakta implementasi, bagian yang sudah tercakup standar, bagian yang belum diatur, dan saran non-normatif.
   - Bukti: `docs/ANALISIS-POLA-SITUS.md` bagian 2, 4, dan 5.
@@ -146,9 +146,9 @@ Perubahan diverifikasi dengan membaca ulang isi file dan pencarian teks terhadap
 
 ## Langkah lanjutan
 
-1. Lakukan audit konsistensi silang antara Constitution, Content Contract, Technical Architecture, Content & Information Architecture, dan Quality Gates.
-2. Turunkan kriteria IA yang dapat diuji menjadi usulan quality gates, tanpa memaksakan keputusan proyek menjadi aturan universal.
-3. Siapkan template dokumen proyek untuk sitemap, intent map, matriks relasi, internal linking, dan keputusan route.
+1. Selesai: audit konsistensi silang antara Constitution, Content Contract, Technical Architecture, Content & Information Architecture, dan Quality Gates (lihat "Audit konsistensi silang 2026-11-26").
+2. Selesai: kriteria IA yang dapat diuji diturunkan menjadi QG-13, tanpa memaksakan keputusan proyek menjadi aturan universal (lihat `quality/QUALITY-GATES.md` 0.4).
+3. Selesai: template dokumen proyek untuk sitemap, intent map, matriks relasi, internal linking, dan keputusan route disiapkan (lihat "Project Architecture Templates 2026-11-26").
 4. Implementasikan validator sesuai Technical Architecture pada proyek Astro pertama yang mengadopsi standar.
 5. Terapkan QG-12 sebagai review editorial pada konten nyata dan evaluasi checklist berdasarkan jenis situs.
 6. Tambahkan ADR jika keputusan arsitektur baru berdampak lintas proyek.
@@ -181,7 +181,7 @@ Perubahan diverifikasi dengan membaca ulang isi file dan pencarian teks terhadap
 - [x] Baca ulang Constitution, Content Contract, Technical Architecture, Content & Information Architecture, Quality Gates, Content Quality Standard, Frontmatter Templates, dan AGENTS.
 - [x] Perbaiki hierarki standar, kewajiban mekanisme ID global, daftar keputusan IA pra-implementasi, dan gate konsistensi IA.
 - [ ] Implementasikan QG-13 pada proyek Astro yang mengadopsi standar dan uji dengan fixture valid/tidak valid.
-- [ ] Siapkan template artefak proyek: intent map, sitemap/route manifest, matriks relasi, navigasi/breadcrumb, internal linking, listing/pagination, local coverage, dan CTA.
+- [x] Siapkan template artefak proyek: intent map, sitemap/route manifest, matriks relasi, navigasi/breadcrumb, internal linking, listing/pagination, local coverage, dan CTA. Bukti: bagian "Project Architecture Templates 2026-11-26" di bawah.
 - [ ] Audit ulang kontrak berdasarkan implementasi pertama; khususnya field yang masih membutuhkan kontrak entitas target (Author/Person dan Organization/Provider).
 
 ### Bukti perubahan
@@ -223,3 +223,12 @@ Paket ini menutup tindak lanjut dokumentasi yang meminta template artefak proyek
 ### Penilaian
 
 Workflow menutup kesenjangan antara starter templates dan proses pemakaiannya. Gate akhir tidak otomatis lulus hanya karena file dokumen tersedia; kesiapan memerlukan kualitas isi, bukti, keputusan, dan persetujuan. Tahap evaluasi berikutnya adalah menerapkan workflow pada satu proyek Astro nyata dan mencatat friksi, pengulangan, serta keputusan yang belum tertampung.
+
+## Koreksi dokumentasi setelah pull 2026-11-26
+
+- [x] Versi paket template diselaraskan: `projects/_template/README.md:4` menjadi 0.2, mengikuti `projects/_template/README.md:66` dan entri Template Pack 0.2 di `CHANGELOG.md`.
+- [x] `projects/_template/TECHNICAL-ARCHITECTURE.md:62-63,91` memisahkan QG-12 dari gate otomatis sesuai `quality/QUALITY-GATES.md:102`; review editorial tidak lagi diwajibkan memiliki perintah dan fixture CI.
+- [x] Checklist yang sudah dibuktikan pada `docs/REVIEW-NOTES.md:149-151,184` ditandai selesai dengan rujukan ke bagian yang memuat buktinya.
+- [x] Rujukan baris diperbarui: `docs/ANALISIS-POLA-SITUS.md:19,117` mengarah ke `README.md:34`, dan `docs/REVIEW-NOTES.md:125` mengarah ke `README.md:20`.
+- Bukti: perubahan pada empat berkas di atas, entri `Fixed — tindak lanjut pull 2026-11-26` di `CHANGELOG.md`, serta pemeriksaan tautan lokal Markdown tanpa tautan rusak.
+- Batas verifikasi: koreksi hanya menyelaraskan metadata, pemetaan gate, dan rujukan; tidak ada aturan normatif baru. Repository tetap tidak memiliki aplikasi, `package.json`, validator, atau test runner sehingga tidak ada build/test yang dijalankan.

@@ -16,7 +16,7 @@ Dokumen ini merangkum pola antarmuka dan data yang muncul berulang pada situs As
 4. CTA ke halaman layanan dan CTA ke nomor WhatsApp tertentu.
 5. Pagination pada halaman indeks artikel.
 
-Tujuannya adalah memisahkan **fakta implementasi** dari **asumsi** dan memberi arah bagi PRD proyek. Sesuai `README.md:33` dan `AGENTS.md`, pola di sini tidak otomatis menjadi aturan universal; kebutuhan spesifik tetap disimpan di bawah `projects/<nama-proyek>/`.
+Tujuannya adalah memisahkan **fakta implementasi** dari **asumsi** dan memberi arah bagi PRD proyek. Sesuai `README.md:34` dan `AGENTS.md`, pola di sini tidak otomatis menjadi aturan universal; kebutuhan spesifik tetap disimpan di bawah `projects/<nama-proyek>/`.
 
 ## 2. Ringkasan lintas repo
 
@@ -114,7 +114,7 @@ Jadi klaim "paging di halaman `/articles/`" **tidak** terbukti pada repo rujukan
 - Sumber nomor WhatsApp dan aturan pemilihan nomor berdasarkan tujuan.
 - Pagination indeks artikel: konvensi rute, `perPage`, canonical, dan empty state.
 
-**Batas kewenangan:** `README.md:33` menyimpan kebutuhan khusus di `projects/<nama-proyek>/`, dan `AGENTS.md` melarang menambahkan fitur wajib ke semua proyek tanpa dasar Constitution. Karena itu dokumen ini berhenti sebagai catatan referensi; perubahan standar hanya boleh dilakukan lewat usulan perubahan standar yang eksplisit.
+**Batas kewenangan:** `README.md:34` menyimpan kebutuhan khusus di `projects/<nama-proyek>/`, dan `AGENTS.md` melarang menambahkan fitur wajib ke semua proyek tanpa dasar Constitution. Karena itu dokumen ini berhenti sebagai catatan referensi; perubahan standar hanya boleh dilakukan lewat usulan perubahan standar yang eksplisit.
 
 ## 5. Catatan perbaikan untuk implementasi proyek
 

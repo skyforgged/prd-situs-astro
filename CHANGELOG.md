@@ -105,3 +105,16 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 - Workflow tidak menggantikan Constitution, Content Contract, IA, Technical Architecture, atau Quality Gates.
 - Gate yang tidak relevan hanya boleh berstatus Not applicable dengan alasan dan persetujuan.
 - Workflow 0.1 belum diuji melalui adopsi proyek Astro nyata; evaluasi setelah penerapan pertama tetap diperlukan.
+
+### Fixed — tindak lanjut pull 2026-11-26
+- `projects/_template/README.md`: versi paket diselaraskan ke 0.2 sesuai catatan di dalam berkas dan entri Template Pack 0.2.
+- `projects/_template/TECHNICAL-ARCHITECTURE.md`: QG-12 dipisahkan dari gate otomatis; template tidak lagi mewajibkan perintah dan fixture CI untuk review editorial.
+- `docs/REVIEW-NOTES.md`: checklist yang sudah dibuktikan ditandai selesai dan rujukan baris README diperbarui.
+- `docs/ANALISIS-POLA-SITUS.md`: rujukan baris README diperbarui setelah penambahan tautan IA.
+
+### Rationale and impact
+- Koreksi ini menjaga konsistensi internal paket template dan catatan bukti tanpa mengubah aturan normatif.
+- Pemisahan QG-12 memperjelas bahwa persetujuan editorial dibuktikan oleh reviewer, bukan oleh perintah CI.
+
+### Compatibility
+- Tidak ada versi standar normatif yang berubah; perintah dan fixture tetap diwajibkan untuk gate otomatis.
