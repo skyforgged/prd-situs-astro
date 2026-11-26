@@ -208,3 +208,18 @@ Perubahan standar telah diperbarui melalui GitHub dan dibaca ulang. Repository i
 ### Penilaian hasil
 
 Paket ini menutup tindak lanjut dokumentasi yang meminta template artefak proyek. Template sengaja memisahkan keputusan IA, model konten, dan keputusan teknis; tidak menggabungkannya menjadi satu dokumen raksasa. Tahap berikutnya adalah mengadopsinya pada satu proyek Astro nyata, menguji apakah kolom dan artefaknya cukup, lalu memperbaiki template berdasarkan temuan implementasi.
+
+
+## Project Initialization Workflow 2026-11-26
+
+- [x] Ditambahkan projects/_template/PROJECT-INITIALIZATION-WORKFLOW.md versi 0.1.
+- [x] Workflow memuat 10 phase: Repository & Standard Onboarding; Project Discovery & Brief; Research & Evidence; Intent Mapping & Page Opportunity; Content Modeling & Content Contract; Information Architecture & Route Design; Content Experience & Editorial Specification; Technical Architecture; PRD & Acceptance Criteria; Implementation Readiness Review.
+- [x] Setiap phase memiliki tujuan, masukan, pekerjaan, keluaran, dan gate/acceptance checklist.
+- [x] Ditambahkan status workflow, aturan iterasi, aturan kerja AGENT AI, format laporan phase, serta relasi phase dengan template dokumen.
+- [x] README root, README template, AGENTS.md, dan CHANGELOG.md ditautkan/diperbarui.
+- Bukti: projects/_template/PROJECT-INITIALIZATION-WORKFLOW.md; projects/_template/README.md; README.md; AGENTS.md; CHANGELOG.md.
+- Batas verifikasi: file dan integrasi dokumentasi diperiksa dengan pembacaan ulang setelah penulisan. Belum diuji pada repository situs Astro nyata, belum ada simulasi agent end-to-end, dan tidak ada automated test runner pada repository standar.
+
+### Penilaian
+
+Workflow menutup kesenjangan antara starter templates dan proses pemakaiannya. Gate akhir tidak otomatis lulus hanya karena file dokumen tersedia; kesiapan memerlukan kualitas isi, bukti, keputusan, dan persetujuan. Tahap evaluasi berikutnya adalah menerapkan workflow pada satu proyek Astro nyata dan mencatat friksi, pengulangan, serta keputusan yang belum tertampung.
