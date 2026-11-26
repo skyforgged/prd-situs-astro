@@ -6,9 +6,10 @@
 3. Gunakan `content-contract/CONTENT-CONTRACT.md` untuk bentuk data Markdown.
 4. Baca `content-contract/FRONTMATTER-TEMPLATES.md` sebelum membuat atau merevisi dokumen konten; gunakan kerangka field kosong sebagai checklist kelengkapan frontmatter.
 5. Gunakan `architecture/TECHNICAL-ARCHITECTURE.md` untuk keputusan implementasi Astro.
-6. Gunakan `quality/QUALITY-GATES.md` untuk verifikasi teknis dan editorial.
-7. Baca `quality/CONTENT-QUALITY-STANDARD.md` sebelum membuat, merevisi, atau menilai konten yang akan dipublikasikan.
-8. Baca `docs/REVIEW-NOTES.md` dan `CHANGELOG.md` sebelum mengubah standar.
+6. Gunakan `architecture/CONTENT-AND-INFORMATION-ARCHITECTURE.md` saat menyusun sitemap, jenis halaman, navigasi, route, internal linking, listing, atau jalur konversi.
+7. Gunakan `quality/QUALITY-GATES.md` untuk verifikasi teknis dan editorial.
+8. Baca `quality/CONTENT-QUALITY-STANDARD.md` sebelum membuat, merevisi, atau menilai konten yang akan dipublikasikan.
+9. Baca `docs/REVIEW-NOTES.md` dan `CHANGELOG.md` sebelum mengubah standar.
 
 ## Aturan kerja
 - Jangan membuat branch kecuali diminta secara eksplisit; kerjakan pada branch yang sedang ditentukan pengguna.
