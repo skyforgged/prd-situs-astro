@@ -1,14 +1,14 @@
 # Content Contract — PRD Astro
 
 > Status: Standar data konten  
-> Versi: 1.1  
+> Versi: 1.2  
 > Format sumber: Markdown + YAML frontmatter
 
 ## 1. Tujuan
 
 Dokumen ini mendefinisikan kontrak data untuk dokumen konten situs. Setiap jenis konten memiliki kontrak frontmatter tersendiri. Kontrak tidak disatukan menjadi satu skema universal; masing-masing dapat memiliki field wajib, opsional, dan aturan validasi sesuai fungsinya.
 
-Aturan lintas jenis konten seperti ID global, foreign key numerik, sumber Markdown, dan Schema.org mengikuti [Website Constitution](../constitution/WEBSITE-CONSTITUTION.md).
+Aturan lintas jenis konten seperti ID global, foreign key numerik, sumber Markdown, dan Schema.org mengikuti [Website Constitution](../constitution/WEBSITE-CONSTITUTION.md). Kerangka field frontmatter kosong untuk setiap jenis konten tersedia di [Frontmatter Templates](FRONTMATTER-TEMPLATES.md). Agen AI dan developer wajib merujuk template tersebut saat membuat dokumen baru, lalu mengisi nilainya sesuai kebutuhan dan kontrak.
 
 ## 2. Aturan umum semua kontrak
 
@@ -112,7 +112,7 @@ items:
   - label: Situs mitra
     url: https://example.com
     external: true
-updatedDate: 2026-11-26T10:00:00+07:00
+updatedDate: 2026-11-26T03:00:00Z
 ---
 ```
 
@@ -156,7 +156,7 @@ blocks:
     component: image
     src: /images/profil.webp
     alt: Tim perusahaan saat melakukan kegiatan konsultasi teknis.
-updatedDate: 2026-11-26T10:00:00+07:00
+updatedDate: 2026-11-26T03:00:00Z
 ---
 ```
 
@@ -203,7 +203,7 @@ featuredImage:
   src: /images/persiapan-dokumen.webp
   alt: Dokumen administrasi yang disusun untuk persiapan proses layanan.
 publishedDate: 2026-11-20T01:00:00Z
-updatedDate: 2026-11-26T10:00:00+07:00
+updatedDate: 2026-11-26T03:00:00Z
 blocks:
   - id: 1
     component: rich-text
@@ -268,7 +268,7 @@ blocks:
     steps:
       - title: Identifikasi
         description: Pemetaan kebutuhan awal.
-updatedDate: 2026-11-26T10:00:00+07:00
+updatedDate: 2026-11-26T03:00:00Z
 ---
 ```
 
@@ -294,7 +294,7 @@ blocks:
     component: content-list
     source: articles
     categoryId: 30
-updatedDate: 2026-11-26T10:00:00+07:00
+updatedDate: 2026-11-26T03:00:00Z
 ---
 ```
 
@@ -378,7 +378,7 @@ Jenis konten lain—misalnya produk, lokasi cabang, anggota tim, testimoni, stud
 
 Dokumen ini menetapkan kontrak konseptual. Nama collection Astro, lokasi file, nama field final, format tanggal, struktur objek SEO, strategi ID registry, serta cara menghasilkan JSON-LD harus dipastikan dalam dokumen arsitektur teknis sebelum implementasi. Perubahan nama field antarproyek tidak boleh dilakukan diam-diam; jika berbeda dari kontrak standar, tuliskan sebagai keputusan proyek dan pastikan tidak melanggar Constitution.
 
-## 12. Kontrak objek bersama
+## 13. Kontrak objek bersama
 
 ### 12.1 Objek `seo`
 
@@ -408,7 +408,7 @@ Jika fallback juga kosong, validasi gagal. URL canonical harus absolut. Properti
 
 `featuredImage` bukan string tunggal. Gambar dekoratif boleh memakai alt kosong hanya pada field block yang secara eksplisit mendukung dekorasi; gambar utama wajib memiliki alt deskriptif.
 
-## 13. Matriks relasi
+## 14. Matriks relasi
 
 Setiap field relasi harus tercantum dalam matriks ini atau matriks khusus proyek yang lebih lengkap. Target yang tidak ditemukan menyebabkan validasi gagal; relasi tidak boleh diam-diam dihapus atau diselesaikan berdasarkan slug.
 
@@ -429,7 +429,7 @@ Relasi internal menu memakai `pageId` dan menunjuk dokumen yang memiliki route. 
 
 Relasi ke Author/Person atau Organization/Provider belum boleh digunakan sebelum kontrak jenis konten target tersebut tersedia. Jika entitas tidak dimodelkan sebagai dokumen konten, gunakan struktur non-relasional yang didefinisikan secara eksplisit dalam PRD.
 
-## 14. Aturan waktu dan Schema.org
+## 15. Aturan waktu dan Schema.org
 
 Semua timestamp wajib memakai ISO 8601 UTC presisi detik: `YYYY-MM-DDTHH:mm:ssZ`, misalnya `2026-11-26T03:00:00Z`. Timestamp dengan offset lokal, tanpa zona waktu, atau presisi milidetik ditolak. Timestamp tidak wajib unik secara global; identitas unik ditentukan oleh ID dokumen.
 
