@@ -22,8 +22,15 @@ Website dinyatakan memenuhi standar hanya jika validasi konten, relasi, routing,
 | QG-09 Assets | Gambar, media, internal/external links | Semua referensi lokal tersedia dan tautan valid |
 | QG-10 Accessibility | Alt, heading, label, keyboard, contrast | Tidak ada pelanggaran kritis yang diketahui |
 | QG-11 Production build | Build produksi | Exit code sukses |
+| QG-12 Editorial quality | Kecukupan, akurasi, orisinalitas, keterbacaan, dan nilai tambah | Review editorial terdokumentasi dan seluruh kriteria yang relevan lulus; tidak menggunakan target jumlah kata sebagai syarat |
 
-## 3. Format laporan error
+## 3. Review editorial
+
+QG-12 merupakan gerbang review manusia/ahli, bukan pemeriksaan otomatis jumlah kata. Reviewer menggunakan [Content Quality Standard](CONTENT-QUALITY-STANDARD.md), menyesuaikan checklist dengan jenis halaman, dan mencatat hasil review pada PR, issue, atau catatan publikasi. Untuk topik berisiko tinggi, reviewer harus memiliki kompetensi yang relevan.
+
+Konten tidak lulus jika memiliki klaim material yang belum diverifikasi, tidak memberi nilai tambah, dibuat massal hanya dengan variasi keyword/lokasi, atau tidak memenuhi tujuan halaman. Panjang konten hanya boleh dipakai sebagai sinyal diagnostik, bukan skor atau target kelulusan.
+
+## 4. Format laporan error
 
 Setiap validator harus menampilkan:
 - Kode gate dan jenis error.
@@ -43,11 +50,11 @@ Expected target: services
 Action: gunakan ID layanan yang tersedia atau hapus relasi opsional.
 ```
 
-## 4. Acceptance criteria rilis
+## 5. Acceptance criteria rilis
 
 Rilis dapat diterima jika seluruh gate wajib berstatus lulus, build produksi sukses, dan tidak ada pengecualian yang belum disetujui. Pengecualian harus dicatat dengan alasan, cakupan, pemilik, dan batas waktu penyelesaian.
 
-## 5. Test matrix minimum
+## 6. Test matrix minimum
 
 | Skenario | Hasil yang diharapkan |
 |---|---|
@@ -68,7 +75,11 @@ Rilis dapat diterima jika seluruh gate wajib berstatus lulus, build produksi suk
 | Featured image tidak memiliki alt | Gagal QG-01/QG-10 |
 | JSON-LD memiliki JSON tidak valid | Gagal QG-08 |
 | Build produksi gagal | Gagal QG-11 |
+| Konten panjang tetapi repetitif dan tidak memberi nilai tambah | Gagal QG-12 |
+| Konten singkat tetapi sudah memenuhi tujuan halaman secara memadai | Dapat lulus QG-12 |
+| Halaman lokasi hanya mengganti nama kota tanpa informasi unik | Gagal QG-12 |
+| Klaim regulasi/teknis penting tidak memiliki verifikasi yang memadai | Gagal QG-12 |
 
-## 6. CI dan verifikasi lokal
+## 7. CI dan verifikasi lokal
 
 Semua gate harus dijalankan secara lokal dan pada CI untuk pull/push yang mengubah konten, schema, komponen block, routing, atau konfigurasi SEO. Perintah final ditetapkan oleh implementasi proyek dan didokumentasikan di README proyek.
