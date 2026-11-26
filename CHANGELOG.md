@@ -5,11 +5,13 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 ## 2026-11-26
 
 ### Added
+- Blank frontmatter templates for Homepage, Menu, Page, Article, Service, and Category, with explicit agent usage instructions.
 - Technical Architecture Specification untuk implementasi Astro.
 - Quality Gates dan acceptance criteria.
 - Instruksi repository untuk agen melalui `AGENTS.md`.
 
 ### Changed
+- Content Contract 1.2: links the frontmatter templates and requires agents to consult them when creating content documents.
 - Constitution 1.1: memperjelas bahwa keunikan global hanya berlaku untuk ID dokumen; ID block lokal per dokumen.
 - Constitution 1.1: menetapkan timestamp ISO 8601 UTC presisi detik, relasi waktu publikasi/pembaruan, dan batas konten vs label UI.
 - Constitution 1.1: menegaskan jenis konten opsional sesuai kebutuhan situs.
