@@ -4,7 +4,7 @@
 > Tanggal: 2026-11-26  
 > Standar yang diperiksa: Website Constitution 1.3, Content Contract 1.3, Frontmatter Templates 1.2, Quality Gates 0.4  
 > Repository implementasi: `skyforgged/tnvcertification`  
-> Commit implementasi yang diperiksa: `ba0ee53e7db1f3f7de522ce5502a278b9b700b05`
+> Commit implementasi yang diperiksa: `778bac514124d139eac8bf02367ed6c6c3d7362a`
 
 ## 1. Kesimpulan
 
@@ -31,7 +31,7 @@ Pemeriksaan dilakukan pada file berikut di repository TNV Certification:
 - Sampel artikel, layanan, dan pelatihan di `src/content/`
 - `AGENTS.md` dan `docs/architecture.md`
 
-Validasi nyata pada commit yang diperiksa: GitHub Actions berhasil menjalankan type/Astro checks, lint, tests, production build, audit page images, SEO/link audit, IA audit, dan block-section audit. Hasil IA: 94 file HTML, 47 halaman indexable, dan 47 URL sitemap. [Run CI](https://github.com/skyforgged/tnvcertification/actions/runs/45855726180).
+Validasi nyata pada commit yang diperiksa: GitHub Actions berhasil menjalankan type/Astro checks, lint, tests, production build, audit page images, SEO/link audit, IA audit, dan block-section audit. Hasil IA pada build terbaru: 85 file HTML, 47 halaman indexable, dan 47 URL sitemap. Perbaikan lanjutan menghilangkan warning slug kategori bilingual, konflik route CSMS dengan generic slug route, dan direktori collection yang belum tersedia. [Run CI](https://github.com/skyforgged/tnvcertification/actions/runs/45855726180).
 
 Build tetap menampilkan warning non-blocking tentang direktori collection `certifications` yang belum tersedia, slug kategori bilingual yang sama, dan kandidat route `/[slug]` yang bertabrakan dengan `/csms/[slug]`. Warning ini perlu ditindaklanjuti terpisah dari evaluasi kontrak.
 
@@ -134,7 +134,7 @@ Schema collection menggunakan `z.object(...)`. Perlu fixture yang mengirim field
 
 Evaluasi ini tidak mengubah standar global dan tidak menyatakan implementasi TNV Certification telah memenuhi seluruh Quality Gates PRD. Build dan test yang berhasil membuktikan konsistensi terhadap validator proyek yang ada, bukan otomatis kesesuaian terhadap seluruh aturan Constitution.
 
-QG-13 pada implementasi pertama telah memeriksa route aktual, sitemap, canonical, navigasi, breadcrumb, redirect, dan keluarga route. Aturan filter, urutan, batas, serta empty state listing/related-content belum seluruhnya masuk ke audit IA terpadu. Sebagian perilaku sudah memiliki test proyek tersendiri; cakupan ini perlu dipetakan dan dilengkapi sebelum QG-13 dinyatakan lengkap.
+QG-13 pada implementasi pertama memeriksa route aktual, sitemap, canonical, navigasi, breadcrumb, redirect, dan keluarga route. Setelah review ini, coverage listing juga diperkuat dalam CI: urutan artikel deterministik (effectiveDate, pubDate, file ID, slug), rank homepage 1–3 dan service index 4–6 tanpa duplikasi, relasi artikel berdasarkan serviceId eksplisit, pagination arsip, serta filter/urutan jadwal pelatihan. Cakupan tersebut diuji melalui test suite yang dijalankan bersama audit IA. Yang masih belum menjadi pemeriksaan universal adalah seluruh empty state dan seluruh varian listing pada semua halaman; hal tersebut tetap perlu dipetakan sebelum menyatakan QG-13 lengkap.
 
 QG-12 belum dinilai oleh laporan ini. Penilaian editorial memerlukan review sampel konten nyata terhadap Content Quality Standard, termasuk akurasi, bukti sumber, kedalaman proporsional, orisinalitas, dan manfaat bagi pembaca.
 

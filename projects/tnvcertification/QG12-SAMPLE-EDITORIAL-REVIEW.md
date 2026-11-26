@@ -3,7 +3,7 @@
 > Status: Review sampel; belum merupakan persetujuan editorial untuk seluruh situs  
 > Tanggal review: 2026-11-26  
 > Repository: `skyforgged/tnvcertification`  
-> Commit implementasi: `ba0ee53e7db1f3f7de522ce5502a278b9b700b05`  
+> Commit implementasi: `778bac514124d139eac8bf02367ed6c6c3d7362a`  
 > Standar: Content Quality & Editorial Standard 1.1
 
 ## 1. Ruang lingkup dan metode
