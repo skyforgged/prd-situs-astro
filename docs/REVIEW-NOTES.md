@@ -99,8 +99,18 @@
 
 Perubahan diverifikasi dengan membaca ulang isi file dan pencarian teks terhadap frasa lama. Repository ini belum memiliki `package.json`, implementasi validator, atau test runner; karena itu belum ada klaim bahwa quality gates telah dijalankan sebagai automated tests. Quality Gates saat ini mendefinisikan kriteria penerimaan yang harus diimplementasikan dan dijalankan pada setiap proyek Astro.
 
+## Tindak lanjut standar editorial 2026-11-26
+
+- [x] Ditambahkan `quality/CONTENT-QUALITY-STANDARD.md` sebagai acuan kualitas editorial lintas jenis halaman.
+- [x] Ditegaskan bahwa Google tidak menetapkan preferred word count; panjang konten mengikuti tujuan halaman, kompleksitas, dan kebutuhan pembaca.
+- [x] Ditambahkan QG-12 untuk review editorial manusia/ahli, tanpa menjadikan jumlah kata sebagai syarat otomatis.
+- [x] `README.md`, `AGENTS.md`, dan `ROLE-SYSTEM-ANALYST.md` ditautkan ke standar editorial.
+- Bukti: `quality/CONTENT-QUALITY-STANDARD.md`, `quality/QUALITY-GATES.md`, `README.md`, `AGENTS.md`, dan `ROLE-SYSTEM-ANALYST.md`.
+- Batas verifikasi: dokumen standar dan tautan telah diperbarui; belum ada validator atau test runner repository untuk menjalankan gate otomatis. QG-12 memang merupakan review editorial yang harus dicatat oleh reviewer.
+
 ## Langkah lanjutan
 
 1. Implementasikan validator sesuai `architecture/TECHNICAL-ARCHITECTURE.md` dan `quality/QUALITY-GATES.md` pada proyek Astro pertama yang mengadopsi standar.
 2. Saat implementasi, validasi ulang detail schema nested SEO dan semua jenis relasi yang benar-benar dipakai proyek.
-3. Tambahkan ADR jika keputusan arsitektur baru berdampak lintas proyek.
+3. Terapkan QG-12 sebagai review editorial pada konten nyata dan evaluasi apakah checklist perlu penyesuaian menurut jenis situs.
+4. Tambahkan ADR jika keputusan arsitektur baru berdampak lintas proyek.
