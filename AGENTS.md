@@ -4,9 +4,10 @@
 1. Baca `README.md` untuk peta standar.
 2. Patuhi `constitution/WEBSITE-CONSTITUTION.md` sebagai aturan tertinggi.
 3. Gunakan `content-contract/CONTENT-CONTRACT.md` untuk bentuk data Markdown.
-4. Gunakan `architecture/TECHNICAL-ARCHITECTURE.md` untuk keputusan implementasi Astro.
-5. Gunakan `quality/QUALITY-GATES.md` untuk verifikasi.
-6. Baca `docs/REVIEW-NOTES.md` dan `CHANGELOG.md` sebelum mengubah standar.
+4. Baca `content-contract/FRONTMATTER-TEMPLATES.md` sebelum membuat atau merevisi dokumen konten; gunakan kerangka field kosong sebagai checklist kelengkapan frontmatter.
+5. Gunakan `architecture/TECHNICAL-ARCHITECTURE.md` untuk keputusan implementasi Astro.
+6. Gunakan `quality/QUALITY-GATES.md` untuk verifikasi.
+7. Baca `docs/REVIEW-NOTES.md` dan `CHANGELOG.md` sebelum mengubah standar.
 
 ## Aturan kerja
 - Jangan membuat branch kecuali diminta secara eksplisit; kerjakan pada branch yang sedang ditentukan pengguna.
