@@ -103,14 +103,15 @@ Jadi klaim "paging di halaman `/articles/`" **tidak** terbukti pada repo rujukan
 
 - Relasi artikel–layanan: `relatedServiceId` di `content-contract/CONTENT-CONTRACT.md:180` dan matriks relasi `:421`, dengan aturan ID numerik di `:348-364`.
 - Pemisahan data dan presentasi: label tidak boleh ditulis di komponen (`constitution/WEBSITE-CONSTITUTION.md:119`); blok dan registry di `architecture/TECHNICAL-ARCHITECTURE.md:52-62`.
-- Footer sebagai dokumen konten: menu dengan `location: footer` di `CONTENT-CONTRACT.md:77-79`.
+- Navigasi footer sebagai dokumen konten: item tautan footer dapat dikelola melalui dokumen Menu dengan `location: footer` di `CONTENT-CONTRACT.md` bagian 4. Ini **hanya mengatur navigasi**, bukan tagline/deskripsi footer, pemilihan layanan kontekstual, atau logika footer dinamis.
 - Schema block opsional: `CONTENT-CONTRACT.md:342-346` — daftar artikel tidak perlu memaksakan schema.
 
 **Belum diatur eksplisit di standar global:**
 
 - Kontrak blok `article-list`: `mode`, `offset`, `limit`, field pengurut, dan tie-break.
 - Aturan footer dinamis berbasis props/layout.
-- Konfigurasi CTA: apakah target layanan ditulis sebagai `serviceId` numerik atau URL, serta sumber nomor WhatsApp.
+- Kontrak target layanan untuk CTA tunggal: Content Contract saat ini belum mendefinisikan field `serviceId` pada block CTA. `serviceIds` yang tercantum dalam matriks adalah relasi jamak untuk Homepage/block, bukan otomatis kontrak CTA tunggal. Jika CTA harus menunjuk layanan, proyek perlu mendefinisikan field relasi numerik dan memasukkannya ke matriks relasi.
+- Sumber nomor WhatsApp dan aturan pemilihan nomor berdasarkan tujuan.
 - Pagination indeks artikel: konvensi rute, `perPage`, canonical, dan empty state.
 
 **Batas kewenangan:** `README.md:33` menyimpan kebutuhan khusus di `projects/<nama-proyek>/`, dan `AGENTS.md` melarang menambahkan fitur wajib ke semua proyek tanpa dasar Constitution. Karena itu dokumen ini berhenti sebagai catatan referensi; perubahan standar hanya boleh dilakukan lewat usulan perubahan standar yang eksplisit.
@@ -120,9 +121,9 @@ Jadi klaim "paging di halaman `/articles/`" **tidak** terbukti pada repo rujukan
 Bersifat non-normatif, terutama bila `konsultan-slf` dipakai sebagai template:
 
 1. **Samakan nama field tanggal.** Kontrak memakai `publishedDate` (`CONTENT-CONTRACT.md:182-183`), sedangkan repo rujukan memakai `pubDate`. Pilih satu dan turunkan ke validator.
-2. **Terjemahkan `serviceHref` ke relasi numerik.** `serviceHref: "/services/..."` adalah URL di frontmatter (`content.config.ts:41-49`), sementara `CONTENT-CONTRACT.md:350-357` melarang slug/URL sebagai relasi utama. Bila standar diadopsi, pakai `serviceId` dan biarkan komponen yang membangun route.
+2. **Ganti `serviceHref` dengan relasi yang didefinisikan secara eksplisit.** `serviceHref: "/services/..."` adalah URL di frontmatter (`content.config.ts:41-49`), sementara `CONTENT-CONTRACT.md` mengarahkan relasi dokumen menggunakan ID numerik. Jangan menganggap `serviceId` sudah menjadi field universal: definisikan `serviceId` (0..1) khusus untuk block CTA dalam kontrak proyek dan matriks relasi, atau gunakan field relasi yang sudah ada bila kardinalitas dan sumbernya memang sesuai. Komponen membangun route dari entitas layanan yang tervalidasi.
 3. **Pusatkan pembentukan URL WhatsApp.** Nomor sudah ada di `config/site.ts`, tetapi prefix `https://wa.me/` ditulis ulang di lima komponen. Satu helper yang menghasilkan href lebih mudah diuji.
-4. **Pindahkan literal footer ke config.** "menyediakan jasa", " dan ", dan "Hak cipta dilindungi undang-undang." masih ada di `SiteFooter.astro:17,28,67`; demikian pula heading "Artikel terkait layanan" di `ServiceLayout.astro:97`.
+4. **Pisahkan konten navigasi footer dari konten/aturan footer.** `location: footer` mengelola tautan navigasi saja. Tagline, deskripsi kontekstual, teks hak cipta, dan aturan pemilihan layanan adalah kebutuhan terpisah; pindahkan literal UI ke konfigurasi UI atau model konten yang sesuai, dan jangan menganggap dokumen Menu telah mencakupnya. Heading "Artikel terkait layanan" di `ServiceLayout.astro:97` juga merupakan label UI yang perlu mengikuti konfigurasi UI.
 5. **Putuskan pagination di PRD proyek.** Jika tidak diinginkan, nyatakan bahwa indeks menampilkan seluruh artikel; jika diinginkan, tentukan rute dan `perPage` secara eksplisit agar tidak muncul dua konvensi (`/articles/` vs `/artikel/`).
 
 ## 6. Batas verifikasi
