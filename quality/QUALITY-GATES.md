@@ -1,0 +1,74 @@
+# Quality Gates & Acceptance Criteria
+
+> Status: Standar verifikasi
+> Versi: 0.1
+
+## 1. Prinsip
+
+Website dinyatakan memenuhi standar hanya jika validasi konten, relasi, routing, aset, metadata, schema, dan build produksi berhasil. Build Astro yang sukses saja tidak cukup.
+
+## 2. Gerbang wajib
+
+| Gate | Pemeriksaan | Kriteria lulus |
+|---|---|---|
+| QG-01 Frontmatter | Field wajib, tipe, enum, field tak dikenal | Semua dokumen valid terhadap kontrak jenisnya |
+| QG-02 Document ID | ID integer positif lintas collection | Tidak ada duplikasi ID dokumen |
+| QG-03 Block ID | ID integer positif per dokumen | Tidak ada duplikasi ID block dalam dokumen yang sama |
+| QG-04 Slug/route | Format slug dan konflik route | Tidak ada route konflik; redirect ditangani |
+| QG-05 Relations | Target collection, ID, kardinalitas | Semua FK valid dan target tersedia |
+| QG-06 Block registry | Nama component dan props | Semua block terdaftar dan props sesuai schema |
+| QG-07 SEO | Title, description, canonical, social metadata | Tidak kosong, canonical absolut, tidak duplikat |
+| QG-08 Schema.org | JSON-LD valid dan sesuai konten | JSON valid, node konsisten, tidak ada properti fiktif |
+| QG-09 Assets | Gambar, media, internal/external links | Semua referensi lokal tersedia dan tautan valid |
+| QG-10 Accessibility | Alt, heading, label, keyboard, contrast | Tidak ada pelanggaran kritis yang diketahui |
+| QG-11 Production build | Build produksi | Exit code sukses |
+
+## 3. Format laporan error
+
+Setiap validator harus menampilkan:
+- Kode gate dan jenis error.
+- Path file sumber.
+- Field atau block yang bermasalah.
+- Nilai/ID terkait bila aman ditampilkan.
+- Penjelasan singkat dan tindakan koreksi.
+
+Contoh:
+
+```text
+[QG-05 RELATION_NOT_FOUND]
+File: src/content/articles/panduan.md
+Field: relatedServiceId
+Value: 999
+Expected target: services
+Action: gunakan ID layanan yang tersedia atau hapus relasi opsional.
+```
+
+## 4. Acceptance criteria rilis
+
+Rilis dapat diterima jika seluruh gate wajib berstatus lulus, build produksi sukses, dan tidak ada pengecualian yang belum disetujui. Pengecualian harus dicatat dengan alasan, cakupan, pemilik, dan batas waktu penyelesaian.
+
+## 5. Test matrix minimum
+
+| Skenario | Hasil yang diharapkan |
+|---|---|
+| Dua dokumen berbeda memiliki ID sama | Gagal QG-02 |
+| Dua dokumen berbeda masing-masing memiliki block ID 1 | Lulus QG-03 |
+| Dua block dalam dokumen sama memiliki ID sama | Gagal QG-03 |
+| Relasi menunjuk ID yang tidak ada | Gagal QG-05 |
+| Relasi menunjuk collection yang salah | Gagal QG-05 |
+| Menu memiliki `pageId` dan `url` sekaligus | Gagal QG-01/QG-05 |
+| Menu tidak memiliki `pageId` maupun `url` | Gagal QG-01/QG-05 |
+| SEO title kosong tetapi title dokumen tersedia | Lulus; fallback digunakan |
+| SEO title dan title dokumen sama-sama kosong | Gagal QG-07 |
+| Block memakai component tidak terdaftar | Gagal QG-06 |
+| Block memiliki props yang tidak dikenal | Gagal QG-06 |
+| Timestamp menggunakan offset `+07:00` | Gagal QG-01 |
+| `updatedDate` lebih awal dari `publishedDate` | Gagal QG-01 |
+| Dua dokumen memiliki timestamp sama | Lulus; timestamp bukan identitas |
+| Featured image tidak memiliki alt | Gagal QG-01/QG-10 |
+| JSON-LD memiliki JSON tidak valid | Gagal QG-08 |
+| Build produksi gagal | Gagal QG-11 |
+
+## 6. CI dan verifikasi lokal
+
+Semua gate harus dijalankan secara lokal dan pada CI untuk pull/push yang mengubah konten, schema, komponen block, routing, atau konfigurasi SEO. Perintah final ditetapkan oleh implementasi proyek dan didokumentasikan di README proyek.
