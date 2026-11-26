@@ -135,3 +135,20 @@ Perubahan diverifikasi dengan membaca ulang isi file dan pencarian teks terhadap
 2. Saat implementasi, validasi ulang detail schema nested SEO dan semua jenis relasi yang benar-benar dipakai proyek.
 3. Terapkan QG-12 sebagai review editorial pada konten nyata dan evaluasi apakah checklist perlu penyesuaian menurut jenis situs.
 4. Tambahkan ADR jika keputusan arsitektur baru berdampak lintas proyek.
+
+## Content Architecture & IA 2026-11-26
+
+- [x] Ditambahkan `architecture/CONTENT-AND-INFORMATION-ARCHITECTURE.md` versi 0.1.
+- [x] Dokumen menetapkan prinsip pemetaan kebutuhan pengguna, tujuan halaman, kelompok topik, relasi konten, navigasi, URL/canonical, internal linking, listing/pagination, halaman lokal, CTA, dan lifecycle.
+- [x] Pola yang tidak universal—jumlah halaman/kata/tautan, pagination, footer, CTA/WhatsApp, dan halaman lokasi—ditegaskan sebagai keputusan proyek.
+- Bukti: `architecture/CONTENT-AND-INFORMATION-ARCHITECTURE.md`, tautan pada `README.md`, dan entri `CHANGELOG.md`.
+- Batas verifikasi: dokumen baru telah ditulis dan ditautkan; belum diuji terhadap proyek implementasi Astro karena repository standar ini tidak memiliki situs aplikasi, validator, atau test runner.
+
+## Langkah lanjutan
+
+1. Lakukan audit konsistensi silang antara Constitution, Content Contract, Technical Architecture, Content & Information Architecture, dan Quality Gates.
+2. Turunkan kriteria IA yang dapat diuji menjadi usulan quality gates, tanpa memaksakan keputusan proyek menjadi aturan universal.
+3. Siapkan template dokumen proyek untuk sitemap, intent map, matriks relasi, internal linking, dan keputusan route.
+4. Implementasikan validator sesuai Technical Architecture pada proyek Astro pertama yang mengadopsi standar.
+5. Terapkan QG-12 sebagai review editorial pada konten nyata dan evaluasi checklist berdasarkan jenis situs.
+6. Tambahkan ADR jika keputusan arsitektur baru berdampak lintas proyek.
