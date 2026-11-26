@@ -36,3 +36,7 @@ Standar global berada di direktori `constitution/`, `content-contract/`, `archit
 ## Prinsip perubahan
 
 Perubahan standar harus memperbarui versi dokumen terkait, mencatat alasan dan dampaknya di `CHANGELOG.md`, serta memperbarui bukti pada `docs/REVIEW-NOTES.md`.
+
+## Project Architecture Templates
+
+- [Project Architecture Templates](projects/_template/README.md) — starter pack dokumen proyek untuk brief, intent, sitemap/route, content model, relasi, navigasi, internal linking, listing, cakupan lokal, konversi, governance, dan keputusan teknis.
