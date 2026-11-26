@@ -1,0 +1,29 @@
+# Changelog
+
+Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
+
+## 2026-11-26
+
+### Added
+- Technical Architecture Specification untuk implementasi Astro.
+- Quality Gates dan acceptance criteria.
+- Instruksi repository untuk agen melalui `AGENTS.md`.
+
+### Changed
+- Constitution 1.1: memperjelas bahwa keunikan global hanya berlaku untuk ID dokumen; ID block lokal per dokumen.
+- Constitution 1.1: menetapkan timestamp ISO 8601 UTC presisi detik, relasi waktu publikasi/pembaruan, dan batas konten vs label UI.
+- Constitution 1.1: menegaskan jenis konten opsional sesuai kebutuhan situs.
+- Content Contract 1.1: menambahkan kontrak SEO, featured image, matriks relasi, dan aturan timestamp.
+- Role System Analyst: menghapus placeholder dan menyelaraskan alur PRD dengan standar repository.
+- README: memperbarui peta dokumen, keputusan standar, dan tautan lisensi.
+
+### Rationale and impact
+- Menghilangkan ambiguitas yang dapat menyebabkan validator salah menolak ID block yang sah.
+- Membuat format waktu dan foreign key dapat diuji secara konsisten.
+- Memisahkan aturan universal dari pilihan fitur setiap proyek.
+- Menyediakan acuan teknis dan quality gates sebelum standar dipakai pada proyek turunan.
+
+### Compatibility
+- Proyek turunan perlu memastikan timestamp frontmatter menggunakan UTC `YYYY-MM-DDTHH:mm:ssZ`.
+- Relasi yang sebelumnya menggunakan objek bebas seperti `author` harus dimigrasikan ke ID numerik jika targetnya merupakan dokumen konten.
+- Timestamp yang sama pada dua dokumen tetap valid; jangan menggunakannya sebagai primary key.
