@@ -194,3 +194,17 @@ Perubahan diverifikasi dengan membaca ulang isi file dan pencarian teks terhadap
 ### Batas verifikasi
 
 Perubahan standar telah diperbarui melalui GitHub dan dibaca ulang. Repository ini tidak memiliki aplikasi Astro, package.json, validator, atau test runner; karena itu QG-13 dan gate lainnya belum dijalankan sebagai automated tests.
+
+
+## Project Architecture Templates 2026-11-26
+
+- [x] Dibuat paket template proyek pada projects/_template/.
+- [x] Paket mencakup Project Brief, Information Architecture (intent map, sitemap/route manifest, navigasi, breadcrumb, internal linking), Content Model & Relation Matrix, Listing & Conversion, Local Coverage, Content Governance, Technical Architecture Decisions, dan ADR template.
+- [x] README repository dan AGENTS.md ditautkan ke paket; instruksi agen membedakan template proyek dari standar universal.
+- [x] Template menggunakan placeholder eksplisit dan meminta bagian yang tidak relevan diberi status Tidak berlaku beserta alasan.
+- Bukti: projects/_template/README.md dan seluruh file template di direktori tersebut; README.md; AGENTS.md; CHANGELOG.md.
+- Batas verifikasi: file dibuat melalui GitHub Contents API pada branch default. Belum ada proyek Astro yang mengadopsi template ini, sehingga belum dilakukan uji penerapan terhadap implementasi, validator, atau CI.
+
+### Penilaian hasil
+
+Paket ini menutup tindak lanjut dokumentasi yang meminta template artefak proyek. Template sengaja memisahkan keputusan IA, model konten, dan keputusan teknis; tidak menggabungkannya menjadi satu dokumen raksasa. Tahap berikutnya adalah mengadopsinya pada satu proyek Astro nyata, menguji apakah kolom dan artefaknya cukup, lalu memperbaiki template berdasarkan temuan implementasi.
