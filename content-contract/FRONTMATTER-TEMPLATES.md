@@ -1,8 +1,8 @@
 # Frontmatter Templates — PRD Astro
 
 > Status: Template referensi
-> Versi: 1.1
-> Mengikuti: Content Contract 1.2
+> Versi: 1.2
+> Mengikuti: Content Contract 1.3
 
 ## Cara menggunakan
 

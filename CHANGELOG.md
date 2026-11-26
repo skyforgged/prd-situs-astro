@@ -19,13 +19,20 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 - Role System Analyst: menghapus placeholder dan menyelaraskan alur PRD dengan standar repository.
 - README: memperbarui peta dokumen, keputusan standar, dan tautan lisensi.
 
+### Fixed
+- Constitution 1.2: daftar quality gate tidak lagi menyebut keunikan global untuk seluruh ID numerik; bunyi tersebut kini membatasi keunikan pada ID dokumen konten dan mengakui ID block lokal.
+- Content Contract 1.3: aturan menu tidak lagi memuat dua versi batas kedalaman, enum `location` mencantumkan `utility`, dan subjudul objek bersama dinomori ulang sebagai 13.1 serta 13.2.
+- Frontmatter Templates 1.2: rujukan versi diselaraskan dengan Content Contract 1.3.
+
 ### Rationale and impact
 - Menghilangkan ambiguitas yang dapat menyebabkan validator salah menolak ID block yang sah.
 - Membuat format waktu dan foreign key dapat diuji secara konsisten.
 - Memisahkan aturan universal dari pilihan fitur setiap proyek.
 - Menyediakan acuan teknis dan quality gates sebelum standar dipakai pada proyek turunan.
+- Menyelaraskan teks aturan yang tertinggal dari rilis sebelumnya agar pembaca tidak menemukan dua bunyi yang bertentangan.
 
 ### Compatibility
 - Proyek turunan perlu memastikan timestamp frontmatter menggunakan UTC `YYYY-MM-DDTHH:mm:ssZ`.
 - Relasi yang sebelumnya menggunakan objek bebas seperti `author` harus dimigrasikan ke ID numerik jika targetnya merupakan dokumen konten.
 - Timestamp yang sama pada dua dokumen tetap valid; jangan menggunakannya sebagai primary key.
+- Koreksi ini tidak mengubah perilaku yang dimaksud, hanya menyelaraskan teks aturan dengan keputusan yang sudah berlaku.

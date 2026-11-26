@@ -1,7 +1,7 @@
 # Content Contract — PRD Astro
 
 > Status: Standar data konten  
-> Versi: 1.2  
+> Versi: 1.3
 > Format sumber: Markdown + YAML frontmatter
 
 ## 1. Tujuan
@@ -86,11 +86,11 @@ Nilai `location` dibatasi pada enum `header`, `footer`, `mobile`, atau `utility`
 | `slug` | Ya | string | Identifier menu, misalnya `main-navigation` |
 | `title` | Ya | string | Nama internal menu |
 | `schema` | Ya | object | Schema utama yang sesuai; dapat berupa `SiteNavigationElement` jika tepat |
-| `location` | Ya | string/enum | Posisi menu, misalnya `header`, `footer`, `mobile` |
+| `location` | Ya | string/enum | Posisi menu: `header`, `footer`, `mobile`, atau `utility` |
 | `items` | Ya | array | Item navigasi sesuai urutan |
 | `updatedDate` | Ya | datetime | Waktu pembaruan |
 
-Setiap item menu wajib memiliki label dan target. Target internal harus menggunakan ID numerik konten tujuan; URL eksternal boleh menggunakan URL langsung. Submenu boleh bersarang sesuai batas kedalaman yang ditentukan proyek.
+Setiap item menu wajib memiliki label dan tepat satu target: `pageId` atau `url`. Target internal harus menggunakan ID numerik konten tujuan; URL eksternal harus absolut. Aturan `external`, `children`, dan batas kedalaman mengikuti ketentuan di atas bagian ini.
 
 ### Contoh
 
@@ -380,7 +380,7 @@ Dokumen ini menetapkan kontrak konseptual. Nama collection Astro, lokasi file, n
 
 ## 13. Kontrak objek bersama
 
-### 12.1 Objek `seo`
+### 13.1 Objek `seo`
 
 Semua dokumen yang menggunakan `seo` wajib memakai object. `title` dan `description` boleh tidak diisi karena memiliki fallback ke field utama dokumen.
 
@@ -395,7 +395,7 @@ Semua dokumen yang menggunakan `seo` wajib memakai object. `title` dan `descript
 
 Jika fallback juga kosong, validasi gagal. URL canonical harus absolut. Properti nested yang tidak dikenal ditolak oleh validator. Metadata SEO tidak boleh menjadi salinan kedua dari seluruh konten utama.
 
-### 12.2 Objek `featuredImage`
+### 13.2 Objek `featuredImage`
 
 | Field | Wajib | Tipe | Aturan |
 |---|---:|---|---|

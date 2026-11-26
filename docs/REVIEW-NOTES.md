@@ -2,7 +2,7 @@
 
 > Tanggal tindak lanjut: 2026-11-26
 > Commit awal yang ditinjau: `70c9469`
-> Status: seluruh 12 temuan telah ditindaklanjuti; lihat catatan verifikasi di bawah.
+> Status: seluruh 12 temuan telah ditindaklanjuti, ditambah 3 koreksi lanjutan pada 2026-11-26; lihat catatan verifikasi di bawah.
 
 ## Ringkasan
 
@@ -24,8 +24,9 @@
 ## P0 — Kebenaran aturan
 
 ### P0-1. ID dokumen global dan ID block lokal
-- [x] Selesai. Constitution 1.1 membatasi keunikan global pada ID dokumen konten dan memisahkan validasi ID block.
-- Bukti: `constitution/WEBSITE-CONSTITUTION.md`, bagian Identitas konten; `content-contract/CONTENT-CONTRACT.md`, aturan umum.
+- [x] Selesai. Constitution 1.2 membatasi keunikan global pada ID dokumen konten dan memisahkan validasi ID block.
+- Bukti: `constitution/WEBSITE-CONSTITUTION.md:48`, `:147`, `:175`; `content-contract/CONTENT-CONTRACT.md:28`; `quality/QUALITY-GATES.md:55`.
+- Verifikasi ulang 2026-11-26: bunyi lama "seluruh ID numerik" pada quality gate sudah diganti dan tidak ditemukan lagi oleh pencarian teks.
 
 ### P0-2. Format dan aturan timestamp
 - [x] Selesai. Format UTC presisi detik ditetapkan; timestamp tidak harus unik; `updatedDate >= publishedDate`.
@@ -43,7 +44,8 @@
 
 ### P1-2. Definisi field yang sebelumnya hanya dicontohkan
 - [x] Selesai. Struktur `featuredImage` didefinisikan. Aturan menu menetapkan tepat satu dari `pageId` atau `url`, serta batas penggunaan `external`.
-- Bukti: Content Contract bagian Kontrak objek bersama dan Kontrak Menu dan Navigasi.
+- Bukti: `content-contract/CONTENT-CONTRACT.md:79`, `:89`, `:93`, `:398-409`.
+- Verifikasi ulang 2026-11-26: kalimat lama tentang batas kedalaman yang ditentukan proyek sudah diganti; enum `location` kini memuat `utility` di tabel dan di narasi.
 
 ### P1-3. FAQ, testimoni, dan tim
 - [x] Selesai dengan klarifikasi. Constitution menyatakan jenis tersebut hanya wajib berbasis Markdown apabila digunakan; bukan fitur wajib semua situs. Kontrak jenis baru wajib dibuat sebelum digunakan.
@@ -78,12 +80,24 @@
 ## Tambahan: kerangka frontmatter untuk agen AI
 
 - [x] Ditambahkan `content-contract/FRONTMATTER-TEMPLATES.md` berisi kerangka field kosong untuk Homepage, Menu, Page, Article, Service, dan Category.
-- [x] Content Contract 1.2 dan README menautkan template; `AGENTS.md` mewajibkan agen membacanya sebelum membuat atau merevisi dokumen konten.
+- [x] Content Contract 1.3 dan README menautkan template; `AGENTS.md` mewajibkan agen membacanya sebelum membuat atau merevisi dokumen konten.
 - Bukti: `content-contract/FRONTMATTER-TEMPLATES.md`, `content-contract/CONTENT-CONTRACT.md`, `AGENTS.md`, dan `README.md`.
+
+## Koreksi lanjutan 2026-11-26
+
+- [x] Quality gate pada konstitusi diselaraskan dengan keputusan ID dokumen global dan ID block lokal.
+  - Bukti: `constitution/WEBSITE-CONSTITUTION.md:4`, `:147`; `CHANGELOG.md` bagian Fixed.
+  - Verifikasi: pencarian teks "seluruh ID numerik" tidak mengembalikan kecocokan; `quality/QUALITY-GATES.md:55` masih menyatakan block ID 1 di dua dokumen berbeda lulus.
+- [x] Aturan menu disatukan menjadi satu bunyi, termasuk enum `location` dan kedalaman maksimal.
+  - Bukti: `content-contract/CONTENT-CONTRACT.md:79`, `:89`, `:93`.
+  - Verifikasi: pencarian teks "batas kedalaman yang ditentukan proyek" tidak mengembalikan kecocokan; `utility` tercantum di narasi dan tabel.
+- [x] Penomoran subjudul objek bersama diperbaiki dan rujukan versi template diselaraskan.
+  - Bukti: `content-contract/CONTENT-CONTRACT.md:383`, `:398`; `content-contract/FRONTMATTER-TEMPLATES.md:4-5`.
+  - Verifikasi: subjudul kini bernomor 13.1 dan 13.2 di bawah Bab 13; template menyatakan mengikuti Content Contract 1.3.
 
 ## Batas verifikasi
 
-Perubahan ini diverifikasi dengan membaca ulang isi file melalui GitHub setelah commit. Repository ini belum memiliki `package.json`, implementasi validator, atau test runner; karena itu belum ada klaim bahwa quality gates telah dijalankan sebagai automated tests. Quality Gates saat ini mendefinisikan kriteria penerimaan yang harus diimplementasikan dan dijalankan pada setiap proyek Astro.
+Perubahan diverifikasi dengan membaca ulang isi file dan pencarian teks terhadap frasa lama. Repository ini belum memiliki `package.json`, implementasi validator, atau test runner; karena itu belum ada klaim bahwa quality gates telah dijalankan sebagai automated tests. Quality Gates saat ini mendefinisikan kriteria penerimaan yang harus diimplementasikan dan dijalankan pada setiap proyek Astro.
 
 ## Langkah lanjutan
 

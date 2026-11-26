@@ -1,7 +1,7 @@
 # Website Constitution — PRD Astro
 
 > Status: Standar dasar proyek  
-> Versi: 1.1  
+> Versi: 1.2
 > Bahasa: Indonesia
 
 ## 1. Tujuan dan cakupan
@@ -144,7 +144,7 @@ Objek gambar yang digunakan dalam konten harus memiliki struktur yang ditetapkan
 Situs belum dianggap memenuhi standar hanya karena `astro build` berhasil. Proyek wajib menyediakan validasi otomatis sekurang-kurangnya untuk:
 
 1. Keberadaan dan tipe field wajib setiap kontrak konten.
-2. Keunikan global seluruh ID numerik.
+2. Keunikan global seluruh ID dokumen konten; ID block divalidasi terpisah di dalam dokumen pemiliknya.
 3. Format dan keunikan slug sesuai aturan routing.
 4. Validitas foreign key, target collection, dan kardinalitas relasi.
 5. Nama komponen block dan properti yang diizinkan.
