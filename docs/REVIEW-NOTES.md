@@ -1,148 +1,86 @@
 # Catatan Review Standar PRD Situs Astro
 
-> Tanggal: 2026-11-26
-> Commit yang ditinjau: `70c9469` di `main`
-> Catatan ini bukan dokumen standar. Isinya tidak mengubah konstitusi maupun kontrak konten.
-> File ini sengaja disimpan di `docs/` sebagai dokumentasi internal, sesuai pengecualian di `constitution/WEBSITE-CONSTITUTION.md:39`.
+> Tanggal tindak lanjut: 2026-11-26
+> Commit awal yang ditinjau: `70c9469`
+> Status: seluruh 12 temuan telah ditindaklanjuti; lihat catatan verifikasi di bawah.
 
-## Cara membaca checklist
+## Ringkasan
 
-- `- [ ]` berarti belum ada bukti implementasi di repo pada commit yang ditinjau.
-- `- [x]` berarti sudah ada bukti di repo, dan buktinya disebut pada bagian **Bukti**.
-- Perbarui kotak pada commit yang sama dengan perbaikannya. Jangan dijadikan pekerjaan menyusul.
-- Saat menandai selesai, ganti **Bukti saat ini** dengan path dan nomor baris yang baru, lalu cantumkan hasil verifikasinya.
-- Karena repo ini belum punya `package.json` atau skrip validasi, verifikasi dilakukan dengan membaca ulang baris yang disebut.
+| Kelompok | Item | Status |
+|---|---:|---|
+| Baseline S1–S4 | 4 | Dipertahankan |
+| P0 — Kebenaran aturan | 3 | Selesai |
+| P1 — Kelengkapan kontrak | 5 | Selesai dengan klarifikasi |
+| P2 — Kerapian repository | 4 | Selesai |
 
-## Status ringkas
+## Keputusan penting selama tindak lanjut
 
-| Kelompok | Item | Sudah | Belum |
-|---|---|---:|---:|
-| Baseline yang sudah ada | S1 s.d. S4 | 4 | 0 |
-| P0, kebenaran aturan | P0-1 s.d. P0-3 | 0 | 3 |
-| P1, kelengkapan kontrak | P1-1 s.d. P1-5 | 0 | 5 |
-| P2, kerapian repo | P2-1 s.d. P2-4 | 0 | 4 |
+1. Keunikan global hanya berlaku untuk **ID dokumen konten**. ID block tetap unik lokal dalam dokumen pemilik.
+2. Timestamp memakai ISO 8601 UTC presisi detik (`YYYY-MM-DDTHH:mm:ssZ`). Timestamp tidak diwajibkan unik; identitas unik adalah ID dokumen. `updatedDate` harus sama dengan atau lebih baru dari `publishedDate`.
+3. FAQ, testimoni, tim, dan jenis konten lain bukan fitur wajib setiap situs. Jika suatu proyek menggunakannya sebagai entitas konten, kontraknya harus didefinisikan sebelum digunakan.
+4. Relasi yang menunjuk Author/Person atau Organization/Provider hanya dapat digunakan setelah kontrak target tersedia.
+5. `seo` memiliki kontrak bersama dengan fallback ke `title` dan `description` dokumen. Detail nested yang bergantung pada implementasi harus ditetapkan dalam arsitektur proyek.
 
-Tindak lanjut terbuka: **12 item, belum ada yang selesai**.
+## P0 — Kebenaran aturan
 
-## Baseline yang sudah terimplementasi
+### P0-1. ID dokumen global dan ID block lokal
+- [x] Selesai. Constitution 1.1 membatasi keunikan global pada ID dokumen konten dan memisahkan validasi ID block.
+- Bukti: `constitution/WEBSITE-CONSTITUTION.md`, bagian Identitas konten; `content-contract/CONTENT-CONTRACT.md`, aturan umum.
 
-### S1. Tiga keputusan standar sudah konsisten di tiga dokumen
+### P0-2. Format dan aturan timestamp
+- [x] Selesai. Format UTC presisi detik ditetapkan; timestamp tidak harus unik; `updatedDate >= publishedDate`.
+- Bukti: Constitution bagian Metadata dan media; Content Contract bagian Aturan waktu dan Schema.org.
 
-- [x] **Sudah diimplementasikan.**
-- **Bukti:** `README.md:10-14`, `constitution/WEBSITE-CONSTITUTION.md:157-165`, `content-contract/CONTENT-CONTRACT.md:28` dan `:340-344`. Keunikan ID global, schema block opsional, kontrak terpisah per jenis konten.
-- **Verifikasi:** baca ketiga lokasi dan pastikan bunyinya masih identik setelah ada perubahan lain.
+### P0-3. Definisi relasi
+- [x] Selesai. Matriks relasi menyebut sumber, target, kardinalitas, status, dan perilaku jika target tidak ditemukan. `author` diperjelas menjadi `authorId` numerik.
+- Bukti: `content-contract/CONTENT-CONTRACT.md`, bagian Matriks relasi dan kontrak Article/Service.
 
-### S2. Tautan dokumen inti di README valid
+## P1 — Kelengkapan kontrak
 
-- [x] **Sudah diimplementasikan.**
-- **Bukti:** `README.md:7-8` menunjuk `constitution/WEBSITE-CONSTITUTION.md` dan `content-contract/CONTENT-CONTRACT.md`, keduanya ada.
-- **Verifikasi:** buka kedua path dari README, pastikan tidak pindah atau terhapus.
+### P1-1. Kontrak objek SEO
+- [x] Selesai. Objek `seo` memiliki field, tipe, fallback, dan aturan canonical.
+- Bukti: `content-contract/CONTENT-CONTRACT.md`, bagian Kontrak objek bersama.
 
-### S3. Dokumen standar punya status dan versi
+### P1-2. Definisi field yang sebelumnya hanya dicontohkan
+- [x] Selesai. Struktur `featuredImage` didefinisikan. Aturan menu menetapkan tepat satu dari `pageId` atau `url`, serta batas penggunaan `external`.
+- Bukti: Content Contract bagian Kontrak objek bersama dan Kontrak Menu dan Navigasi.
 
-- [x] **Sudah diimplementasikan.**
-- **Bukti:** `constitution/WEBSITE-CONSTITUTION.md:3-5` dan `content-contract/CONTENT-CONTRACT.md:3-5`.
-- **Verifikasi:** pastikan versi dinaikkan dan dicatat bila isi standar berubah.
+### P1-3. FAQ, testimoni, dan tim
+- [x] Selesai dengan klarifikasi. Constitution menyatakan jenis tersebut hanya wajib berbasis Markdown apabila digunakan; bukan fitur wajib semua situs. Kontrak jenis baru wajib dibuat sebelum digunakan.
+- Bukti: `constitution/WEBSITE-CONSTITUTION.md`, bagian Sumber konten; `content-contract/CONTENT-CONTRACT.md`, bagian Kontrak yang belum didefinisikan.
 
-### S4. Lisensi tersedia
+### P1-4. Dokumen arsitektur yang dirujuk
+- [x] Selesai. Technical Architecture dan Quality Gates telah dibuat dan ditautkan dari README.
+- Bukti: `architecture/TECHNICAL-ARCHITECTURE.md`, `quality/QUALITY-GATES.md`, `README.md`.
 
-- [x] **Sudah diimplementasikan.**
-- **Bukti:** `LICENSE:1-3`, MIT atas nama arisciwek.
-- **Verifikasi:** README belum menautkan lisensi. Ini bukan error, tetapi bisa ditambahkan di P2-2.
+### P1-5. FAQPage dan HowTo
+- [x] Selesai. Contoh dinyatakan sebagai ilustrasi semantik, bukan jaminan kelayakan rich result; kebijakan mesin pencari harus diperiksa saat implementasi.
+- Bukti: Constitution bagian Schema.org; Content Contract bagian Aturan waktu dan Schema.org.
 
-## P0. Kebenaran aturan
+## P2 — Kerapian repository
 
-### P0-1. Definisi ID numerik global bertabrakan dengan ID block lokal
+### P2-1. Konten dan label UI
+- [x] Selesai. Batas konten substantif dan label UI generik dijelaskan dengan contoh.
+- Bukti: `constitution/WEBSITE-CONSTITUTION.md`, bagian Sumber konten dan batas pengecualian; Architecture bagian Konfigurasi UI dan konten.
 
-- [ ] **Belum diimplementasikan.**
-- **Bukti saat ini:** `constitution/WEBSITE-CONSTITUTION.md:135` menyatakan "keunikan global seluruh ID numerik". `content-contract/CONTENT-CONTRACT.md:28` menyatakan ID block adalah identitas lokal dalam dokumen pemilik dan tidak ikut ruang ID global.
-- **Tindakan:** ubah kalimat di konstitusi menjadi keunikan global untuk seluruh **ID dokumen konten**, bukan seluruh ID numerik. Jika tidak, validator akan menolak dua block dengan `id: 1` di dokumen berbeda.
-- **Verifikasi:** baca ulang kedua baris. Tidak boleh ada lagi kata "seluruh ID numerik" yang mencakup ID block.
+### P2-2. Role System Analyst
+- [x] Selesai. Placeholder niche dan typo heading dihilangkan; standar wajib, lokasi output, dan prinsip analisis ditambahkan. README menautkan LICENSE.
+- Bukti: `ROLE-SYSTEM-ANALYST.md`, `README.md`.
 
-### P0-2. Format dan aturan timestamp belum ditetapkan, tetapi sudah dipakai dalam contoh
+### P2-3. AGENTS.md
+- [x] Selesai. Instruksi kerja agen, dokumen yang wajib dibaca, dan aturan perubahan standar ditambahkan.
+- Bukti: `AGENTS.md`.
 
-- [ ] **Belum diimplementasikan.**
-- **Bukti saat ini:** enam contoh memakai `2026-11-26T10:00:00+07:00` di `content-contract/CONTENT-CONTRACT.md:71`, `:113`, `:157`, `:204`, `:269`, `:295`. Format tanggal justru ditunda ke dokumen arsitektur di `:378`, dan dokumen itu belum ada. Standar Astro global yang dipakai dalam sesi ini mensyaratkan UTC `YYYY-MM-DDTHH:mm:ssZ`, keunikan timestamp lintas koleksi, serta `updatedDate > publishedDate`.
-- **Tindakan:** tetapkan satu format di kontrak atau konstitusi, nyatakan apakah timestamp wajib unik global, dan tambahkan aturan urutan `updatedDate` terhadap `publishedDate`. Setelah itu perbarui keenam contoh agar tidak identik.
-- **Verifikasi:** semua contoh memakai format yang ditetapkan, tidak ada dua timestamp sama, dan tidak ada `updatedDate` lebih kecil dari `publishedDate`.
+### P2-4. Pencatatan perubahan standar
+- [x] Selesai. `CHANGELOG.md` dibuat dengan tanggal, perubahan, alasan, dampak, dan catatan kompatibilitas.
+- Bukti: `CHANGELOG.md`.
 
-### P0-3. Tabel relasi belum memenuhi kewajiban konstitusinya sendiri
+## Batas verifikasi
 
-- [ ] **Belum diimplementasikan.**
-- **Bukti saat ini:** `constitution/WEBSITE-CONSTITUTION.md:61` mewajibkan setiap relasi mendefinisikan collection target, kardinalitas, kewajiban, dan perilaku ketika target tidak ditemukan. `content-contract/CONTENT-CONTRACT.md:169-181` dan `:227-239` hanya mencantumkan nama field. Field `author` bertipe "object/ID" di `:175` dan `providerId` di `:234` belum jelas bentuknya.
-- **Tindakan:** tambahkan kolom target, kardinalitas, wajib/opsional, dan perilaku target hilang pada setiap field relasi. Putuskan apakah `author` memakai ID numerik atau objek, lalu samakan dengan aturan foreign key di `:26` dan `:348-355`.
-- **Verifikasi:** setiap field yang berakhir dengan `Id` atau `Ids` memiliki baris tabel lengkap di kontrak dan bisa divalidasi tanpa interpretasi tambahan.
+Perubahan ini diverifikasi dengan membaca ulang isi file melalui GitHub setelah commit. Repository ini belum memiliki `package.json`, implementasi validator, atau test runner; karena itu belum ada klaim bahwa quality gates telah dijalankan sebagai automated tests. Quality Gates saat ini mendefinisikan kriteria penerimaan yang harus diimplementasikan dan dijalankan pada setiap proyek Astro.
 
-## P1. Kelengkapan kontrak
+## Langkah lanjutan
 
-### P1-1. Objek `seo` diwajibkan tetapi tidak didefinisikan
-
-- [ ] **Belum diimplementasikan.**
-- **Bukti saat ini:** `content-contract/CONTENT-CONTRACT.md:45`, `:130`, `:174`, `:233`, `:288` menandai `seo` sebagai wajib. Tidak ada definisi field di dalamnya. `:378` menundanya ke dokumen arsitektur yang belum ada.
-- **Tindakan:** buat kontrak objek `seo` minimal, misalnya judul, deskripsi, canonical, dan aturan turunan dari `title` serta `description` bila kosong.
-- **Verifikasi:** ada bagian baru yang mendefinisikan `seo` dan semua kontrak merujuk ke bagian itu, bukan mengulang definisi berbeda.
-
-### P1-2. Beberapa field penting hanya dicontohkan, tidak didefinisikan
-
-- [ ] **Belum diimplementasikan.**
-- **Bukti saat ini:** `featuredImage` di `content-contract/CONTENT-CONTRACT.md:131` dan `:179`, struktur item menu di `:91`, enum `location` di `:87`, serta batas kedalaman submenu tidak memiliki tipe data dan aturan resmi.
-- **Tindakan:** tambahkan tipe dan aturan untuk masing-masing. Untuk item menu, tegaskan bahwa tepat satu dari `pageId` atau `url` harus ada, dan `external: true` hanya boleh dipakai bersama `url`.
-- **Verifikasi:** tidak ada lagi field yang bentuknya hanya bisa diketahui dari contoh.
-
-### P1-3. FAQ, testimoni, dan tim diwajibkan sebagai Markdown tetapi belum punya kontrak
-
-- [ ] **Belum diimplementasikan.**
-- **Bukti saat ini:** `constitution/WEBSITE-CONSTITUTION.md:26-33` mencantumkan FAQ, testimoni, dan tim sebagai konten wajib Markdown. `content-contract/CONTENT-CONTRACT.md:364-373` menyatakan jenis tersebut belum didefinisikan dan harus punya kontrak sebelum dipakai.
-- **Tindakan:** buatkan kontraknya, atau nyatakan dengan tegas bahwa jenis tersebut belum didukung sampai kontrak tersedia, supaya konstitusi tidak menjanjikan sesuatu yang belum bisa divalidasi.
-- **Verifikasi:** status keduanya selaras. Tidak ada kewajiban di konstitusi yang tidak punya padanan di kontrak.
-
-### P1-4. Dokumen yang dirujuk kontrak belum ada
-
-- [ ] **Belum diimplementasikan.**
-- **Bukti saat ini:** `constitution/WEBSITE-CONSTITUTION.md:151` menaruh spesifikasi arsitektur Astro di urutan ketiga hierarki aturan. `content-contract/CONTENT-CONTRACT.md:12` dan `:378` menunda format tanggal, struktur SEO, strategi registry ID, dan cara menghasilkan JSON-LD ke dokumen itu. `README.md:20` menyebut dokumen akan ditambahkan bertahap, tetapi belum ada.
-- **Tindakan:** buat dokumen arsitektur dan quality gates sebelum PRD proyek pertama. Cakup register ID, block registry, kontrak SEO, format tanggal, dan nama perintah validasi.
-- **Verifikasi:** semua rujukan silang di konstitusi dan kontrak menunjuk ke file yang ada.
-
-### P1-5. Contoh FAQPage dan HowTo perlu catatan kelayakan rich result
-
-- [ ] **Belum diimplementasikan.**
-- **Bukti saat ini:** `content-contract/CONTENT-CONTRACT.md:210-216` dan `:318-325`, serta `constitution/WEBSITE-CONSTITUTION.md:97-103`, memakai `FAQPage` dan `HowTo` sebagai contoh tanpa catatan. Konstitusi `:90` sudah mengingatkan bahwa skema valid belum tentu memenuhi syarat rich result.
-- **Tindakan:** tambahkan catatan langsung pada contoh, atau pindahkan ke konteks yang memang memenuhi syarat. Cek ulang kebijakan mesin pencari yang berlaku saat implementasi sebelum menjanjikan target tanpa error atau warning.
-- **Verifikasi:** contoh tidak bisa dibaca sebagai jaminan rich result.
-
-## P2. Kerapian repo
-
-### P2-1. Batas konten dan label UI belum ditegaskan
-
-- [ ] **Belum diimplementasikan.**
-- **Bukti saat ini:** `constitution/WEBSITE-CONSTITUTION.md:35` melarang salinan konten di konfigurasi lain, sementara `:39` mengecualikan konfigurasi teknis aplikasi. Label tombol dan pesan sistem tidak punya contoh batas yang jelas.
-- **Tindakan:** tambahkan satu contoh pasangan, misalnya judul section harus dari frontmatter, sedangkan label "Baca selengkapnya" boleh dari config UI.
-- **Verifikasi:** ada contoh eksplisit yang memisahkan keduanya.
-
-### P2-2. Dokumen role analis belum diperbarui mengikuti standar baru
-
-- [ ] **Belum diimplementasikan.**
-- **Bukti saat ini:** `ROLE-SYSTEM-ANALYST.md:5` masih berisi placeholder niche, `:13` dan `:32` bertypo `##v`, tidak ada path output, dan tidak ada kewajiban bagi PRD untuk mematuhi konstitusi serta kontrak. README tidak menautkan `LICENSE`.
-- **Tindakan:** isi niche, perbaiki heading, tentukan lokasi output PRD, tambahkan klausul kepatuhan standar, dan tautkan lisensi dari README.
-- **Verifikasi:** tidak ada placeholder tersisa dan alur dari role ke PRD ke standar bisa diikuti pembaca baru.
-
-### P2-3. `AGENTS.md` masih kosong
-
-- [ ] **Belum diimplementasikan.**
-- **Bukti saat ini:** `AGENTS.md` berukuran 0 byte pada commit `70c9469`.
-- **Tindakan:** isi dengan konvensi repo, arah pembaca dokumen, dan aturan bahwa perubahan standar wajib memperbarui catatan ini serta versi dokumen.
-- **Verifikasi:** file tidak kosong dan isinya tidak bertentangan dengan konstitusi.
-
-### P2-4. Belum ada tempat pencatatan keputusan perubahan standar
-
-- [ ] **Belum diimplementasikan.**
-- **Bukti saat ini:** `constitution/WEBSITE-CONSTITUTION.md:155` mewajibkan perubahan aturan global dicatat sebagai keputusan perubahan standar, tetapi repo belum punya `CHANGELOG.md` atau direktori keputusan.
-- **Tindakan:** tambahkan `CHANGELOG.md` atau `decisions/`, lalu pakai untuk setiap perubahan pada konstitusi dan kontrak.
-- **Verifikasi:** setiap perubahan standar memiliki entri dengan tanggal, alasan, dan dampak ke proyek turunan.
-
-## Langkah berikutnya
-
-1. Selesaikan P0-1 sampai P0-3, lalu tandai kotaknya dan perbarui **Status ringkas**.
-2. Lanjut P1-1 sampai P1-5, terutama dokumen arsitektur yang jadi penundaan banyak field di P1-4.
-3. Terakhir P2-1 sampai P2-4.
-4. Setelah checklist tertutup, gunakan standar ini sebagai dasar penyusunan PRD proyek.
+1. Implementasikan validator sesuai `architecture/TECHNICAL-ARCHITECTURE.md` dan `quality/QUALITY-GATES.md` pada proyek Astro pertama yang mengadopsi standar.
+2. Saat implementasi, validasi ulang detail schema nested SEO dan semua jenis relasi yang benar-benar dipakai proyek.
+3. Tambahkan ADR jika keputusan arsitektur baru berdampak lintas proyek.
