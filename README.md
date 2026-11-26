@@ -9,6 +9,7 @@ Repository ini menyimpan standar reusable untuk analisis kebutuhan, perancangan,
 - [Frontmatter Templates](content-contract/FRONTMATTER-TEMPLATES.md) — kerangka field kosong untuk setiap jenis konten, sebagai checklist saat membuat dokumen.
 - [Technical Architecture](architecture/TECHNICAL-ARCHITECTURE.md) — panduan penerapan standar pada Astro.
 - [Quality Gates](quality/QUALITY-GATES.md) — acceptance criteria dan verifikasi.
+- [Content Quality Standard](quality/CONTENT-QUALITY-STANDARD.md) — standar kualitas editorial, kedalaman, akurasi, orisinalitas, dan people-first content.
 
 ## Instruksi dan analisis
 
