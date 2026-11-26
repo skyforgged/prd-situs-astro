@@ -40,3 +40,8 @@ Perubahan standar harus memperbarui versi dokumen terkait, mencatat alasan dan d
 ## Project Architecture Templates
 
 - [Project Architecture Templates](projects/_template/README.md) — starter pack dokumen proyek untuk brief, intent, sitemap/route, content model, relasi, navigasi, internal linking, listing, cakupan lokal, konversi, governance, dan keputusan teknis.
+
+
+## Project initialization
+
+- [Project Initialization Workflow](projects/_template/PROJECT-INITIALIZATION-WORKFLOW.md) — phase-gated process dari onboarding, discovery, riset, intent mapping, content modeling, IA, editorial dan technical architecture, PRD, hingga Implementation Readiness Review.
