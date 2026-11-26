@@ -33,3 +33,11 @@
 - Lengkapi keputusan yang relevan sebelum implementasi; tandai bagian yang tidak berlaku beserta alasannya, jangan memaksakan fitur.
 - Jangan menganggap template sebagai aturan universal baru. Constitution, Content Contract, IA, Technical Architecture, dan Quality Gates tetap menjadi acuan normatif.
 - Jangan menandai dokumen arsitektur Approved sebelum keputusan kritis, asumsi berisiko, pemilik, dan bukti persetujuan jelas.
+
+
+## Workflow inisialisasi proyek
+- Ikuti [Project Initialization Workflow](projects/_template/PROJECT-INITIALIZATION-WORKFLOW.md) saat memulai proyek situs baru.
+- Selesaikan baseline repository dan phase discovery sebelum menyusun keputusan arsitektur atau membuat implementasi.
+- Jangan melewati phase gate yang menjadi prasyarat; status Approved/Ready memerlukan artefak, pemeriksaan, dan persetujuan nyata.
+- Jika bukti baru membatalkan keputusan, kembali ke phase terdampak dan perbarui artefak terkait.
+- Implementasi normal baru dimulai setelah Implementation Readiness Review disetujui. Prototipe yang diminta lebih awal harus dibatasi dan diberi label eksperimen.
