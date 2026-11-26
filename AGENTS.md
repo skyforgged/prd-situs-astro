@@ -27,3 +27,9 @@
 - Gunakan Bahasa Indonesia yang jelas untuk dokumen standar, kecuali istilah teknis yang lebih tepat dipertahankan dalam bahasa Inggris.
 - Bedakan aturan universal, pilihan arsitektur, dan keputusan khusus proyek.
 - Jangan menandai checklist selesai hanya karena file ditulis; sertakan bukti dan hasil verifikasi yang benar-benar dilakukan.
+
+## Saat memulai repository situs baru
+- Salin dan gunakan paket [Project Architecture Templates](projects/_template/README.md) sebagai kerangka dokumen arsitektur proyek.
+- Lengkapi keputusan yang relevan sebelum implementasi; tandai bagian yang tidak berlaku beserta alasannya, jangan memaksakan fitur.
+- Jangan menganggap template sebagai aturan universal baru. Constitution, Content Contract, IA, Technical Architecture, dan Quality Gates tetap menjadi acuan normatif.
+- Jangan menandai dokumen arsitektur Approved sebelum keputusan kritis, asumsi berisiko, pemilik, dan bukti persetujuan jelas.
