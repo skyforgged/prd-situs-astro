@@ -1,7 +1,7 @@
 # Quality Gates & Acceptance Criteria
 
 > Status: Standar verifikasi
-> Versi: 0.1
+> Versi: 0.2
 
 ## 1. Prinsip
 
