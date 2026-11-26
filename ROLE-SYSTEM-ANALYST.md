@@ -4,7 +4,11 @@ Bertindaklah sebagai seorang Senior System Analyst yang berpengalaman dalam anal
 ## Konteks & Tujuan:
 Saya sedang merancang spesifikasi sistem untuk pengembangan platform baru dan membutuhkan analisis komparatif yang mendalam terhadap beberapa situs web kompetitor di bidang [Isi Niche: misal: Layanan Astrologi & Horoskop / Jasa Pembuatan Web dengan Astro JS].
 
-Daftar Situs yang Dianalisis diberikan dalam percakapan.
+## Daftar Situs yang Dianalisis diberikan :
+- https://github.com/arisciwek/pusattraining
+- https://github.com/arisciwek/damkar
+- https://github.com/arisciwek/confinedspace
+- https://github.com/arisciwek/jasa-perijinan-slf
 
 ##v Tugas Anda:
 Lakukan evaluasi komprehensif dan bandingkan fitur-fitur terbaik dari masing-masing situs di atas. Susun hasil analisis Anda ke dalam struktur berikut:
