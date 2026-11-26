@@ -10,6 +10,7 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 - Technical Architecture Specification untuk implementasi Astro.
 - Quality Gates dan acceptance criteria.
 - Instruksi repository untuk agen melalui `AGENTS.md`.
+- `docs/ANALISIS-POLA-SITUS.md`: catatan non-normatif berisi verifikasi pola artikel 1–3 dan 4–6, footer dinamis, CTA layanan/WhatsApp, serta pagination pada lima repo Astro rujukan.
 
 ### Changed
 - Quality Gates 0.2: menambahkan QG-12 untuk review editorial manusia/ahli dan test case untuk konten repetitif, halaman lokasi duplikatif, serta verifikasi klaim.

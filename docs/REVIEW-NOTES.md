@@ -119,6 +119,16 @@ Perubahan diverifikasi dengan membaca ulang isi file dan pencarian teks terhadap
 - Bukti pendukung: `CHANGELOG.md` bagian Fixed, Rationale and impact, serta Compatibility.
 - Batas verifikasi: perubahan ini hanya verifikasi baca dan pencarian teks. Belum ada reviewer nyata atau CI yang menjalankan gate karena repo ini tidak memiliki implementasi validator.
 
+## Analisis pola situs referensi 2026-11-26
+
+- [x] Pola artikel 1–3, artikel 4–6, footer dinamis, CTA layanan/WhatsApp, dan pagination dicatat dalam berkas analisis tersendiri.
+  - Bukti: `docs/ANALISIS-POLA-SITUS.md`; tautan di `README.md:19`.
+  - Verifikasi: lima repo dibaca via GitHub API dan `raw.githubusercontent.com`; `skyforgged/konsultan-slf` dipakai sebagai rujukan utama, empat repo `arisciwek/*` sebagai pembanding.
+- [x] Temuan dibedakan menjadi fakta implementasi, bagian yang sudah tercakup standar, bagian yang belum diatur, dan saran non-normatif.
+  - Bukti: `docs/ANALISIS-POLA-SITUS.md` bagian 2, 4, dan 5.
+  - Verifikasi: tidak ada versi dokumen standar yang diubah; sesuai `AGENTS.md`, pola referensi tidak dijadikan kewajiban global tanpa dasar Constitution.
+- Batas verifikasi: analisis hanya membaca kode, tanpa build, validator, atau test runner. Klaim "pola ada di setiap repo" tidak diterima apa adanya; tiga dari lima pola ternyata tidak konsisten lintas repo.
+
 ## Langkah lanjutan
 
 1. Implementasikan validator sesuai `architecture/TECHNICAL-ARCHITECTURE.md` dan `quality/QUALITY-GATES.md` pada proyek Astro pertama yang mengadopsi standar.
