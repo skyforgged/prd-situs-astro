@@ -27,7 +27,6 @@ id:
 slug:
 title:
 description:
-intro:
 schema:
   type:
 seo:
@@ -154,6 +153,7 @@ id:
 slug:
 title:
 description:
+intro:
 schema:
   type:
 seo:
