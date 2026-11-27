@@ -1,7 +1,7 @@
 # Quality Gates & Acceptance Criteria
 
 > Status: Standar verifikasi
-> Versi: 0.5
+> Versi: 0.6
 
 ## 1. Prinsip
 
@@ -89,8 +89,21 @@ Rilis dapat diterima jika seluruh gate wajib berstatus lulus, build produksi suk
 | JSON-LD memiliki JSON tidak valid | Gagal QG-08 |
 | Tipe Schema.org dipakai tetapi tidak terdaftar di Schema Registry | Gagal QG-08 |
 | Schema Registry dan Block Registry memberi aturan bertentangan untuk satu tipe | Gagal QG-08 |
-| `intro` Page, Article, atau Service kosong | Gagal QG-01 |
-| `schema.type: DefinedTerm` tetapi intro tidak diawali judul dokumen dan kata "adalah" | Gagal QG-08 |
+| `intro` Page, Article, atau Service tidak tersedia | Gagal QG-01 |
+| `intro` Page, Article, atau Service bukan string | Gagal QG-01 |
+| `intro` hanya berisi whitespace | Gagal QG-01 |
+| `intro` berisi lebih dari satu paragraf | Gagal QG-01 |
+| `intro` mengandung markup HTML atau Markdown | Gagal QG-01 |
+| Intro tidak dirender sebagai paragraf pembuka yang terlihat setelah judul halaman | Gagal QG-08 |
+| Page definisi memakai `schema.type: DefinedTerm` sebagai page-level type | Gagal QG-08 |
+| Page definisi memakai `schema.mainEntity.type: DefinedTerm` dengan `schema.type: WebPage` | Lulus QG-08 jika pemetaan dan graph valid |
+| `schema.mainEntity.type: DefinedTerm` tetapi intro tidak diawali judul dokumen dan kata "adalah" | Gagal QG-08 |
+| Judul pada pola intro berbeda hanya dalam kapitalisasi atau spasi berlebih setelah normalisasi | Lulus pemeriksaan pola QG-08 |
+| Intro DefinedTerm hanya berisi `<title> adalah` tanpa definisi setelahnya | Gagal QG-08 |
+| `description` atau `seo.description` tersedia tetapi `intro` DefinedTerm tidak tersedia | Gagal QG-01/QG-08 |
+| Artikel membahas istilah tetapi tidak mendefinisikan satu istilah sebagai tujuan utamanya | Lulus tanpa node DefinedTerm |
+| `DefinedTerm.description` diambil dari `description` dokumen atau `seo.description`, bukan `intro` | Gagal QG-08 |
+| Node DefinedTerm tidak terhubung melalui `WebPage.mainEntity` atau tidak memiliki `@id` stabil | Gagal QG-08 |
 | Build produksi gagal | Gagal QG-11 |
 | Konten panjang tetapi repetitif dan tidak memberi nilai tambah | Gagal QG-12 |
 | Konten singkat tetapi sudah memenuhi tujuan halaman secara memadai | Dapat lulus QG-12 |
