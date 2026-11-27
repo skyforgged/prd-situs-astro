@@ -602,7 +602,6 @@ Tipe berikut dapat relevan untuk block tertentu apabila data yang diperlukan ben
 | `Course` | Kursus atau program pembelajaran | Katalog kursus/pelatihan | Harus benar-benar merupakan kursus dengan informasi yang relevan, bukan artikel biasa. |
 | `Quiz` | Kuis/evaluasi pembelajaran | Kuis dengan pertanyaan dan evaluasi | Gunakan hanya jika ada kuis nyata; jangan menyamakan FAQ dengan Quiz. |
 | `Question` | Satu pertanyaan dalam struktur yang sesuai | Item pertanyaan dalam Q&A/FAQ | Umumnya menjadi bagian dari struktur induk yang tepat, bukan schema mandiri untuk setiap teks tanya. |
-| `DefinedTerm` | Istilah yang didefinisikan | Glosarium istilah teknis | Definisi harus benar-benar disajikan dan konsisten. |
 | `Claim` | Pernyataan/klaim yang dapat diidentifikasi | Klaim yang disertai sumber atau konteks | Jangan menggunakannya untuk klaim pemasaran tanpa dasar. |
 | `Quotation` | Kutipan yang diidentifikasi sebagai kutipan | Kutipan regulasi atau pendapat ahli | Kutipan harus akurat, memiliki atribusi/sumber bila diperlukan, dan tampil pada halaman. |
 | `SpeakableSpecification` | Penanda bagian konten yang cocok dibacakan | Ringkasan atau bagian artikel tertentu | Ini bukan pengganti schema Article/WebPage dan dukungannya harus diperiksa pada target mesin pencari. |
@@ -641,6 +640,7 @@ Tipe berikut menggambarkan entitas yang ditawarkan, dimiliki, atau direpresentas
 | `LocalBusiness` | Bisnis dengan lokasi fisik/lokal | Data lokasi, nama, alamat, dan informasi bisnis harus faktual. |
 | `Organization` | Identitas organisasi/badan usaha | Cocok sebagai entitas organisasi utama. |
 | `Person` | Individu | Gunakan untuk orang/tenaga ahli yang nyata dan dapat diidentifikasi. |
+| `DefinedTerm` | Istilah atau konsep yang didefinisikan | Halaman glosarium yang berfokus pada satu istilah; `name` dari `title` dan `description` dari `intro`. |
 | `Offer` | Penawaran | Harus merepresentasikan penawaran nyata dengan informasi yang tersedia. |
 | `AggregateOffer` | Kumpulan penawaran | Gunakan hanya jika benar-benar ada kumpulan penawaran yang dapat dirangkum. |
 | `Review` | Ulasan | Harus berasal dari ulasan yang benar-benar tersedia dan ditampilkan sesuai kebijakan terkait. |
@@ -923,7 +923,7 @@ Untuk menghindari registry yang terlalu luas dan sulit divalidasi, penerapan dis
 - Block-level: `FAQPage`, `HowTo`, dan `ItemList` sesuai kebijakan scope dan pemetaan.
 
 **Tahap 2 — Media dan konten terstruktur**
-- `VideoObject`, `ImageObject`, `DefinedTerm`, `Table`, `Question`, dan `Quotation` jika ada kebutuhan nyata dan field mapping telah ditetapkan.
+- `VideoObject`, `ImageObject`, `Table`, `Question`, dan `Quotation` jika ada kebutuhan nyata dan field mapping telah ditetapkan. `DefinedTerm` diperlakukan sebagai entity-level node sesuai kontrak `intro`.
 
 **Tahap 3 — Tipe khusus**
 - `Course`, `Quiz`, `Event`, `JobPosting`, `Dataset`, `Product`, `Permit`, `Legislation`, dan tipe khusus lain hanya ketika jenis konten terkait benar-benar menjadi bagian dari situs.
