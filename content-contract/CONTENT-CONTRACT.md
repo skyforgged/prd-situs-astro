@@ -1,7 +1,7 @@
 # Content Contract — PRD Astro
 
 > Status: Standar data konten  
-> Versi: 1.3
+> Versi: 1.4
 > Format sumber: Markdown + YAML frontmatter
 
 ## 1. Tujuan
@@ -119,6 +119,8 @@ updatedDate: 2026-11-26T03:00:00Z
 ## 5. Kontrak Halaman
 
 Digunakan untuk halaman informasional atau halaman statis yang bukan homepage, artikel, atau layanan.
+
+Untuk halaman glosarium/definisi yang tujuan utamanya mendefinisikan satu istilah, `schema.type` boleh bernilai `DefinedTerm`. Dalam keluaran JSON-LD, renderer tetap harus membentuk node `WebPage` untuk dokumen dan menghubungkannya ke node `DefinedTerm` melalui `mainEntity`; `DefinedTerm` bukan pengganti identitas halaman web. Untuk artikel yang hanya membahas istilah sebagai bagian dari pembahasan, pertahankan tipe halaman editorial seperti `Article`/`TechArticle` dan jangan otomatis membuat node `DefinedTerm`.
 
 ### Field
 
