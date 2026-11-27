@@ -18,7 +18,7 @@ Semua dokumen konten—apa pun jenisnya—wajib mematuhi ketentuan berikut:
 |---|---|
 | `id` | Wajib, integer positif, unik secara global dalam satu situs |
 | `slug` | Wajib untuk entitas yang memiliki URL; string |
-| `schema` | Wajib; object dengan `type` Schema.org yang valid |
+| `schema` | Wajib; object dengan `type` Schema.org yang valid. Untuk dokumen ber-route, `type` menyatakan tipe halaman; deklarasi entitas utama yang berbeda diletakkan terpisah, bukan menggantikan tipe halaman |
 | `blocks` | Wajib untuk jenis dokumen yang menggunakan sistem block; berupa array berurutan |
 | ID block | Wajib integer positif dan unik di dalam dokumen pemiliknya; tidak menggantikan ID dokumen global |
 | `component` | Wajib pada setiap block; harus terdaftar di block registry |
