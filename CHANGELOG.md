@@ -5,23 +5,25 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 ## 2026-11-27
 
 ### Added
-- Content Contract 1.4: katalog tipe Schema.org, Arsitektur tiga lapisan Schema.org, Schema Registry berisi field wajib dan status dukungan Google, serta aturan JSON-LD graph. Field `intro` ditetapkan sebagai paragraf pembuka tersendiri pada Page, Article, dan Service, termasuk panduan `DefinedTerm` untuk halaman definisi.
+- Content Contract 1.5: memisahkan page-level schema dari entity-level `DefinedTerm`; halaman definisi menggunakan `schema.type` untuk `WebPage` dan `schema.mainEntity.type` untuk `DefinedTerm`. `DefinedTerm.name` dipetakan dari `title` dan `DefinedTerm.description` secara khusus dipetakan dari `intro`.
 
 ### Changed
-- Frontmatter Templates 1.3: menambahkan `intro` pada template Page, Article, dan Service serta checklist validasi `DefinedTerm`.
+- Frontmatter Templates 1.4: menambahkan kerangka opsional `schema.mainEntity.type` dan checklist pemetaan `DefinedTerm` dari `title` + `intro`.
 - Technical Architecture 0.3: Schema Registry menjadi keputusan yang harus ditetapkan sebelum implementasi.
 - Project Architecture Templates 0.3 dan `projects/_template/TECHNICAL-ARCHITECTURE.md` 0.2: menyediakan tempat keputusan Schema Registry pada artefak proyek.
-- Quality Gates 0.5: QG-08 menguji keberadaan dan konsistensi Schema Registry; test matrix menambahkan kasus `intro` dan `DefinedTerm`.
+- Quality Gates 0.6: memperluas test matrix untuk validasi bentuk dan keterlihatan `intro`, pemisahan page/entity schema, pola definisi `DefinedTerm`, serta sumber `DefinedTerm.description`.
 - README: menautkan laporan evaluasi proyek pada `projects/tnvcertification/`.
 
 ### Rationale and impact
-- Memisahkan ringkasan editorial (`intro`) dari meta description agar kedua field tidak saling menggantikan.
+- Memisahkan paragraf pembuka substantif (`intro`) dari ringkasan dokumen (`description`) dan meta description (`seo.description`).
+- Menghindari ambiguitas antara tipe schema halaman dan entitas utama yang didefinisikan halaman.
 - Mencegah penggunaan tipe Schema.org hanya karena tersedia di katalog; setiap tipe harus memiliki sumber data, batas penggunaan, dan verifikasi status.
 - Menurunkan kewajiban Schema Registry ke artefak proyek dan gate yang dapat diuji, bukan hanya pernyataan di kontrak konten.
 - Menandai laporan TNV Certification sebagai snapshot sebelum revisi agar tidak dibaca sebagai penolakan terhadap standar 1.4.
 
 ### Compatibility
-- Proyek yang memakai satu field `description` untuk intro dan meta description perlu memisahkannya menjadi `intro` dan `seo.description`.
+- Proyek yang sebelumnya memakai `schema.type: DefinedTerm` harus memindahkan deklarasi entitas ke `schema.mainEntity.type: DefinedTerm` dan mempertahankan page-level type pada `schema.type`.
+- Untuk DefinedTerm, sumber `DefinedTerm.description` wajib `intro`; `description` dokumen dan `seo.description` tetap memiliki fungsi masing-masing.
 - Proyek harus menyiapkan Schema Registry sebelum QG-08 dinyatakan lulus; konflik dengan Block Registry harus menggagalkan validasi.
 - Katalog Schema.org bukan daftar tipe wajib. Tipe tetap dipilih berdasarkan konten dan aturan registry proyek.
 
