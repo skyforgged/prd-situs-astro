@@ -1,7 +1,7 @@
 # Quality Gates & Acceptance Criteria
 
 > Status: Standar verifikasi
-> Versi: 0.4
+> Versi: 0.5
 
 ## 1. Prinsip
 
@@ -18,7 +18,7 @@ Website dinyatakan memenuhi standar hanya jika validasi konten, relasi, routing,
 | QG-05 Relations | Target collection, ID, kardinalitas | Semua FK valid dan target tersedia |
 | QG-06 Block registry | Nama component dan props | Semua block terdaftar dan props sesuai schema |
 | QG-07 SEO | Title, description, canonical, social metadata | Tidak kosong, canonical absolut, tidak duplikat |
-| QG-08 Schema.org | JSON-LD valid dan sesuai konten | JSON valid, node konsisten, tidak ada properti fiktif |
+| QG-08 Schema.org | JSON-LD valid, sesuai konten, dan sesuai Schema Registry | JSON valid, node konsisten, tidak ada properti fiktif; Schema Registry tersedia, tipe yang dipakai terdaftar beserta scope dan pemetaan field, serta tidak konflik dengan Block Registry |
 | QG-09 Assets | Gambar, media, internal/external links | Semua referensi lokal tersedia dan tautan valid |
 | QG-10 Accessibility | Alt, heading, label, keyboard, contrast | Tidak ada pelanggaran kritis yang diketahui |
 | QG-11 Production build | Build produksi | Exit code sukses |
@@ -87,6 +87,10 @@ Rilis dapat diterima jika seluruh gate wajib berstatus lulus, build produksi suk
 | Dua dokumen memiliki timestamp sama | Lulus; timestamp bukan identitas |
 | Featured image tidak memiliki alt | Gagal QG-01/QG-10 |
 | JSON-LD memiliki JSON tidak valid | Gagal QG-08 |
+| Tipe Schema.org dipakai tetapi tidak terdaftar di Schema Registry | Gagal QG-08 |
+| Schema Registry dan Block Registry memberi aturan bertentangan untuk satu tipe | Gagal QG-08 |
+| `intro` Page, Article, atau Service kosong | Gagal QG-01 |
+| `schema.type: DefinedTerm` tetapi intro tidak diawali judul dokumen dan kata "adalah" | Gagal QG-08 |
 | Build produksi gagal | Gagal QG-11 |
 | Konten panjang tetapi repetitif dan tidak memberi nilai tambah | Gagal QG-12 |
 | Konten singkat tetapi sudah memenuhi tujuan halaman secara memadai | Dapat lulus QG-12 |

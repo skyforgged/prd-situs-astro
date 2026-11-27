@@ -1,8 +1,8 @@
 # Catatan Review Standar PRD Situs Astro
 
-> Tanggal tindak lanjut: 2026-11-26
+> Tanggal tindak lanjut: 2026-11-26, diperbarui 2026-11-27
 > Commit awal yang ditinjau: `70c9469`
-> Status: seluruh 12 temuan telah ditindaklanjuti, ditambah 3 koreksi lanjutan dan 2 koreksi integrasi editorial pada 2026-11-26; lihat catatan verifikasi di bawah.
+> Status: seluruh 12 temuan telah ditindaklanjuti, ditambah 3 koreksi lanjutan dan 2 koreksi integrasi editorial pada 2026-11-26; tindak lanjut Content Contract 1.4 pada 2026-11-27 tercatat di bawah.
 
 ## Ringkasan
 
@@ -25,7 +25,7 @@
 
 ### P0-1. ID dokumen global dan ID block lokal
 - [x] Selesai. Constitution 1.2 membatasi keunikan global pada ID dokumen konten dan memisahkan validasi ID block.
-- Bukti: `constitution/WEBSITE-CONSTITUTION.md:48`, `:147`, `:175`; `content-contract/CONTENT-CONTRACT.md:28`; `quality/QUALITY-GATES.md:55`.
+- Bukti: `constitution/WEBSITE-CONSTITUTION.md:48`, `:147`, `:175`; `content-contract/CONTENT-CONTRACT.md:28`; `quality/QUALITY-GATES.md:75`.
 - Verifikasi ulang 2026-11-26: bunyi lama "seluruh ID numerik" pada quality gate sudah diganti dan tidak ditemukan lagi oleh pencarian teks.
 
 ### P0-2. Format dan aturan timestamp
@@ -87,7 +87,7 @@
 
 - [x] Quality gate pada konstitusi diselaraskan dengan keputusan ID dokumen global dan ID block lokal.
   - Bukti: `constitution/WEBSITE-CONSTITUTION.md:4`, `:147`; `CHANGELOG.md` bagian Fixed.
-  - Verifikasi: pencarian teks "seluruh ID numerik" tidak mengembalikan kecocokan; `quality/QUALITY-GATES.md:55` masih menyatakan block ID 1 di dua dokumen berbeda lulus.
+  - Verifikasi: pencarian teks "seluruh ID numerik" tidak mengembalikan kecocokan; `quality/QUALITY-GATES.md:75` masih menyatakan block ID 1 di dua dokumen berbeda lulus.
 - [x] Aturan menu disatukan menjadi satu bunyi, termasuk enum `location` dan kedalaman maksimal.
   - Bukti: `content-contract/CONTENT-CONTRACT.md:79`, `:89`, `:93`.
   - Verifikasi: pencarian teks "batas kedalaman yang ditentukan proyek" tidak mengembalikan kecocokan; `utility` tercantum di narasi dan tabel.
@@ -111,7 +111,7 @@ Perubahan diverifikasi dengan membaca ulang isi file dan pencarian teks terhadap
 ## Koreksi integrasi editorial 2026-11-26
 
 - [x] Aturan CI dibedakan dari review editorial QG-12.
-  - Bukti: `quality/QUALITY-GATES.md:55`, `:85`, versi 0.3 pada `:4`.
+  - Bukti: `quality/QUALITY-GATES.md:68`, `:106`, versi 0.5 pada `:4`.
   - Verifikasi: teks "Semua gate harus dijalankan" sudah diganti; QG-01 sampai QG-11 disebut sebagai gate otomatis, QG-12 sebagai persetujuan reviewer sebelum rilis.
 - [x] Baris dokumen utilitas tidak lagi menyamakan menu dan navigasi dengan halaman.
   - Bukti: `quality/CONTENT-QUALITY-STANDARD.md:110`, versi 1.1 pada `:4`.
@@ -226,9 +226,31 @@ Workflow menutup kesenjangan antara starter templates dan proses pemakaiannya. G
 
 ## Koreksi dokumentasi setelah pull 2026-11-26
 
-- [x] Versi paket template diselaraskan: `projects/_template/README.md:4` menjadi 0.2, mengikuti `projects/_template/README.md:66` dan entri Template Pack 0.2 di `CHANGELOG.md`.
-- [x] `projects/_template/TECHNICAL-ARCHITECTURE.md:62-63,91` memisahkan QG-12 dari gate otomatis sesuai `quality/QUALITY-GATES.md:102`; review editorial tidak lagi diwajibkan memiliki perintah dan fixture CI.
+- [x] Versi paket template diselaraskan: `projects/_template/README.md:4` menjadi 0.2, mengikuti `projects/_template/README.md:66` dan entri Template Pack 0.2 di `CHANGELOG.md` (kini 0.3; lihat bagian 2026-11-27).
+- [x] `projects/_template/TECHNICAL-ARCHITECTURE.md:66-67,95` memisahkan QG-12 dari gate otomatis sesuai `quality/QUALITY-GATES.md:106`; review editorial tidak lagi diwajibkan memiliki perintah dan fixture CI.
 - [x] Checklist yang sudah dibuktikan pada `docs/REVIEW-NOTES.md:149-151,184` ditandai selesai dengan rujukan ke bagian yang memuat buktinya.
-- [x] Rujukan baris diperbarui: `docs/ANALISIS-POLA-SITUS.md:19,117` mengarah ke `README.md:34`, dan `docs/REVIEW-NOTES.md:125` mengarah ke `README.md:20`.
+- [x] Rujukan baris diperbarui: `docs/ANALISIS-POLA-SITUS.md:19,117` mengarah ke `README.md:35`, dan `docs/REVIEW-NOTES.md:125` mengarah ke `README.md:20`.
 - Bukti: perubahan pada empat berkas di atas, entri `Fixed — tindak lanjut pull 2026-11-26` di `CHANGELOG.md`, serta pemeriksaan tautan lokal Markdown tanpa tautan rusak.
 - Batas verifikasi: koreksi hanya menyelaraskan metadata, pemetaan gate, dan rujukan; tidak ada aturan normatif baru. Repository tetap tidak memiliki aplikasi, `package.json`, validator, atau test runner sehingga tidak ada build/test yang dijalankan.
+
+## Tindak lanjut Content Contract 1.4 2026-11-27
+
+- [x] `intro` dipisahkan dari `description`/`seo.description` dan diwajibkan pada Page, Article, dan Service.
+  - Bukti: `content-contract/CONTENT-CONTRACT.md:4` (versi 1.4), bagian kontrak halaman, artikel, dan layanan; `content-contract/FRONTMATTER-TEMPLATES.md:4` (versi 1.3), template yang bersangkutan dan checklist.
+  - Verifikasi: tiga template memuat field `intro`; checklist memuat syarat paragraf pertama dan pola kalimat `DefinedTerm`.
+- [x] Katalog tipe, Arsitektur tiga lapisan, Schema Registry, dan aturan graph ditambahkan ke Content Contract 1.4.
+  - Bukti: `content-contract/CONTENT-CONTRACT.md` bagian 16 sampai 19.
+  - Verifikasi: entri registry mendefinisikan `schemaType`, `scope`, `fieldMapping`, `validationRules`, `googleRichResultSupport`, dan `mergeStrategy`; status Google memakai enum terkontrol.
+- [x] Kewajiban Schema Registry diturunkan ke artefak proyek dan gate yang dapat diuji.
+  - Bukti: `architecture/TECHNICAL-ARCHITECTURE.md:4` (versi 0.3) bagian 14; `projects/_template/TECHNICAL-ARCHITECTURE.md:4` (versi 0.2) bagian 1 dan 5; `projects/_template/README.md:4` (versi 0.3); `quality/QUALITY-GATES.md:4` (versi 0.5) QG-08 dan test matrix.
+  - Verifikasi: pencarian "Schema Registry" menemukan kewajiban di kontrak konten, daftar keputusan pra-implementasi, template arsitektur proyek, dan kriteria QG-08.
+- [x] Laporan TNV Certification ditandai sebagai snapshot sebelum revisi dan ditautkan dari README root.
+  - Bukti: `projects/tnvcertification/CONTENT-CONTRACT-EVALUATION.md` bagian "Catatan status 2026-11-27"; `projects/tnvcertification/README.md`; `README.md`.
+  - Verifikasi: laporan masih menyebut standar 1.3/1.2 sebagai objek yang diperiksa, dengan catatan tindak lanjut ke 1.4/1.3.
+- [x] Rujukan baris yang bergeser diperbarui setelah penambahan field dan baris tabel.
+  - Bukti: `docs/ANALISIS-POLA-SITUS.md:19,117` dan `docs/REVIEW-NOTES.md:232` kini mengarah ke `README.md:35`; `docs/REVIEW-NOTES.md:230` mengarah ke `projects/_template/TECHNICAL-ARCHITECTURE.md:66-67,95` dan `quality/QUALITY-GATES.md:106`; rujukan QG pada `docs/REVIEW-NOTES.md:28,90,114` diselaraskan dengan test matrix saat ini.
+  - Verifikasi: pencarian rujukan baris lama tidak menemukan kecocokan di luar catatan ini.
+- [x] `CHANGELOG.md` memperbarui versi, alasan, dampak, dan kompatibilitas untuk perubahan di atas.
+  - Bukti: `CHANGELOG.md` bagian 2026-11-27.
+  - Verifikasi: perubahan normatif pada dokumen standar dan template memiliki entri serta catatan kompatibilitas.
+- Batas verifikasi: pemeriksaan dilakukan dengan membaca ulang isi dokumen, pencarian versi dan frasa kunci, serta pemeriksaan tautan lokal Markdown. Repository ini tidak memiliki aplikasi Astro, `package.json`, validator, atau test runner, sehingga tidak ada build, automated test, atau QG-08 yang dijalankan.

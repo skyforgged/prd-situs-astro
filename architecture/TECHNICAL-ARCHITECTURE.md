@@ -1,7 +1,7 @@
 # Technical Architecture Specification — Astro
 
 > Status: Draft standar teknis
-> Versi: 0.2
+> Versi: 0.3
 > Berlaku untuk: proyek Astro yang mengadopsi PRD Situs Astro
 
 ## 1. Tujuan dan batas
@@ -143,6 +143,7 @@ Setiap penyimpangan atau pilihan yang belum ditetapkan standar harus dicatat dal
 - Kebijakan halaman lokal dan bukti cakupan operasional bila relevan.
 - Jalur konversi dan aturan CTA beserta target yang tervalidasi.
 - Schema final seluruh jenis konten yang dipakai.
+- Schema Registry yang memuat tipe yang diizinkan, scope, pemetaan field, aturan validasi, dan status dukungan Google yang diverifikasi.
 - Block registry dan kontrak props setiap block.
 - Struktur lengkap SEO nested.
 - Strategi registry ID dan validator lintas collection.

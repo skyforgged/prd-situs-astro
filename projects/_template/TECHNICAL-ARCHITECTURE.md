@@ -1,7 +1,7 @@
 # Project Technical Architecture Decisions
 
 > Status: Draft
-> Versi: 0.1
+> Versi: 0.2
 > Astro/runtime/package manager: [ISI]
 
 ## 1. Struktur aplikasi
@@ -10,6 +10,7 @@
 |---|---|---|---|
 | Content collections | [ISI] | [ISI] | [ISI] |
 | Components/block registry | [ISI] | [ISI] | [ISI] |
+| Schema registry | [ISI] | [ISI] | [ISI] |
 | Layouts | [ISI] | [ISI] | [ISI] |
 | Routes | [ISI] | [ISI] | [ISI] |
 | Content query/relations | [ISI] | [ISI] | [ISI] |
@@ -44,6 +45,9 @@
 - Site URL, locale, identitas organisasi: [ISI]
 - Nested SEO schema: [ISI]
 - Canonical/robots/Open Graph/Twitter: [ISI]
+- Lokasi dan format Schema Registry: [ISI]
+- Tipe yang diizinkan, scope, dan pemilik sumber data: [ISI]
+- Status dukungan Google dan tanggal verifikasi: [ISI]
 - JSON-LD graph dan @id: [ISI]
 - Validator schema: [ISI]
 

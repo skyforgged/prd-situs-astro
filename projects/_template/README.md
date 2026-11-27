@@ -1,7 +1,7 @@
 # Project Architecture Templates
 
 > Status: Template proyek
-> Versi: 0.2
+> Versi: 0.3
 
 ## Tujuan
 
@@ -47,7 +47,7 @@ Gunakan Draft, Review, Approved, atau Superseded. Dokumen tidak boleh Approved s
 - [ ] Kebijakan lokal tidak membuat klaim kehadiran yang menyesatkan.
 - [ ] CTA memiliki target yang tersedia dan tervalidasi.
 - [ ] Lifecycle dan pemilik akurasi konten ditetapkan.
-- [ ] ID registry, block registry, validator, schema SEO, dan quality gates direncanakan.
+- [ ] ID registry, block registry, schema registry, validator, schema SEO, dan quality gates direncanakan.
 - [ ] Keputusan penting memiliki status, pemilik, dan bukti persetujuan.
 
 ## Aturan standar yang tetap berlaku
@@ -63,4 +63,4 @@ Gunakan Draft, Review, Approved, atau Superseded. Dokumen tidak boleh Approved s
 
 Gunakan [PROJECT-INITIALIZATION-WORKFLOW.md](PROJECT-INITIALIZATION-WORKFLOW.md) sebagai urutan operasional dari onboarding repository hingga Implementation Readiness Review. Workflow ini menggunakan phase gates; pembuatan semua dokumen template tidak otomatis berarti proyek siap implementasi.
 
-Paket template saat ini: **0.2** (menambahkan workflow operasional 0.1).
+Paket template saat ini: **0.3** (menambahkan workflow operasional 0.1 dan keputusan Schema Registry pada template arsitektur teknis 0.2).

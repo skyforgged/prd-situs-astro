@@ -1,10 +1,14 @@
 # Evaluasi Content Contract terhadap implementasi TNV Certification
 
-> Status: Review teknis awal  
-> Tanggal: 2026-11-26  
-> Standar yang diperiksa: Website Constitution 1.3, Content Contract 1.3, Frontmatter Templates 1.2, Quality Gates 0.4  
-> Repository implementasi: `skyforgged/tnvcertification`  
+> Status: Snapshot review teknis awal, sebelum revisi standar 2026-11-27\
+> Tanggal: 2026-11-26\
+> Standar yang diperiksa: Website Constitution 1.3, Content Contract 1.3, Frontmatter Templates 1.2, Quality Gates 0.4\
+> Repository implementasi: `skyforgged/tnvcertification`\
 > Commit implementasi yang diperiksa: `778bac514124d139eac8bf02367ed6c6c3d7362a`
+
+## Catatan status 2026-11-27
+
+Dokumen ini dipertahankan sebagai snapshot evaluasi terhadap Content Contract 1.3 dan Frontmatter Templates 1.2. Setelah evaluasi ini, standar global direvisi menjadi Content Contract 1.4 dan Frontmatter Templates 1.3. Field `intro` pada bagian 3 dan rekomendasi pada bagian 4.4 telah ditindaklanjuti: `intro` kini wajib pada Page, Article, dan Service serta dipisahkan dari `seo.description`. Katalog dan registry Schema.org pada bagian 4.3 juga ditindaklanjuti sebagai katalog tipe dan Schema Registry wajib di Content Contract 1.4. Temuan lain, seperti ID dokumen numerik global, ID block numerik, dan relasi berbasis slug, belum diubah oleh revisi tersebut; jangan membaca dokumen ini sebagai penilaian terhadap standar terbaru.
 
 ## 1. Kesimpulan
 
@@ -14,7 +18,7 @@ Namun, implementasi ini **belum sepenuhnya sesuai dengan Website Constitution 1.
 
 Karena Constitution menyatakan aturan tersebut berlaku lintas proyek, perbedaan ini tidak boleh dianggap sebagai pengecualian yang sah hanya karena build berhasil. Sebaliknya, standar global juga tidak boleh diubah hanya berdasarkan satu implementasi. Rekomendasi saat ini adalah mencatat temuan dan keputusan yang diperlukan, lalu memilih secara eksplisit antara migrasi proyek atau revisi standar setelah pola ini dibandingkan dengan proyek Astro nyata lain.
 
-**Tidak ada dokumen standar global yang diubah dalam evaluasi ini.**
+**Tidak ada dokumen standar global yang diubah dalam evaluasi ini pada tanggal review; tindak lanjut revisi tercatat dalam "Catatan status 2026-11-27" di atas.**
 
 ## 2. Bukti implementasi yang diperiksa
 

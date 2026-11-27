@@ -2,6 +2,29 @@
 
 Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 
+## 2026-11-27
+
+### Added
+- Content Contract 1.4: katalog tipe Schema.org, Arsitektur tiga lapisan Schema.org, Schema Registry berisi field wajib dan status dukungan Google, serta aturan JSON-LD graph. Field `intro` ditetapkan sebagai paragraf pembuka tersendiri pada Page, Article, dan Service, termasuk panduan `DefinedTerm` untuk halaman definisi.
+
+### Changed
+- Frontmatter Templates 1.3: menambahkan `intro` pada template Page, Article, dan Service serta checklist validasi `DefinedTerm`.
+- Technical Architecture 0.3: Schema Registry menjadi keputusan yang harus ditetapkan sebelum implementasi.
+- Project Architecture Templates 0.3 dan `projects/_template/TECHNICAL-ARCHITECTURE.md` 0.2: menyediakan tempat keputusan Schema Registry pada artefak proyek.
+- Quality Gates 0.5: QG-08 menguji keberadaan dan konsistensi Schema Registry; test matrix menambahkan kasus `intro` dan `DefinedTerm`.
+- README: menautkan laporan evaluasi proyek pada `projects/tnvcertification/`.
+
+### Rationale and impact
+- Memisahkan ringkasan editorial (`intro`) dari meta description agar kedua field tidak saling menggantikan.
+- Mencegah penggunaan tipe Schema.org hanya karena tersedia di katalog; setiap tipe harus memiliki sumber data, batas penggunaan, dan verifikasi status.
+- Menurunkan kewajiban Schema Registry ke artefak proyek dan gate yang dapat diuji, bukan hanya pernyataan di kontrak konten.
+- Menandai laporan TNV Certification sebagai snapshot sebelum revisi agar tidak dibaca sebagai penolakan terhadap standar 1.4.
+
+### Compatibility
+- Proyek yang memakai satu field `description` untuk intro dan meta description perlu memisahkannya menjadi `intro` dan `seo.description`.
+- Proyek harus menyiapkan Schema Registry sebelum QG-08 dinyatakan lulus; konflik dengan Block Registry harus menggagalkan validasi.
+- Katalog Schema.org bukan daftar tipe wajib. Tipe tetap dipilih berdasarkan konten dan aturan registry proyek.
+
 ## 2026-11-26
 
 ### Added
