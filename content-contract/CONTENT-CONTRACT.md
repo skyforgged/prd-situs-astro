@@ -127,7 +127,8 @@ Digunakan untuk halaman informasional atau halaman statis yang bukan homepage, a
 | `id` | Ya | integer | ID global |
 | `slug` | Ya | string | Segmen URL |
 | `title` | Ya | string | Judul halaman |
-| `description` | Ya | string | Ringkasan halaman |
+| `description` | Ya | string | Ringkasan singkat halaman untuk kebutuhan umum; bukan pengganti `intro` |
+| `intro` | Ya | string | Paragraf pembuka substantif yang ditampilkan sebelum seluruh block konten |
 | `schema` | Ya | object | Schema utama, misalnya `AboutPage`, `ContactPage`, atau `WebPage` |
 | `seo` | Ya | object | Metadata SEO |
 | `featuredImage` | Sesuai kebutuhan | object | Gambar utama beserta alt deskriptif |
@@ -143,6 +144,7 @@ id: 20
 slug: tentang-kami
 title: Tentang Kami
 description: Profil dan ruang lingkup perusahaan.
+intro: PT Contoh memberikan layanan profesional dengan ruang lingkup kompetensi yang dijelaskan pada halaman ini.
 schema:
   type: AboutPage
 seo:
@@ -171,7 +173,8 @@ Digunakan untuk artikel, berita, panduan, insight, atau konten editorial. Perbed
 | `id` | Ya | integer | ID global |
 | `slug` | Ya | string | Segmen URL |
 | `title` | Ya | string | Judul artikel |
-| `description` | Ya | string | Ringkasan artikel |
+| `description` | Ya | string | Ringkasan singkat artikel untuk kebutuhan umum; bukan pengganti `intro` |
+| `intro` | Ya | string | Paragraf pembuka substantif yang ditampilkan sebelum seluruh block konten |
 | `schema` | Ya | object | Umumnya `Article` atau subtype yang tepat |
 | `seo` | Ya | object | Metadata SEO |
 | `authorId` | Opsional | integer | Relasi ke satu dokumen penulis dengan ID numerik |
@@ -191,6 +194,7 @@ id: 102
 slug: panduan-persiapan-dokumen
 title: Panduan Persiapan Dokumen
 description: Hal yang perlu disiapkan sebelum memulai proses.
+intro: Panduan persiapan dokumen adalah uraian mengenai data dan dokumen yang perlu disiapkan sebelum suatu proses dimulai.
 schema:
   type: Article
 seo:
@@ -230,7 +234,8 @@ Digunakan untuk halaman layanan atau jasa yang ditawarkan oleh organisasi.
 | `id` | Ya | integer | ID global |
 | `slug` | Ya | string | Segmen URL |
 | `title` | Ya | string | Nama layanan |
-| `description` | Ya | string | Ringkasan layanan |
+| `description` | Ya | string | Ringkasan singkat layanan untuk kebutuhan umum; bukan pengganti `intro` |
+| `intro` | Ya | string | Paragraf pembuka substantif yang ditampilkan sebelum seluruh block konten |
 | `schema` | Ya | object | Umumnya `Service` |
 | `seo` | Ya | object | Metadata SEO |
 | `providerId` | Opsional | integer | Relasi ke satu dokumen organisasi/provider |
@@ -248,6 +253,7 @@ id: 12
 slug: konsultasi-perizinan
 title: Konsultasi Perizinan
 description: Pendampingan untuk memahami kebutuhan dan proses perizinan.
+intro: Konsultasi perizinan adalah layanan pendampingan untuk membantu memahami kebutuhan, persyaratan, dan tahapan proses perizinan sesuai kondisi pemohon.
 schema:
   type: Service
 seo:
@@ -485,6 +491,14 @@ Dokumen ini menetapkan kontrak konseptual. Nama collection Astro, lokasi file, n
 
 Semua dokumen yang menggunakan `seo` wajib memakai object. `title` dan `description` boleh tidak diisi karena memiliki fallback ke field utama dokumen.
 
+`description` pada level dokumen dan `seo.description` memiliki tujuan berbeda dari `intro`:
+
+- `description` adalah ringkasan singkat dokumen untuk kebutuhan umum seperti kartu konten, daftar, arsip, dan fallback metadata.
+- `seo.description` adalah teks metadata deskripsi untuk mesin pencari dan platform yang membaca metadata. Nilainya boleh lebih ringkas atau memiliki sudut penyajian berbeda dari `description`. Tidak ada batas karakter universal yang dijadikan syarat validitas kontrak; panjang editorial dapat ditetapkan dalam pedoman proyek. Mesin pencari dapat memotong atau memilih cuplikan lain dari halaman.
+- `intro` adalah paragraf pembuka substantif yang benar-benar ditampilkan pada halaman. `intro` bukan meta description dan tidak boleh dipendekkan hanya untuk mengikuti perkiraan batas karakter metadata.
+
+Fallback `seo.description` tetap menggunakan `description` dokumen, bukan `intro`. Jangan otomatis menyalin `intro` ke metadata. Sistem pencarian dan AI dapat menggunakan berbagai bagian halaman; keberadaan `intro` yang informatif membantu menyediakan konteks yang jelas, tetapi tidak menjamin halaman dikutip atau ditampilkan dalam AI Mode maupun fitur pencarian tertentu.
+
 | Field | Wajib | Tipe | Aturan |
 |---|---:|---|---|
 | `title` | Tidak | string | Fallback ke `title` dokumen |
@@ -496,7 +510,27 @@ Semua dokumen yang menggunakan `seo` wajib memakai object. `title` dan `descript
 
 Jika fallback juga kosong, validasi gagal. URL canonical harus absolut. Properti nested yang tidak dikenal ditolak oleh validator. Metadata SEO tidak boleh menjadi salinan kedua dari seluruh konten utama.
 
-### 13.2 Objek `featuredImage`
+### 13.2 Field `intro`
+
+`intro` adalah paragraf pertama dari konten utama halaman dan dirender langsung setelah judul utama (serta metadata visual yang ditetapkan layout) dan sebelum block pertama. Intro disimpan sebagai teks biasa, bukan HTML, Markdown, atau block terpisah.
+
+| Field | Wajib | Tipe | Aturan |
+|---|---:|---|---|
+| `intro` | Ya pada Page, Article, dan Service | string | Satu paragraf substantif, tidak kosong, dan ditampilkan sebagai paragraf pembuka |
+
+Aturan editorial dan validasi:
+
+1. Intro harus menjelaskan topik utama secara langsung, spesifik, faktual, dan dapat dipahami tanpa harus membaca paragraf sebelumnya.
+2. Intro tidak boleh hanya berupa slogan, ajakan bertindak, daftar keyword, kalimat pengantar generik, atau pengulangan judul tanpa penjelasan.
+3. Untuk dokumen yang secara eksplisit mendefinisikan istilah/konsep dan memakai `schema.type: DefinedTerm`, kalimat pertama wajib mengikuti pola `<judul halaman> adalah <definisi substantif>.` Judul pada awal kalimat harus sama dengan nilai `title` setelah normalisasi spasi dan perbandingan tanpa membedakan huruf besar-kecil. Setelah frasa `adalah`, harus ada definisi yang bermakna, bukan sekadar sinonim atau pengulangan judul.
+4. Pola definisi tersebut tidak diwajibkan untuk halaman yang bukan halaman definisi. Untuk halaman non-definisi, intro harus mengikuti tujuan dan bentuk kontennya.
+5. Intro tidak boleh memuat klaim yang tidak didukung, data yang dikarang, atau janji hasil.
+6. Intro menjadi sumber utama properti `description` pada node `DefinedTerm` jika tipe tersebut digunakan. `title` dipetakan ke `DefinedTerm.name`. Node DefinedTerm harus dihubungkan sebagai `mainEntity` halaman dan memiliki `@id` stabil. Jangan membuat DefinedTerm hanya karena intro diawali definisi; tipe tersebut hanya digunakan bila halaman memang berfokus pada satu istilah yang didefinisikan.
+7. Intro harus terlihat oleh pengguna. Jangan hanya memasukkannya ke JSON-LD atau menyembunyikannya dari tampilan halaman.
+
+Validator wajib menggagalkan dokumen Page, Article, atau Service jika `intro` tidak ada, bukan string, kosong setelah trim, berisi lebih dari satu paragraf, atau memuat markup HTML/Markdown. Untuk `schema.type: DefinedTerm`, validator juga wajib memeriksa pola awal `<title> adalah ` secara case-insensitive setelah normalisasi spasi, serta memastikan bagian definisi setelahnya tidak kosong. Validator tidak boleh menganggap keberadaan `intro` saja cukup untuk meloloskan kelayakan semantik DefinedTerm; kesesuaian tipe tetap harus diperiksa.
+
+### 13.3 Objek `featuredImage`
 
 | Field | Wajib | Tipe | Aturan |
 |---|---:|---|---|
@@ -663,7 +697,7 @@ Implementasi schema proyek harus memisahkan tiga lapisan berikut. Pemisahan ini 
 
 ### 17.1 Layer 1 — Block-level schema
 
-Schema yang merepresentasikan struktur atau objek yang disajikan oleh satu bagian konten. Contoh kandidat: `HowTo`, `ItemList`, `VideoObject`, `ImageObject`, `DefinedTerm`, `Question`, atau tipe lain yang disetujui registry.
+Schema yang merepresentasikan struktur atau objek yang disajikan oleh satu bagian konten. Contoh kandidat: `HowTo`, `ItemList`, `VideoObject`, `ImageObject`, `Question`, atau tipe lain yang disetujui registry. `DefinedTerm` yang bersumber dari field dokumen `title` dan `intro` diperlakukan sebagai entity-level node, bukan schema block.
 
 Aturan:
 - Schema hanya dibuat jika block dan data sumbernya memenuhi definisi tipe.
@@ -685,7 +719,7 @@ Aturan:
 
 ### 17.3 Layer 3 — Entity-level schema
 
-Schema yang menggambarkan entitas di luar isi satu block, misalnya `Organization`, `LocalBusiness`, `Service`, `Person`, `Offer`, dan informasi kontak/lokasi.
+Schema yang menggambarkan entitas di luar isi satu block, misalnya `Organization`, `LocalBusiness`, `Service`, `Person`, `DefinedTerm`, `Offer`, dan informasi kontak/lokasi.
 
 Aturan:
 - Dikelola dari sumber data entitas yang konsisten, bukan disalin manual ke banyak halaman.
@@ -771,6 +805,30 @@ schemaRegistry:
       - content that is not a procedure
     documentationUrl:
       - https://schema.org/HowTo
+    verifiedAt: 2026-11-27
+
+  - schemaType: DefinedTerm
+    scope: entity
+    entitySource: document.title+document.intro
+    fieldMapping:
+      name: title
+      description: intro
+    requiredFields:
+      - title
+      - intro
+    optionalFields: []
+    validationRules:
+      - document schema type must explicitly be DefinedTerm
+      - intro first sentence must begin with the normalized document title followed by 'adalah'
+      - definition must be visible on the page
+      - stable entity id must be used and linked as WebPage.mainEntity
+    googleRichResultSupport: not-applicable
+    mergeStrategy: reuse-entity-node
+    prohibitedUsage:
+      - ordinary articles that do not define a single term
+      - generating a term node from a title without a substantive definition
+    documentationUrl:
+      - https://schema.org/DefinedTerm
     verifiedAt: 2026-11-27
 
   - schemaType: Organization
