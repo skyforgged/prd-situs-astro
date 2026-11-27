@@ -1,7 +1,7 @@
 # Content Contract — PRD Astro
 
 > Status: Standar data konten  
-> Versi: 1.4
+> Versi: 1.5
 > Format sumber: Markdown + YAML frontmatter
 
 ## 1. Tujuan
@@ -120,7 +120,7 @@ updatedDate: 2026-11-26T03:00:00Z
 
 Digunakan untuk halaman informasional atau halaman statis yang bukan homepage, artikel, atau layanan.
 
-Untuk halaman glosarium/definisi yang tujuan utamanya mendefinisikan satu istilah, `schema.type` boleh bernilai `DefinedTerm`. Dalam keluaran JSON-LD, renderer tetap harus membentuk node `WebPage` untuk dokumen dan menghubungkannya ke node `DefinedTerm` melalui `mainEntity`; `DefinedTerm` bukan pengganti identitas halaman web. Untuk artikel yang hanya membahas istilah sebagai bagian dari pembahasan, pertahankan tipe halaman editorial seperti `Article`/`TechArticle` dan jangan otomatis membuat node `DefinedTerm`.
+Untuk halaman glosarium/definisi yang tujuan utamanya mendefinisikan satu istilah, `schema.type` tetap menyatakan tipe halaman (`WebPage` atau subtype halaman yang tepat), sedangkan entitas istilah dinyatakan terpisah melalui `schema.mainEntity.type: DefinedTerm`. `DefinedTerm` adalah entity-level node dan tidak boleh dipakai sebagai pengganti tipe halaman. Untuk artikel yang hanya membahas istilah sebagai bagian dari pembahasan, jangan otomatis membuat node `DefinedTerm`.
 
 ### Field
 
@@ -131,7 +131,7 @@ Untuk halaman glosarium/definisi yang tujuan utamanya mendefinisikan satu istila
 | `title` | Ya | string | Judul halaman |
 | `description` | Ya | string | Ringkasan singkat halaman untuk kebutuhan umum; bukan pengganti `intro` |
 | `intro` | Ya | string | Paragraf pembuka substantif yang ditampilkan sebelum seluruh block konten |
-| `schema` | Ya | object | Schema utama, misalnya `AboutPage`, `ContactPage`, atau `WebPage` |
+| `schema` | Ya | object | `type` menyatakan page-level schema; `mainEntity` opsional untuk mendeklarasikan entitas utama yang didefinisikan halaman |
 | `seo` | Ya | object | Metadata SEO |
 | `featuredImage` | Sesuai kebutuhan | object | Gambar utama beserta alt deskriptif |
 | `blocks` | Ya | array | Konten halaman |
@@ -163,6 +163,17 @@ blocks:
 updatedDate: 2026-11-26T03:00:00Z
 ---
 ```
+
+Untuk halaman glosarium, deklarasi frontmatter yang benar berbentuk:
+
+~~~yaml
+schema:
+  type: WebPage
+  mainEntity:
+    type: DefinedTerm
+~~~
+
+Pemetaan entitas: `title` → `DefinedTerm.name`; `intro` → `DefinedTerm.description`. Field `description` dan `seo.description` tidak digunakan sebagai sumber definisi. Renderer menghasilkan node `WebPage` dan node `DefinedTerm` terpisah dalam satu `@graph`, lalu menghubungkan keduanya melalui `WebPage.mainEntity`. `@id` node DefinedTerm harus stabil dan berbasis URL kanonis halaman, misalnya fragmen `#definedterm`.
 
 ## 6. Kontrak Artikel
 
@@ -524,13 +535,13 @@ Aturan editorial dan validasi:
 
 1. Intro harus menjelaskan topik utama secara langsung, spesifik, faktual, dan dapat dipahami tanpa harus membaca paragraf sebelumnya.
 2. Intro tidak boleh hanya berupa slogan, ajakan bertindak, daftar keyword, kalimat pengantar generik, atau pengulangan judul tanpa penjelasan.
-3. Untuk dokumen yang secara eksplisit mendefinisikan istilah/konsep dan memakai `schema.type: DefinedTerm`, kalimat pertama wajib mengikuti pola `<judul halaman> adalah <definisi substantif>.` Judul pada awal kalimat harus sama dengan nilai `title` setelah normalisasi spasi dan perbandingan tanpa membedakan huruf besar-kecil. Setelah frasa `adalah`, harus ada definisi yang bermakna, bukan sekadar sinonim atau pengulangan judul.
+3. Untuk Page yang secara eksplisit mendefinisikan satu istilah/konsep dan memakai `schema.mainEntity.type: DefinedTerm`, kalimat pertama wajib mengikuti pola `<judul halaman> adalah <definisi substantif>.` Judul pada awal kalimat harus sama dengan nilai `title` setelah normalisasi spasi dan perbandingan tanpa membedakan huruf besar-kecil. Setelah frasa `adalah`, harus ada definisi yang bermakna, bukan sekadar sinonim atau pengulangan judul.
 4. Pola definisi tersebut tidak diwajibkan untuk halaman yang bukan halaman definisi. Untuk halaman non-definisi, intro harus mengikuti tujuan dan bentuk kontennya.
 5. Intro tidak boleh memuat klaim yang tidak didukung, data yang dikarang, atau janji hasil.
-6. Intro menjadi sumber utama properti `description` pada node `DefinedTerm` jika tipe tersebut digunakan. `title` dipetakan ke `DefinedTerm.name`. Node DefinedTerm harus dihubungkan sebagai `mainEntity` halaman dan memiliki `@id` stabil. Jangan membuat DefinedTerm hanya karena intro diawali definisi; tipe tersebut hanya digunakan bila halaman memang berfokus pada satu istilah yang didefinisikan.
+6. `title` dipetakan ke `DefinedTerm.name`, sedangkan `intro` dipetakan ke `DefinedTerm.description`. `description` dokumen dan `seo.description` bukan sumber untuk properti tersebut. Renderer membentuk node DefinedTerm dengan `@id` stabil dan mereferensikannya melalui `WebPage.mainEntity`. Jangan membuat DefinedTerm hanya karena intro diawali definisi; deklarasi ini hanya digunakan bila halaman memang berfokus pada satu istilah yang didefinisikan.
 7. Intro harus terlihat oleh pengguna. Jangan hanya memasukkannya ke JSON-LD atau menyembunyikannya dari tampilan halaman.
 
-Validator wajib menggagalkan dokumen Page, Article, atau Service jika `intro` tidak ada, bukan string, kosong setelah trim, berisi lebih dari satu paragraf, atau memuat markup HTML/Markdown. Untuk `schema.type: DefinedTerm`, validator juga wajib memeriksa pola awal `<title> adalah ` secara case-insensitive setelah normalisasi spasi, serta memastikan bagian definisi setelahnya tidak kosong. Validator tidak boleh menganggap keberadaan `intro` saja cukup untuk meloloskan kelayakan semantik DefinedTerm; kesesuaian tipe tetap harus diperiksa.
+Validator wajib menggagalkan dokumen Page, Article, atau Service jika `intro` tidak ada, bukan string, kosong setelah trim, berisi lebih dari satu paragraf, atau memuat markup HTML/Markdown. Untuk `schema.mainEntity.type: DefinedTerm`, validator wajib memastikan dokumen merupakan Page, `schema.type` merupakan page-level type yang valid (bukan `DefinedTerm`), memeriksa pola awal `<title> adalah ` secara case-insensitive setelah normalisasi spasi, serta memastikan bagian definisi setelahnya tidak kosong. Validator tidak boleh menganggap keberadaan `intro` saja cukup untuk meloloskan kelayakan semantik DefinedTerm; kesesuaian tipe tetap harus diperiksa.
 
 ### 13.3 Objek `featuredImage`
 
@@ -640,7 +651,7 @@ Tipe berikut menggambarkan entitas yang ditawarkan, dimiliki, atau direpresentas
 | `LocalBusiness` | Bisnis dengan lokasi fisik/lokal | Data lokasi, nama, alamat, dan informasi bisnis harus faktual. |
 | `Organization` | Identitas organisasi/badan usaha | Cocok sebagai entitas organisasi utama. |
 | `Person` | Individu | Gunakan untuk orang/tenaga ahli yang nyata dan dapat diidentifikasi. |
-| `DefinedTerm` | Istilah atau konsep yang didefinisikan | Halaman glosarium yang berfokus pada satu istilah; `name` dari `title` dan `description` dari `intro`. |
+| `DefinedTerm` | Istilah atau konsep yang didefinisikan | Entity-level node yang dideklarasikan melalui `schema.mainEntity.type` pada Page glosarium; `name` dari `title` dan `description` dari `intro`. |
 | `Offer` | Penawaran | Harus merepresentasikan penawaran nyata dengan informasi yang tersedia. |
 | `AggregateOffer` | Kumpulan penawaran | Gunakan hanya jika benar-benar ada kumpulan penawaran yang dapat dirangkum. |
 | `Review` | Ulasan | Harus berasal dari ulasan yang benar-benar tersedia dan ditampilkan sesuai kebijakan terkait. |
@@ -699,7 +710,7 @@ Implementasi schema proyek harus memisahkan tiga lapisan berikut. Pemisahan ini 
 
 ### 17.1 Layer 1 — Block-level schema
 
-Schema yang merepresentasikan struktur atau objek yang disajikan oleh satu bagian konten. Contoh kandidat: `HowTo`, `ItemList`, `VideoObject`, `ImageObject`, `Question`, atau tipe lain yang disetujui registry. `DefinedTerm` yang bersumber dari field dokumen `title` dan `intro` diperlakukan sebagai entity-level node, bukan schema block.
+Schema yang merepresentasikan struktur atau objek yang disajikan oleh satu bagian konten. Contoh kandidat: `HowTo`, `ItemList`, `VideoObject`, `ImageObject`, `Question`, atau tipe lain yang disetujui registry. `DefinedTerm` yang dideklarasikan melalui `schema.mainEntity.type` dan bersumber dari field dokumen `title` dan `intro` diperlakukan sebagai entity-level node, bukan page-level schema atau schema block.
 
 Aturan:
 - Schema hanya dibuat jika block dan data sumbernya memenuhi definisi tipe.
@@ -820,7 +831,7 @@ schemaRegistry:
       - intro
     optionalFields: []
     validationRules:
-      - document schema type must explicitly be DefinedTerm
+      - document must be a Page with a valid page-level schema type; DefinedTerm is declared at schema.mainEntity.type
       - intro first sentence must begin with the normalized document title followed by 'adalah'
       - definition must be visible on the page
       - stable entity id must be used and linked as WebPage.mainEntity
