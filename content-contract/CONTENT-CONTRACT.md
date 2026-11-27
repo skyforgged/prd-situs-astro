@@ -339,11 +339,112 @@ Block dengan component yang tidak terdaftar atau properti yang tidak sesuai haru
 
 ### 9.3 Aturan schema block
 
-- Schema block bersifat opsional, bukan field wajib.
-- Block dekoratif, navigasi, layout, CTA, atau block teks umum biasanya tidak perlu schema tersendiri.
-- Block seperti FAQ, HowTo, ItemList, atau Review dapat memiliki schema jika konten dan konteksnya memenuhi ketentuan.
-- Schema tidak boleh dipaksakan hanya untuk memenuhi kuota.
-- Schema pada block harus konsisten dengan schema utama dokumen dan graph JSON-LD yang dihasilkan.
+Schema block bersifat opsional, bukan field wajib. Namun, ketika sebuah block merepresentasikan entitas atau struktur yang dikenali Schema.org, agen **wajib mengevaluasi** apakah schema relevan dan tidak boleh menghilangkannya tanpa alasan. Keputusan untuk tidak memakai schema harus didasarkan pada jenis konten, pedoman mesin pencari, dan konteks halaman—bukan karena contoh atau field schema tidak tersedia.
+
+Aturan penerapan:
+
+1. Properti `schema` diletakkan pada level block yang bersangkutan, sejajar dengan `id` dan `component`; bukan di dalam `items` atau `steps`.
+2. Bentuk minimalnya adalah object dengan properti `type` berisi nama tipe Schema.org yang valid, mengikuti konvensi kontrak ini.
+3. Properti data schema diambil dari field konten block yang benar-benar tersedia. Jangan mengarang jawaban, rating, penulis, tanggal, atau langkah demi melengkapi schema.
+4. Schema block harus menggambarkan konten yang terlihat oleh pengguna. Jangan menambahkan schema untuk konten tersembunyi, tidak relevan, atau tidak benar-benar disajikan.
+5. Schema block bukan pengganti schema utama dokumen. Keduanya harus digabungkan secara konsisten ke graph JSON-LD halaman tanpa duplikasi atau konflik entitas.
+6. Jangan menambahkan schema pada block dekoratif, navigasi, layout, CTA, atau teks umum yang tidak merepresentasikan tipe Schema.org tertentu.
+7. Schema tidak menjamin rich result. Agen tidak boleh menjanjikan rich result hanya karena markup ditambahkan.
+
+#### Contoh A — FAQ block dengan FAQPage
+
+Gunakan ketika block benar-benar menampilkan daftar pertanyaan dan jawaban. FAQPage ditempatkan pada block FAQ, bukan pada setiap item.
+
+~~~yaml
+blocks:
+  - id: 4
+    component: faq
+    title: Pertanyaan yang sering diajukan
+    schema:
+      type: FAQPage
+    items:
+      - question: Apa fungsi dokumen ini?
+        answer: Dokumen ini menjelaskan persyaratan dan proses yang perlu dipenuhi.
+      - question: Kapan proses dapat dimulai?
+        answer: Proses dapat dimulai setelah data awal dan dokumen pendukung tersedia.
+~~~
+
+Pemetaan: items[].question menjadi Question.name dan items[].answer menjadi acceptedAnswer.text. Jangan menambahkan FAQPage jika block hanya berisi tautan pertanyaan atau konten yang tidak tampil.
+
+#### Contoh B — HowTo block dengan HowTo
+
+Gunakan ketika halaman menjelaskan satu prosedur yang terdiri dari langkah-langkah berurutan. Setiap langkah harus memiliki nama dan penjelasan yang terlihat.
+
+~~~yaml
+blocks:
+  - id: 5
+    component: how-to
+    title: Tahapan persiapan pengajuan
+    description: Urutan persiapan sebelum pengajuan dilakukan.
+    schema:
+      type: HowTo
+    steps:
+      - name: Pemeriksaan data awal
+        text: Periksa identitas pemilik, data bangunan, dan dokumen yang tersedia.
+      - name: Pengumpulan dokumen
+        text: Siapkan dokumen administrasi dan teknis sesuai kondisi bangunan.
+      - name: Evaluasi kelengkapan
+        text: Cocokkan dokumen dengan persyaratan proses yang berlaku.
+~~~
+
+Pemetaan: title menjadi HowTo.name; description menjadi HowTo.description; steps[].name dan steps[].text menjadi HowToStep.name dan HowToStep.text. Jangan memakai HowTo untuk daftar manfaat, daftar layanan, atau uraian yang bukan prosedur berurutan.
+
+#### Contoh C — ItemList block dengan ItemList
+
+Gunakan ketika block menyajikan daftar item yang bermakna sebagai satu daftar terstruktur. Item yang ditampilkan harus sama dengan item yang dimasukkan ke schema.
+
+~~~yaml
+blocks:
+  - id: 6
+    component: item-list
+    title: Dokumen yang perlu disiapkan
+    schema:
+      type: ItemList
+    items:
+      - name: Identitas pemilik
+        description: Dokumen identitas pihak pemilik bangunan.
+      - name: Data bangunan
+        description: Informasi fungsi, luas, dan lokasi bangunan.
+      - name: Dokumen teknis
+        description: Dokumen teknis yang tersedia sesuai kondisi bangunan.
+~~~
+
+Pemetaan: items menjadi ItemList.itemListElement; setiap entri direpresentasikan sebagai ListItem dengan posisi urutan yang sesuai. Jika implementasi block menggunakan field lain, registry wajib mendokumentasikan pemetaan tersebut secara eksplisit.
+
+#### Contoh D — block tanpa schema
+
+Tidak semua block memerlukan schema. CTA berikut cukup dirender sebagai antarmuka ajakan bertindak dan tidak diberi schema:
+
+~~~yaml
+blocks:
+  - id: 7
+    component: cta
+    title: Konsultasikan kebutuhan Anda
+    description: Sampaikan kondisi awal agar tim dapat membantu menentukan langkah berikutnya.
+    label: Hubungi kami
+    url: https://example.com/kontak
+~~~
+
+Tidak adanya properti schema pada contoh ini disengaja, bukan kekurangan data.
+
+#### Kewajiban block registry
+
+Block registry wajib mendefinisikan untuk setiap component:
+- Apakah schema didukung, dilarang, atau opsional bersyarat.
+- Tipe Schema.org yang diizinkan untuk component tersebut.
+- Field block yang menjadi sumber data tiap properti schema.
+- Bentuk dan aturan validasi field sumber, termasuk field wajib.
+- Cara renderer/JSON-LD builder menggabungkan schema block ke graph halaman.
+- Kondisi ketika schema harus dihilangkan.
+
+Contoh: registry faq dapat menetapkan schema.type hanya boleh FAQPage, dengan sumber items[].question dan items[].answer. Registry how-to dapat menetapkan HowTo, dengan sumber title, description, dan steps[].name/text.
+
+Block dengan component tidak terdaftar, tipe schema yang tidak diizinkan, atau field sumber yang tidak sesuai harus menggagalkan validasi. Jika schema bersifat opsional bersyarat dan tidak digunakan, validasi konten tetap dapat lolos selama aturan component di registry terpenuhi.
 
 ## 10. Standar relasi
 
