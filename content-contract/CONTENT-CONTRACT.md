@@ -538,3 +538,336 @@ Jika `publishedDate` dan `updatedDate` tersedia, `updatedDate` harus sama dengan
 
 Contoh `FAQPage` dan `HowTo` dalam dokumen ini hanya menunjukkan pemetaan semantik Schema.org. Contoh bukan jaminan kelayakan rich result. Periksa kebijakan mesin pencari yang berlaku saat implementasi dan pastikan markup sesuai dengan konten yang terlihat serta persyaratan tipe terkait.
 
+
+
+## 16. Katalog tipe Schema.org dan ruang lingkup penggunaannya
+
+Bagian ini merupakan inventaris tipe Schema.org yang dapat dipertimbangkan oleh proyek. Daftar ini bukan izin untuk menggunakan semua tipe secara bebas. Setiap penggunaan tetap harus disetujui dalam Schema Registry, sesuai struktur konten, konteks halaman, dan implementasi JSON-LD proyek.
+
+Penting untuk membedakan:
+- **Validitas Schema.org:** apakah tipe dan properti merupakan bagian dari kosakata Schema.org.
+- **Kesesuaian semantik:** apakah tipe tersebut benar-benar menggambarkan konten atau entitas yang disajikan.
+- **Dukungan rich result Google:** apakah Google saat implementasi mendukung tipe tersebut untuk tampilan hasil kaya tertentu dan apakah halaman memenuhi persyaratannya.
+
+Ketiganya tidak sama. Tipe Schema.org yang valid tidak otomatis memenuhi syarat rich result Google.
+
+### 16.1 Tipe yang dapat dipertimbangkan untuk struktur block
+
+Tipe berikut dapat relevan untuk block tertentu apabila data yang diperlukan benar-benar tersedia dan terlihat oleh pengguna.
+
+| Schema.org type | Kegunaan | Contoh block/konten | Catatan penerapan |
+|---|---|---|---|
+| `FAQPage` | Halaman yang berisi kumpulan pertanyaan dan jawaban | FAQ | Pertimbangkan sebagai entitas halaman; jangan menghasilkan banyak FAQPage yang saling menduplikasi dari beberapa block. |
+| `HowTo` | Prosedur yang terdiri dari langkah-langkah | Panduan langkah demi langkah | Gunakan hanya untuk instruksi/prosedur nyata, bukan daftar manfaat atau daftar layanan. |
+| `ItemList` | Sekumpulan item yang memiliki makna sebagai satu daftar | Daftar persyaratan, tahapan, atau pilihan | Urutan dan item schema harus sesuai dengan yang ditampilkan. |
+| `VideoObject` | Informasi tentang video | Video tutorial, video penjelasan | Harus mengacu pada video yang benar-benar tersedia; properti media dan thumbnail mengikuti kontrak media. |
+| `ImageObject` | Informasi tentang gambar | Foto proyek, diagram, ilustrasi teknis | Jangan membuat ImageObject untuk setiap gambar secara otomatis; gunakan jika metadata objek gambar memang diperlukan. |
+| `Table` | Tabel sebagai karya/konten terstruktur | Tabel perbandingan atau data | Pastikan pemetaan tabel sesuai kosakata Schema.org dan bukan sekadar menandai semua elemen HTML table. |
+| `Course` | Kursus atau program pembelajaran | Katalog kursus/pelatihan | Harus benar-benar merupakan kursus dengan informasi yang relevan, bukan artikel biasa. |
+| `Quiz` | Kuis/evaluasi pembelajaran | Kuis dengan pertanyaan dan evaluasi | Gunakan hanya jika ada kuis nyata; jangan menyamakan FAQ dengan Quiz. |
+| `Question` | Satu pertanyaan dalam struktur yang sesuai | Item pertanyaan dalam Q&A/FAQ | Umumnya menjadi bagian dari struktur induk yang tepat, bukan schema mandiri untuk setiap teks tanya. |
+| `DefinedTerm` | Istilah yang didefinisikan | Glosarium istilah teknis | Definisi harus benar-benar disajikan dan konsisten. |
+| `Claim` | Pernyataan/klaim yang dapat diidentifikasi | Klaim yang disertai sumber atau konteks | Jangan menggunakannya untuk klaim pemasaran tanpa dasar. |
+| `Quotation` | Kutipan yang diidentifikasi sebagai kutipan | Kutipan regulasi atau pendapat ahli | Kutipan harus akurat, memiliki atribusi/sumber bila diperlukan, dan tampil pada halaman. |
+| `SpeakableSpecification` | Penanda bagian konten yang cocok dibacakan | Ringkasan atau bagian artikel tertentu | Ini bukan pengganti schema Article/WebPage dan dukungannya harus diperiksa pada target mesin pencari. |
+
+Katalog di atas merupakan kandidat, bukan kewajiban. Block dekoratif, navigasi, layout, CTA, dan teks umum tidak perlu diberi schema hanya agar setiap block memiliki markup.
+
+### 16.2 Tipe tingkat halaman/dokumen
+
+Tipe berikut menggambarkan halaman atau dokumen secara keseluruhan. Tipe ini umumnya ditetapkan pada frontmatter dokumen, bukan diulang pada setiap block.
+
+| Schema.org type | Kegunaan | Contoh halaman |
+|---|---|---|
+| `WebPage` | Halaman web umum | Halaman informasional |
+| `Article` | Artikel umum | Artikel editorial |
+| `BlogPosting` | Artikel blog | Postingan blog |
+| `TechArticle` | Artikel teknis | Panduan atau penjelasan teknis |
+| `NewsArticle` | Artikel berita | Berita perusahaan/industri |
+| `CollectionPage` | Halaman koleksi/kumpulan | Arsip artikel atau kategori |
+| `AboutPage` | Halaman tentang entitas | Tentang perusahaan |
+| `ContactPage` | Halaman kontak | Kontak perusahaan |
+| `ProfilePage` | Halaman profil | Profil orang atau organisasi |
+| `SearchResultsPage` | Halaman hasil pencarian | Hasil pencarian internal |
+| `QAPage` | Halaman yang berfokus pada satu pertanyaan dan jawaban dari pengguna/komunitas | Forum atau halaman tanya-jawab yang memenuhi karakteristik Q&A |
+| `ItemPage` | Halaman yang membahas satu item tertentu | Detail satu item/entitas |
+
+Pemilihan tipe harus mengikuti tujuan utama halaman. Sebagai contoh, halaman artikel teknis dapat memakai `TechArticle` jika memang sesuai, sedangkan halaman arsip artikel lebih tepat dipertimbangkan sebagai `CollectionPage`. `QAPage` tidak boleh dipakai hanya karena halaman memiliki FAQ; karakteristik Q&A-nya harus benar-benar terpenuhi.
+
+### 16.3 Tipe tingkat entitas bisnis, layanan, dan orang
+
+Tipe berikut menggambarkan entitas yang ditawarkan, dimiliki, atau direpresentasikan oleh situs. Tipe-tipe ini umumnya dikelola sebagai node entitas pada graph JSON-LD dan direlasikan dengan halaman yang relevan.
+
+| Schema.org type | Kegunaan | Catatan penerapan |
+|---|---|---|
+| `Service` | Layanan/jasa | Cocok untuk entitas layanan; hubungkan dengan provider yang benar. |
+| `ProfessionalService` | Bisnis jasa profesional | Gunakan jika jenis bisnis dan hierarki tipe memang sesuai; jangan otomatis mengganti semua Organization dengannya. |
+| `LocalBusiness` | Bisnis dengan lokasi fisik/lokal | Data lokasi, nama, alamat, dan informasi bisnis harus faktual. |
+| `Organization` | Identitas organisasi/badan usaha | Cocok sebagai entitas organisasi utama. |
+| `Person` | Individu | Gunakan untuk orang/tenaga ahli yang nyata dan dapat diidentifikasi. |
+| `Offer` | Penawaran | Harus merepresentasikan penawaran nyata dengan informasi yang tersedia. |
+| `AggregateOffer` | Kumpulan penawaran | Gunakan hanya jika benar-benar ada kumpulan penawaran yang dapat dirangkum. |
+| `Review` | Ulasan | Harus berasal dari ulasan yang benar-benar tersedia dan ditampilkan sesuai kebijakan terkait. |
+| `AggregateRating` | Ringkasan rating dari sejumlah penilaian | Nilai, jumlah, dan sumber rating harus nyata; dilarang mengarang atau memanipulasi. |
+| `ContactPoint` | Titik/kategori kontak organisasi | Hubungkan dengan organisasi yang benar. |
+| `PostalAddress` | Alamat pos | Data alamat harus sesuai alamat sebenarnya. |
+| `GeoCoordinates` | Koordinat geografis | Koordinat harus akurat dan merujuk pada lokasi entitas yang benar. |
+
+Contoh hubungan semantik yang dapat dibentuk dalam graph:
+- `Organization` menggambarkan perusahaan.
+- `LocalBusiness` menggambarkan entitas/lokasi bisnis lokal jika sesuai.
+- `Service` menggambarkan layanan yang ditawarkan.
+- `Offer` menggambarkan penawaran tertentu.
+- `Person` menggambarkan tenaga ahli atau individu yang benar-benar ada.
+- `ContactPoint`, `PostalAddress`, dan `GeoCoordinates` memberikan informasi pendukung pada entitas yang tepat.
+
+Jangan membuat node Organization, LocalBusiness, Person, atau Service baru pada setiap block. Identitas entitas harus konsisten dan dapat dirujuk kembali melalui `@id` yang stabil.
+
+### 16.4 Tipe untuk kebutuhan situs khusus
+
+Tipe berikut dapat dipakai jika situs memang memiliki jenis konten atau entitas yang sesuai.
+
+| Schema.org type | Kegunaan | Contoh penggunaan |
+|---|---|---|
+| `Event` | Acara dengan waktu/lokasi atau informasi acara yang relevan | Seminar, webinar, pelatihan |
+| `JobPosting` | Lowongan pekerjaan | Halaman karier/lowongan |
+| `Dataset` | Kumpulan data yang diterbitkan | Dataset penelitian atau data publik |
+| `SoftwareApplication` | Aplikasi perangkat lunak | Halaman produk perangkat lunak |
+| `Product` | Produk | Halaman produk yang benar-benar ditawarkan |
+| `RealEstateListing` | Listing properti | Situs listing properti |
+| `Place` | Tempat/lokasi | Halaman lokasi |
+| `GovernmentService` | Layanan pemerintah | Informasi layanan pemerintah yang benar-benar diselenggarakan instansi pemerintah |
+| `Permit` | Izin atau dokumen perizinan sebagai entitas | Halaman yang membahas suatu izin secara spesifik dan memenuhi definisi tipe |
+| `Legislation` | Peraturan/perundang-undangan | Halaman yang membahas atau merepresentasikan regulasi |
+| `DigitalDocument` | Dokumen digital | Dokumen digital yang diterbitkan atau dideskripsikan |
+| `Report` | Laporan | Laporan teknis atau laporan resmi |
+| `AnalysisNewsArticle` | Artikel berita analisis | Analisis berita yang sesuai definisi tipe |
+
+Konteks konsultan dan perizinan dapat membuat `Service`, `Organization`, `LocalBusiness`, `Legislation`, atau `Permit` relevan. Akan tetapi, artikel yang sekadar menyebut izin atau peraturan tidak otomatis harus menggunakan `Permit` atau `Legislation`. Tipe `GovernmentService` hanya boleh digunakan untuk layanan pemerintah yang sesuai, bukan untuk jasa konsultan swasta yang membantu mengurus layanan tersebut.
+
+### 16.5 Tipe yang tidak boleh dipaksakan
+
+Schema tidak ditambahkan hanya karena:
+- nama tipe tersedia di Schema.org;
+- sebuah block memiliki judul atau daftar;
+- AGENT AI ingin melengkapi jumlah schema;
+- schema dianggap sebagai cara otomatis untuk menaikkan ranking;
+- contoh implementasi ditemukan pada situs lain tanpa memeriksa kesesuaian konten;
+- properti yang diperlukan tidak tersedia dan harus dikarang.
+
+Jika tidak ada tipe yang benar-benar cocok, jangan menambahkan schema. Konten tetap dapat valid tanpa schema block.
+
+## 17. Arsitektur tiga lapisan Schema.org
+
+Implementasi schema proyek harus memisahkan tiga lapisan berikut. Pemisahan ini merupakan pemisahan tanggung jawab data, bukan kewajiban untuk menghasilkan tiga script JSON-LD yang berbeda.
+
+### 17.1 Layer 1 — Block-level schema
+
+Schema yang merepresentasikan struktur atau objek yang disajikan oleh satu bagian konten. Contoh kandidat: `HowTo`, `ItemList`, `VideoObject`, `ImageObject`, `DefinedTerm`, `Question`, atau tipe lain yang disetujui registry.
+
+Aturan:
+- Schema hanya dibuat jika block dan data sumbernya memenuhi definisi tipe.
+- Pemetaan field harus dinyatakan dalam Block Registry.
+- Block tidak boleh membuat node entitas global baru yang menduplikasi organisasi, penulis, atau layanan.
+- Schema block dapat digabungkan ke graph halaman oleh JSON-LD builder.
+- Scope sumber block tidak selalu sama dengan scope entitas Schema.org. Contohnya, beberapa block FAQ pada satu halaman dapat digabungkan ke satu representasi halaman yang sesuai, bukan otomatis menghasilkan beberapa node FAQPage.
+
+### 17.2 Layer 2 — Page-level schema
+
+Schema yang menggambarkan dokumen/halaman secara keseluruhan, misalnya `WebPage`, `Article`, `BlogPosting`, `TechArticle`, `CollectionPage`, `AboutPage`, atau `ContactPage`.
+
+Aturan:
+- Ditetapkan melalui kontrak frontmatter dokumen.
+- Satu halaman harus memiliki identitas halaman yang konsisten.
+- Page-level schema menjadi konteks untuk block dan entitas lain.
+- Jangan menghasilkan beberapa node yang menggambarkan halaman yang sama dengan identitas berbeda.
+- Gunakan `mainEntity`, `mainEntityOfPage`, `about`, `publisher`, atau properti relasi lain hanya jika maknanya benar dan targetnya tersedia.
+
+### 17.3 Layer 3 — Entity-level schema
+
+Schema yang menggambarkan entitas di luar isi satu block, misalnya `Organization`, `LocalBusiness`, `Service`, `Person`, `Offer`, dan informasi kontak/lokasi.
+
+Aturan:
+- Dikelola dari sumber data entitas yang konsisten, bukan disalin manual ke banyak halaman.
+- Setiap entitas harus mempunyai `@id` stabil dan dapat dirujuk dari halaman lain.
+- Relasi harus menunjuk entitas yang benar, misalnya provider suatu Service.
+- Informasi yang berubah harus memiliki satu sumber kebenaran.
+- Jangan membuat rating, review, alamat, koordinat, identitas orang, atau penawaran yang tidak dapat diverifikasi.
+
+Ketiga layer dapat disatukan dalam satu JSON-LD `@graph` pada halaman, sepanjang setiap node memiliki identitas dan relasi yang konsisten. Jumlah script JSON-LD bukan ukuran kualitas; konsistensi graph dan ketepatan semantik lebih penting.
+
+## 18. Schema Registry
+
+Proyek wajib memiliki Schema Registry terkontrol sebagai daftar resmi tipe Schema.org yang boleh digunakan, batas pemakaiannya, serta cara validasinya. Registry ini melengkapi Block Registry; keduanya tidak saling menggantikan.
+
+Setiap entri Schema Registry sekurang-kurangnya mendefinisikan:
+
+| Properti registry | Wajib | Fungsi |
+|---|---:|---|
+| `schemaType` | Ya | Nama tipe Schema.org yang diizinkan |
+| `scope` | Ya | Lapisan penggunaan: `block`, `page`, atau `entity` |
+| `supportedComponents` | Untuk scope block | Daftar component yang boleh menggunakan tipe tersebut |
+| `supportedDocumentTypes` | Untuk scope page | Jenis dokumen yang boleh menggunakan tipe tersebut |
+| `entitySource` | Untuk scope entity | Sumber data resmi entitas |
+| `fieldMapping` | Ya | Pemetaan field sumber ke properti Schema.org |
+| `requiredFields` | Ya | Field sumber/properti yang wajib tersedia |
+| `optionalFields` | Ya | Field tambahan yang boleh digunakan |
+| `validationRules` | Ya | Validasi tipe, format, kardinalitas, dan nilai |
+| `googleRichResultSupport` | Ya | Status dukungan Google yang diverifikasi, atau `not-applicable/unknown` |
+| `mergeStrategy` | Ya | Cara node digabung ke JSON-LD graph |
+| `prohibitedUsage` | Ya | Kondisi penggunaan yang dilarang |
+| `documentationUrl` | Ya | Referensi dokumentasi Schema.org dan/atau Google yang relevan |
+| `verifiedAt` | Ya untuk status Google | Tanggal pemeriksaan status dukungan Google |
+
+Nilai `scope` dibatasi pada `block`, `page`, dan `entity`. Satu tipe dapat memiliki kebijakan berbeda pada implementasi berbeda, tetapi setiap entri registry harus menyatakan scope dan pemilik sumber datanya secara eksplisit.
+
+Status `googleRichResultSupport` harus memakai status terkontrol, sekurang-kurangnya:
+- `supported`: tipe/fitur didukung Google untuk rich result tertentu pada saat diverifikasi; persyaratan spesifik tetap harus dipenuhi.
+- `not-supported`: tidak ada dukungan rich result Google yang dinyatakan untuk tipe/fitur tersebut pada saat diverifikasi.
+- `deprecated`: dukungan yang pernah ada telah dihentikan menurut dokumentasi Google yang diperiksa.
+- `unknown`: belum diverifikasi atau dokumentasi tidak cukup.
+- `not-applicable`: tipe digunakan untuk semantik Schema.org, bukan dengan tujuan rich result Google.
+
+Status tersebut bukan sifat permanen Schema.org. Periksa kembali dokumentasi Google saat implementasi atau pemeliharaan; catat tanggal verifikasinya. Jangan mengubah status menjadi `supported` hanya karena validator Schema.org menerima markup.
+
+### 18.1 Contoh bentuk entri Schema Registry
+
+Contoh konseptual berikut menunjukkan struktur registry, bukan daftar final semua tipe yang harus diimplementasikan:
+
+~~~yaml
+schemaRegistry:
+  - schemaType: HowTo
+    scope: block
+    supportedComponents:
+      - how-to
+    supportedDocumentTypes:
+      - page
+      - article
+      - service
+    fieldMapping:
+      name: title
+      description: description
+      step:
+        source: steps
+        itemType: HowToStep
+        fields:
+          name: name
+          text: text
+    requiredFields:
+      - title
+      - steps
+      - steps[].name
+      - steps[].text
+    optionalFields:
+      - description
+    validationRules:
+      - steps must contain at least one item
+      - every step must have a non-empty name and text
+    googleRichResultSupport: not-supported
+    mergeStrategy: merge-by-stable-node-id
+    prohibitedUsage:
+      - benefit lists
+      - unordered service lists
+      - content that is not a procedure
+    documentationUrl:
+      - https://schema.org/HowTo
+    verifiedAt: 2026-11-27
+
+  - schemaType: Organization
+    scope: entity
+    entitySource: site.business
+    fieldMapping:
+      name: business.name
+      url: site.url
+      address: business.address
+    requiredFields:
+      - business.name
+      - site.url
+    optionalFields:
+      - business.address
+    validationRules:
+      - entity id must be stable across pages
+      - values must come from the configured business profile
+    googleRichResultSupport: unknown
+    mergeStrategy: reuse-entity-node
+    prohibitedUsage:
+      - creating a new organization node per block
+      - inventing company details
+    documentationUrl:
+      - https://schema.org/Organization
+    verifiedAt: 2026-11-27
+~~~
+
+Contoh di atas harus disesuaikan dengan struktur konfigurasi dan validator proyek. Nilai status Google pada contoh bersifat ilustrasi dan harus diverifikasi terhadap dokumentasi Google ketika registry benar-benar diimplementasikan.
+
+### 18.2 Hubungan Schema Registry dan Block Registry
+
+Block Registry menjawab:
+- Component apa yang tersedia?
+- Field apa yang wajib dan opsional pada component?
+- Bagaimana Astro merender component?
+- Schema apa yang boleh dipakai component?
+- Bagaimana data block dipetakan ke schema?
+
+Schema Registry menjawab:
+- Tipe Schema.org apa yang diakui proyek?
+- Scope mana yang diperbolehkan?
+- Properti dan field apa yang dibutuhkan?
+- Bagaimana tipe tersebut divalidasi?
+- Bagaimana node masuk ke graph?
+- Bagaimana status dukungan Google diverifikasi?
+
+Jika Block Registry mengizinkan `faq` memakai `FAQPage`, Schema Registry tetap harus mendefinisikan pemetaan dan aturan FAQPage. Keduanya harus konsisten; konflik harus menggagalkan validasi.
+
+## 19. Aturan JSON-LD graph, identitas, dan penggabungan
+
+Semua schema dari tiga layer harus diproses secara konsisten menjadi graph JSON-LD halaman.
+
+Ketentuan:
+1. Gunakan `@context` Schema.org yang benar.
+2. Gunakan `@graph` untuk menggabungkan beberapa node yang saling berhubungan bila diperlukan.
+3. Gunakan `@id` stabil untuk halaman dan entitas yang perlu dirujuk lintas node/halaman.
+4. Node yang merepresentasikan entitas sama harus menggunakan identitas yang sama, bukan dibuat ulang dengan ID berbeda.
+5. Relasi seperti `publisher`, `provider`, `author`, `mainEntity`, `mainEntityOfPage`, dan `about` hanya dibuat jika hubungan dan targetnya benar.
+6. Jangan mengeluarkan properti bernilai kosong, placeholder, atau data yang tidak tersedia.
+7. Jangan menggandakan node yang sama dari frontmatter, block, layout, dan konfigurasi situs.
+8. Jika dua sumber memberikan nilai yang bertentangan untuk entitas yang sama, tentukan sumber kebenaran melalui arsitektur; jangan memilih secara acak.
+9. Schema yang dihasilkan harus sesuai dengan konten yang benar-benar terlihat dan dapat diakses pengguna.
+10. JSON-LD harus lolos validasi sintaks dan pemeriksaan semantik yang sesuai.
+
+Strategi merge harus ditentukan oleh arsitektur. Penggabungan tidak boleh sekadar menggabungkan object secara dangkal karena dapat menggandakan array, menimpa properti penting, atau membuat node dengan identitas berbeda. Gunakan identitas node dan aturan properti yang eksplisit.
+
+## 20. Kebijakan Google Rich Results dan pemeliharaan
+
+Schema.org merupakan kosakata semantik yang lebih luas daripada fitur rich result Google. Karena itu:
+
+- Validitas Schema.org tidak menjamin rich result.
+- Lolos Schema Markup Validator tidak otomatis berarti lolos Google Rich Results Test.
+- Lolos Google Rich Results Test tidak menjamin rich result akan ditampilkan.
+- Google dapat membatasi, mengubah, atau menghentikan dukungan rich result tanpa mengubah validitas tipe Schema.org.
+- Konten harus memenuhi kebijakan dan persyaratan khusus tipe rich result yang dituju.
+- Markup harus mencerminkan konten utama yang terlihat; jangan menyembunyikan atau merekayasa konten untuk memperoleh rich result.
+- Review dan rating tidak boleh direkayasa. Perhatikan aturan Google mengenai review pihak pertama/self-serving review dan jenis entitas yang memenuhi syarat.
+- FAQPage dan HowTo tetap dapat menjadi tipe Schema.org yang valid meskipun dukungan tampilan rich result Google dapat berbeda atau berubah.
+- Jangan menulis klaim pemasaran atau dokumentasi proyek yang menjanjikan posisi ranking atau rich result hanya karena schema diterapkan.
+
+Dokumentasi Google harus diperiksa saat implementasi dan pemeliharaan. Registry harus menyimpan URL referensi serta tanggal verifikasi agar status tidak dianggap permanen.
+
+## 21. Rekomendasi penerapan bertahap
+
+Untuk menghindari registry yang terlalu luas dan sulit divalidasi, penerapan disarankan bertahap:
+
+**Tahap 1 — Tipe inti**
+- Page-level: `WebPage`, `Article`/subtype yang relevan, `CollectionPage`, `AboutPage`, dan `ContactPage`.
+- Entity-level: `Organization`, `LocalBusiness` jika relevan, `Service`, dan `Person` jika kontrak Person tersedia.
+- Block-level: `FAQPage`, `HowTo`, dan `ItemList` sesuai kebijakan scope dan pemetaan.
+
+**Tahap 2 — Media dan konten terstruktur**
+- `VideoObject`, `ImageObject`, `DefinedTerm`, `Table`, `Question`, dan `Quotation` jika ada kebutuhan nyata dan field mapping telah ditetapkan.
+
+**Tahap 3 — Tipe khusus**
+- `Course`, `Quiz`, `Event`, `JobPosting`, `Dataset`, `Product`, `Permit`, `Legislation`, dan tipe khusus lain hanya ketika jenis konten terkait benar-benar menjadi bagian dari situs.
+
+Urutan tersebut adalah rekomendasi prioritas, bukan kewajiban untuk mengimplementasikan semua tipe. Tipe baru harus melalui proses penambahan registry dan validasi sebelum dapat dipakai oleh konten.
+
+**Keputusan desain:** proyek menggunakan Schema Registry yang terkontrol dan bertahap. Tidak semua block wajib memiliki schema. Schema dipilih berdasarkan makna konten, scope, field yang tersedia, dan kebijakan registry. Lebih baik menggunakan sedikit schema yang tepat, valid, dan konsisten daripada banyak markup yang tidak menggambarkan isi halaman.
