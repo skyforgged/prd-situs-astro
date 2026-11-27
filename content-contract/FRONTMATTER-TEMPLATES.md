@@ -1,8 +1,8 @@
 # Frontmatter Templates — PRD Astro
 
 > Status: Template referensi
-> Versi: 1.2
-> Mengikuti: Content Contract 1.3
+> Versi: 1.3
+> Mengikuti: Content Contract 1.4
 
 ## Cara menggunakan
 
@@ -27,6 +27,7 @@ id:
 slug:
 title:
 description:
+intro:
 schema:
   type:
 seo:
@@ -79,6 +80,7 @@ id:
 slug:
 title:
 description:
+intro:
 schema:
   type:
 seo:
@@ -113,6 +115,7 @@ id:
 slug:
 title:
 description:
+intro:
 schema:
   type:
 seo:
@@ -232,6 +235,8 @@ blocks:
 - [ ] Slug dan route tidak konflik.
 - [ ] `schema.type` valid dan sesuai konten.
 - [ ] SEO fallback tidak menghasilkan title atau description kosong.
+- [ ] `intro` Page/Article/Service tersedia, berupa satu paragraf substantif, dan tampil sebagai paragraf pertama sebelum block.
+- [ ] Jika `schema.type: DefinedTerm`, intro dimulai dengan pola `<title> adalah <definisi substantif>.` dan lolos validasi semantik.
 - [ ] Relasi numerik menunjuk target yang tersedia.
 - [ ] Block dan props terdaftar di block registry.
 - [ ] Featured image memiliki `src` dan alt deskriptif.
