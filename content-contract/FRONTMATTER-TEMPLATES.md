@@ -1,8 +1,8 @@
 # Frontmatter Templates — PRD Astro
 
 > Status: Template referensi
-> Versi: 1.3
-> Mengikuti: Content Contract 1.4
+> Versi: 1.4
+> Mengikuti: Content Contract 1.5
 
 ## Cara menggunakan
 
@@ -82,6 +82,8 @@ description:
 intro:
 schema:
   type:
+  mainEntity:
+    type:
 seo:
   title:
   description:
@@ -104,7 +106,7 @@ updatedDate:
 ---
 ```
 
-Catatan: `featuredImage` dan `publishedDate` opsional sesuai kebutuhan. Hapus seluruh objek/field opsional jika tidak digunakan; jangan membiarkan nilai null pada konten final.
+Catatan: `featuredImage`, `publishedDate`, dan `schema.mainEntity` opsional sesuai kebutuhan. Untuk halaman glosarium yang mendefinisikan satu istilah, isi `schema.mainEntity.type: DefinedTerm`; untuk halaman lain, hapus objek `mainEntity`. Hapus seluruh objek/field opsional jika tidak digunakan; jangan membiarkan nilai null pada konten final.
 
 ## 4. Artikel
 
@@ -236,7 +238,9 @@ blocks:
 - [ ] `schema.type` valid dan sesuai konten.
 - [ ] SEO fallback tidak menghasilkan title atau description kosong.
 - [ ] `intro` Page/Article/Service tersedia, berupa satu paragraf substantif, dan tampil sebagai paragraf pertama sebelum block.
-- [ ] Jika `schema.type: DefinedTerm`, intro dimulai dengan pola `<title> adalah <definisi substantif>.` dan lolos validasi semantik.
+- [ ] Untuk Page definisi, gunakan `schema.type` sebagai page-level type (misalnya `WebPage`) dan `schema.mainEntity.type: DefinedTerm` sebagai entity-level type.
+- [ ] `DefinedTerm.name` berasal dari `title` dan `DefinedTerm.description` berasal dari `intro`, bukan `description` atau `seo.description`.
+- [ ] Intro DefinedTerm dimulai dengan pola `<title> adalah <definisi substantif>.` dan lolos validasi semantik.
 - [ ] Relasi numerik menunjuk target yang tersedia.
 - [ ] Block dan props terdaftar di block registry.
 - [ ] Featured image memiliki `src` dan alt deskriptif.
