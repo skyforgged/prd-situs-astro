@@ -29,6 +29,10 @@ collections:
           description: description
         requiredFields: [title, description]
     routePrefix: /training/
+    relations:
+      categoryIds:
+        target: category
+        cardinality: many
 
   schedule:
     directory: schedules
@@ -38,7 +42,6 @@ collections:
       ulid: ulid
       type: string
       scheduleId: string
-      publisherId: string
       trainingSlug: string
       batchNo: string
       slug: string
