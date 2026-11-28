@@ -89,7 +89,7 @@ def validate_document(path,data,kind=None):
       "category":{"id","slug","title","description","schema","seo","blocks","updatedDate"},
     }
     for field in sorted(set(data)-allowed_fields[kind]):
-        err(f"unknown field '{field}' for {kind} contract; add it through an explicit project decision/contract or remove it")
+        err(f"unknown field '{field}' for {kind} contract; add it to the core contract and validator allowlist (or a project-specific validator) through an explicit decision, or remove it")
     required(required_fields[kind]); string_fields(("slug","title","description"))
     schema=data.get("schema")
     if not isinstance(schema,dict) or not nonempty(schema.get("type")):
