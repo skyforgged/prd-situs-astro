@@ -67,12 +67,21 @@ Tipe field v1:
 - `object`
 - `array`
 - `utc_datetime` (ISO 8601 UTC presisi detik, mengikuti kontrak inti)
+- `offset_datetime` (ISO 8601 datetime yang wajib memiliki zona waktu/offset)
+- `iso_date_or_datetime` (tanggal ISO atau datetime ISO)
+- `ulid` (ULID 26 karakter)
+- `string_array` dan `positive_int_array`
 - `string_array`
 - `positive_int_array`
 
-Setiap `schemaType` wajib memiliki `schemaMappings` yang mendefinisikan `fieldMapping` (property Schema.org ke field sumber) dan `requiredFields`. Validator memeriksa bahwa field sumber dan field wajib mapping tersedia pada dokumen; mapping ini menjadi kontrak sumber bagi implementasi JSON-LD proyek, bukan generator JSON-LD itu sendiri. Tipe Schema.org yang diterima tanpa mapping ditolak.
+Setiap `schemaType` wajib memiliki `schemaMappings` yang mendefinisikan `fieldMapping` (property Schema.org ke field sumber) dan `requiredFields`. Proyek dapat menetapkan `schemaType` statis pada registry jika tipe schema tidak disimpan pada frontmatter; jika tidak, validator membaca `schema.type` pada dokumen. Validator memeriksa bahwa field sumber dan field wajib mapping tersedia pada dokumen; mapping ini menjadi kontrak sumber bagi implementasi JSON-LD proyek, bukan generator JSON-LD itu sendiri. Tipe Schema.org yang diterima tanpa mapping ditolak. `fieldEnums` dapat menetapkan enum string pada field.
 
-Relasi v1 mendukung kardinalitas `one` atau `many` dengan target kind yang diindeks berdasarkan ID dokumen. Target yang hilang atau ambigu menggagalkan validasi. Semua extension document tetap wajib memakai `id` integer positif yang unik secara global.
+Relasi v1 mendukung kardinalitas `one` atau `many` dengan target kind dan `targetField`. Default `targetField` adalah `id`; untuk extension collection, relasi juga dapat memakai natural key seperti `trainingSlug`. Tipe field sumber dan target diperiksa kesesuaiannya. Target yang hilang atau ambigu menggagalkan validasi. Semua extension document tetap wajib memakai `id` integer positif yang unik secara global.
+
+
+## Contoh berbasis collection training/schedule
+
+File `examples/content-contracts/training-schedule.yml` memperlihatkan bentuk ekstensi yang lebih dekat dengan collection training dan schedule: ULID tambahan, `pubDate` ber-offset, tanggal schedule, enum status, tipe schema statis `Course`/`Event`, pemetaan field JSON-LD, route prefix, dan relasi natural key `schedule.trainingSlug -> training.trainingSlug`. Contoh ini tetap hanya memvalidasi tipe field dan relasi yang dideklarasikan; nested Zod schema dan refinement domain proyek belum seluruhnya direplikasi.
 
 ## Pemanggilan
 
@@ -88,7 +97,7 @@ Collection inti tetap dapat dipetakan dengan `--collection KIND=DIR`. Opsi terse
 ## Batasan v1
 
 - Tipe Schema.org diperiksa terhadap `schemaTypes` dan harus memiliki `schemaMappings`; validator referensi belum menghasilkan JSON-LD.
-- Field bertipe `object` dan `array` hanya diperiksa bentuk luarnya. Validasi nested object, discriminator block, refinement lintas-field (misalnya `endDate >= startDate`), dan semantik domain harus ditambahkan melalui kontrak proyek atau validator khusus.
+- Field bertipe `object` dan `array` hanya diperiksa bentuk luarnya. Validasi nested object, discriminator block, refinement lintas-field (misalnya `endDate >= startDate`), validasi timezone IANA, dan semantik domain harus ditambahkan melalui kontrak proyek atau validator khusus.
 - Relasi hanya memeriksa ID positif, target kind, keberadaan, dan keunikan target. Tidak ada inferensi relasi otomatis.
 - Route dibangun dari `routePrefix` dan `slug`; redirect dan sitemap tetap diverifikasi melalui route manifest.
 - Ekstensi tidak mengubah kontrak inti, registry Block lintas proyek, maupun kebijakan Quality Gates.
