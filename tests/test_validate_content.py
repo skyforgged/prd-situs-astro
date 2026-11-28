@@ -1265,3 +1265,14 @@ def test_internal_link_validator_covers_all_supported_link_props(tmp_path: Path,
     data = {"blocks": [{"component": "cta", field: "/not-a-route/"}]}
     issues = validate_assets_and_links([(path, data, "page")], tmp_path, {"/tentang/": path})
     assert any("INTERNAL_LINK_NOT_FOUND" in issue.message for issue in issues)
+
+
+def test_route_validation_rejects_unsafe_prefix_segments(tmp_path: Path):
+    from validate_content import validate_routes
+    path = tmp_path / "pages" / "page.md"
+    issues, routes = validate_routes(
+        [(path, {"slug": "tentang"}, "page")],
+        {"page": "/../outside/"},
+    )
+    assert routes == {}
+    assert any("INVALID_ROUTE_PREFIX" in issue.message for issue in issues)
