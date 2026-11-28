@@ -1159,3 +1159,65 @@ collections:
 """, encoding="utf-8")
     contracts, mapping = load_extension_contracts(registry, content)
     assert validate_paths([training, schedule], mapping, contracts) == []
+
+
+@pytest.mark.parametrize("registry_text, expected", [
+    ("""version: 1
+collections:
+  training:
+    directory: trainings
+    requiredFields: [id, title]
+    fieldTypes:
+      id: positive_int
+      title: string
+    fieldEnums:
+      missingField: [one, two]
+    schemaTypes: [Course]
+    schemaMappings:
+      Course:
+        fieldMapping:
+          name: title
+        requiredFields: [title]
+    routePrefix: /training/
+""", "fieldEnums"),
+    ("""version: 1
+collections:
+  training:
+    directory: trainings
+    requiredFields: [id, title]
+    fieldTypes:
+      id: positive_int
+      title: string
+    schemaTypes: [Course]
+    schemaMappings:
+      Course:
+        fieldMapping:
+          name: undeclaredTitle
+        requiredFields: [title]
+    routePrefix: /training/
+""", "fieldMapping sources"),
+    ("""version: 1
+collections:
+  training:
+    directory: trainings
+    requiredFields: [id, title]
+    fieldTypes:
+      id: positive_int
+      title: string
+    schemaTypes: [Course]
+    schemaMappings:
+      Course:
+        fieldMapping:
+          name: title
+        requiredFields: [title]
+    routePrefix: /training?draft=1/
+""", "routePrefix"),
+])
+def test_extension_registry_rejects_inconsistent_contracts(tmp_path: Path, registry_text: str, expected: str):
+    from validate_content import load_extension_contracts
+    content = tmp_path / "content"
+    content.mkdir()
+    registry = tmp_path / "contracts.yml"
+    registry.write_text(registry_text, encoding="utf-8")
+    with pytest.raises(ValueError, match=expected):
+        load_extension_contracts(registry, content)
