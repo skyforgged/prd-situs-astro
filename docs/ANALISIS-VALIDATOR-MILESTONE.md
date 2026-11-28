@@ -1,7 +1,7 @@
 # Analisis Validator Milestone 1–5
 
 > Tanggal analisis: 2026-11-28
-> Status: catatan tinjauan, bukan perubahan aturan normatif dan bukan persetujuan gate
+> Status: audit implementasi dan rekomendasi tindak lanjut; bukan perubahan aturan normatif, bukan persetujuan gate, dan bukan bukti bahwa seluruh milestone siap dipakai melalui CLI
 > Objek: 59 commit antara `fa3d50a` dan `37651fa` pada repository standar ini
 > Pemeriksaan tambahan: penerapan pada korpus nyata di `../pusattraining/pusattraining/`
 
@@ -84,9 +84,11 @@ Tiga commit berisi klaim tanpa diff: `898f966` (scope), `1d4b962` (perbaikan fix
 
 Component dan props yang tidak dikenal ditolak. Pasangan block–schema dibatasi, dan field sumber wajib untuk FAQ, HowTo, serta ItemList ikut diperiksa (`:101-112`). Pemisahan block dari UI component ditegaskan di `VALIDATOR-MILESTONE-4.md:31-36`.
 
-**Kelemahan**
+**Kelemahan — konsistensi scope dan registry**
 
-`SCHEMA_TYPES["page"]` memuat lebih banyak tipe daripada tujuh entri `SCHEMA_REGISTRY`. Sebuah tipe dapat lolos pemeriksaan scope tanpa memiliki `fieldMapping`, dan validator tidak menandai ketiadaan itu. Nilai `googleRichResultSupport` juga memerlukan pemeliharaan saat kebijakan berubah. `CHANGELOG.md:23` mencatat 45 test pada `03610b8`.
+`SCHEMA_TYPES["page"]` memuat lebih banyak tipe daripada tujuh entri `SCHEMA_REGISTRY`. Akibatnya, sebuah tipe dapat lolos pemeriksaan scope dokumen tanpa memiliki entri registry yang menyediakan `fieldMapping`, `requiredFields`, dan `optionalFields`. Ini menciptakan dua sumber kebenaran: daftar tipe yang diizinkan oleh scope dan daftar tipe yang benar-benar dapat dipetakan ke JSON-LD. Validator perlu menetapkan kebijakan eksplisit: setiap tipe yang diterima harus memiliki mapping registry, atau secara eksplisit ditandai sebagai tipe yang hanya diizinkan tetapi belum memiliki generator/mapping. Untuk kontrak yang mengharuskan JSON-LD, ketiadaan mapping harus menjadi error, bukan lolos validasi.
+
+Nilai `googleRichResultSupport` juga merupakan metadata yang dapat berubah mengikuti kebijakan Google; nilainya perlu ditinjau berkala dan tidak boleh diperlakukan sebagai jaminan bahwa hasil kaya pasti tampil. `CHANGELOG.md:23` mencatat 45 test pada `03610b8`. Jumlah tersebut adalah bukti unit test yang dicatat, bukan bukti bahwa seluruh kombinasi scope dan registry telah konsisten.
 
 ### Milestone 5 — Route, aset, tautan, dan Quality Gates (`685fbae`–`37651fa`)
 
@@ -103,19 +105,19 @@ Component dan props yang tidak dikenal ditolak. Pasangan block–schema dibatasi
 
 Error memakai kode gate yang dapat ditindaklanjuti, misalnya `[QG-04 INVALID_SLUG]`, `[QG-07 DUPLICATE_CANONICAL]`, dan `[QG-13 ROUTE_NOT_IN_MANIFEST]`. Prefix route dapat dioverride. Validator sengaja tidak mengakses HTTP eksternal sehingga tetap deterministik.
 
-**Temuan 1 — integrasi CLI belum terjadi**
+**Temuan 1 — defect P0: validasi Milestone 5 belum terintegrasi ke CLI**
 
 `main()` pada `scripts/validate_content.py:471-491` hanya memanggil `validate_paths()`. Fungsi `validate_seo_uniqueness`, `validate_routes`, `validate_assets_and_links`, dan `validate_route_manifest` tidak dipanggil dari entry point. Nilai `args.site_root`, `args.route_manifest`, dan `args.route_prefixes` juga tidak dipakai. Pesan sukses di `:489` tetap menyatakan bahwa route, aset, dan IA telah divalidasi.
 
 Dengan demikian klaim "CLI terpadu" pada `CHANGELOG.md:10`, `VALIDATOR-MILESTONE-5.md:34-42`, dan `docs/REVIEW-NOTES.md:290` belum sesuai dengan kode yang dapat dijalankan.
 
-**Temuan 2 — smoke-test CI tidak ada di workflow**
+**Temuan 2 — defect P0: smoke-test CLI yang diklaim tidak ada di workflow CI**
 
 `.github/workflows/validator-tests.yml:1-18` hanya menjalankan `pytest -q`; tidak ada langkah `--help`. Commit `6228f1e` yang berjudul "Smoke-test quality gate CLI in CI" kosong. Klaim smoke-test masuk ke `VALIDATOR-MILESTONE-5.md:120,135`, `quality/QUALITY-GATES.md:121`, `CHANGELOG.md:10`, dan `docs/REVIEW-NOTES.md:291`.
 
 **Bukti yang memang benar**
 
-GitHub Actions pada `37651fa` berstatus `success`. Berkas `tests/test_validate_content.py` memuat 50 fungsi `test_` dan menguji fungsi-fungsi Milestone 5 secara langsung pada `:565-644`. Pengujian unit tersedia; yang belum adalah penyambungannya ke CLI dan ke langkah CI tambahan.
+GitHub Actions pada `37651fa` berstatus `success`. Berkas `tests/test_validate_content.py` memuat 50 fungsi `test_` dan menguji fungsi-fungsi Milestone 5 secara langsung pada `:565-644`. Pengujian unit tersedia dan membuktikan fungsi-fungsi tersebut dapat diuji secara terpisah. Namun, unit test itu tidak membuktikan bahwa `main()` memanggil fungsi-fungsi tersebut, bahwa argumen CLI diteruskan dengan benar, atau bahwa kegagalan pemeriksaan menghasilkan exit code non-zero. Ketiganya memerlukan pengujian integrasi CLI. Workflow CI yang diperiksa juga belum menjalankan smoke-test `--help` yang diklaim.
 
 ## 3. Uji penerapan pada proyek nyata: training dan schedule
 
@@ -131,7 +133,7 @@ Proyek pusattraining justru memakai keduanya sebagai collection utama, dengan 13
 
 | Aspek | Validator PRD | Isi proyek pusattraining | Dampak |
 |---|---|---|---|
-| Jenis dokumen | enam kind; collection asing ditolak | `training` dan `schedule` tidak ada di `ALIASES` | Perlu pemetaan eksplisit `--collection`; tanpa itu ber error |
+| Jenis dokumen | enam kind; parser `--collection` hanya menerima enam kind tersebut | `training` dan `schedule` tidak termasuk daftar kind yang diizinkan | Tidak dapat didaftarkan hanya dengan `--collection training=...`; parser menolak kind di luar enam kontrak inti. Diperlukan mekanisme ekstensi kontrak atau validator proyek-spesifik |
 | Identitas | `id` integer positif | `id` plus `ulid` 26 karakter (`src/content.config.ts:4-6`) | ULID tidak memiliki padanan di kontrak PRD |
 | Tanggal | `publishedDate` dan `updatedDate` UTC presisi detik (`scripts/validate_content.py:171-176`) | `pubDate` dan `updatedDate` dengan offset; `startDate` dan `endDate` berupa tanggal kalender | Nama field PRD tidak ada, sehingga pemeriksaan tanggal tidak berjalan |
 | SEO dan schema | `schema` dan `seo` wajib berupa object (`:84-98`) | 0 dari 133 training dan 0 dari 116 schedule memuat field tersebut | Korpus ditolak apa adanya |
@@ -155,26 +157,50 @@ Temuan ini mengonfirmasi prioritas P1 dari penilaian awal: pengujian penerapan P
 
 Tindakan yang disarankan untuk menutup celah ini, tanpa mengubah standar dalam catatan ini:
 
-1. Tetapkan kontrak `training` dan `schedule` menurut Content Contract bagian 11, mencakup route, field wajib, Schema.org utama, dan relasi ke collection training.
+1. Tetapkan kontrak `training` dan `schedule` menurut Content Contract bagian 11, mencakup route, field wajib, Schema.org utama, dan relasi antarkoleksi.
 2. Tentukan kebijakan alias field, misalnya `pubDate` versus `publishedDate`, sebagai keputusan proyek yang eksplisit, bukan konversi diam-diam.
 3. Perluas registry block agar menerima block domain seperti `training-detail-intro` dan `training-schedule-list`, atau nyatakan berada di luar renderer generik seperti yang sudah dicatat katalog.
 4. Sambungkan 12 test yang belum masuk CI dan perluas trigger push agar cabang yang mengubah schema training ikut diverifikasi.
-5. Jalankan validator PRD minimal sekali terhadap salinan korpus nyata sebagai uji penerapan, dengan hasil yang diharapkan ditulis sesuai kontrak proyek.
+5. Sediakan mekanisme ekstensi yang terkontrol untuk kontrak proyek tambahan. `--collection` saat ini hanya memetakan direktori ke salah satu dari enam kind inti; jangan mengklaim bahwa opsi tersebut mendaftarkan kind baru.
+6. Setelah kontrak dan mekanisme ekstensi tersedia, jalankan validator terhadap salinan korpus nyata sebagai uji penerapan, dengan hasil yang diharapkan ditulis sesuai kontrak proyek.
 
 ## 4. Temuan lintas milestone
 
 1. Enam commit kosong dipakai sebagai catatan bukti: `b1138b2`, `cf7f662`, `898f966`, `1d4b962`, `eae9efa`, dan `6228f1e`.
 2. Dokumentasi lebih cepat daripada implementasi pada dua titik: integrasi CLI Milestone 5 dan smoke-test CI.
-3. Status CI `success` diverifikasi melalui GitHub API, tetapi jumlah test tidak dijalankan ulang secara lokal karena pytest tidak tersedia di lingkungan ini.
-4. Validator belum memeriksa graph JSON-LD hasil render, accessibility browser, production build Astro, atau kualitas editorial. QG-12 tetap manual.
-5. Kontrak enam jenis belum diuji terhadap korpus proyek nyata yang memakai `training` dan `schedule`.
+3. Unit test fungsi Milestone 5 tidak boleh disamakan dengan pengujian integrasi entry point. Klaim bahwa route/aset/tautan/manifest telah divalidasi melalui CLI belum didukung oleh kode `main()` yang diperiksa.
+4. Status CI `success` pada commit yang disebutkan diverifikasi melalui GitHub API. Ini hanya membuktikan job yang terpasang pada workflow tersebut berhasil; bukan bukti bahwa smoke-test CLI yang tidak ada telah dijalankan. Jumlah test juga tidak dijalankan ulang secara lokal karena pytest tidak tersedia di lingkungan audit ini.
+5. Validator belum memeriksa graph JSON-LD hasil render, accessibility browser, production build Astro, atau kualitas editorial. QG-12 tetap manual.
+6. Kontrak enam jenis belum diuji terhadap korpus proyek nyata yang memakai `training` dan `schedule`; kedua collection itu membutuhkan kontrak tambahan, bukan pemaksaan ke jenis inti.
 
-## 5. Penilaian
+## 5. Matriks tindak lanjut audit
 
-Kelima milestone bergerak tepat pada prioritas P0 dan P1: kontrak menjadi dapat diuji, relasi dapat diverifikasi, registry membuat aturan tidak lagi interpretatif, dan Quality Gates memperoleh pemetaan automasi.
+Matriks ini adalah daftar pekerjaan korektif yang diturunkan dari temuan audit. Status menggambarkan kondisi pada saat audit 2026-11-28, bukan status setelah pekerjaan perbaikan dilakukan.
 
-Yang masih menghalangi klaim "selesai" bukan cakupan teori, melainkan penyambungan implementasi ke entry point yang didokumentasikan dan kesesuaian bukti CI dengan klaimnya. Fungsi dan test Milestone 5 sudah ada, tetapi CLI belum memanggilnya dan smoke-test yang diklaim tidak terdapat di workflow. Uji pada korpus pusattraining menambah satu celah lagi: dua jenis konten yang dipakai proyek nyata belum memiliki kontrak di PRD, jadi validator tidak dapat dijalankan langsung terhadap korpus tersebut.
+| ID | Prioritas | Temuan | Tindakan yang diperlukan | Kriteria penerimaan | Status saat audit |
+|---|---|---|---|---|---|
+| AUD-01 | P0 | Entry point CLI hanya menjalankan `validate_paths()` | Integrasikan validasi canonical, routes, assets/links, dan route manifest ke `main()`; teruskan `--site-root`, `--route-manifest`, dan `--route-prefixes` ke fungsi terkait | Semua pemeriksaan yang dikonfigurasi benar-benar berjalan melalui CLI; setiap error membuat exit code non-zero; pesan sukses hanya menyebut pemeriksaan yang benar-benar dijalankan | Belum |
+| AUD-02 | P0 | Smoke-test CLI yang diklaim tidak ada di workflow | Tambahkan smoke-test `python scripts/validate_content.py --help` dan test integrasi CLI pada workflow CI | Workflow gagal bila CLI tidak dapat dipanggil, argumen tidak dikenali, atau fixture integrasi yang sengaja invalid tidak menghasilkan kegagalan | Belum |
+| AUD-03 | P1 | `SCHEMA_TYPES` dan `SCHEMA_REGISTRY` tidak konsisten | Selaraskan tipe yang diterima dengan entri registry atau tandai secara eksplisit tipe yang belum memiliki mapping; tentukan perilaku untuk tipe tanpa mapping | Tidak ada tipe yang diwajibkan menghasilkan JSON-LD tetapi lolos tanpa mapping; test mencakup setiap tipe yang diizinkan dan setiap pasangan block–schema | Belum |
+| AUD-04 | P1 | Validator hanya mengenal enam kind inti | Rancang mekanisme ekstensi kontrak yang eksplisit dan aman untuk collection proyek seperti `training` dan `schedule`; jangan memperluas makna `--collection` secara diam-diam | Kontrak tambahan dapat didaftarkan dengan validasi field, relasi, route, dan schema yang jelas; enam kontrak inti tetap kompatibel dan tetap fail-closed | Belum |
+| AUD-05 | P1 | Belum ada uji penerapan yang dapat direproduksi pada korpus proyek nyata | Siapkan fixture/salinan korpus representatif beserta kontrak proyeknya dan jalankan validator setelah mekanisme ekstensi tersedia | Hasil validasi dapat diulang; setiap error/pengecualian dijelaskan oleh kontrak; tidak ada kebutuhan mengubah data proyek agar cocok secara paksa dengan kind inti | Belum |
+| AUD-06 | P1 | Test pada proyek pusattraining belum seluruhnya dijalankan CI | Sambungkan test mapping schedule dan structured data training ke workflow serta tinjau trigger branch | Seluruh test yang dimaksud berjalan di CI untuk perubahan schema dan generator terkait; branch/path trigger mencakup sumber yang diuji | Belum |
+| AUD-07 | P2 | Beberapa commit audit/evidence kosong | Simpan bukti berupa test, output, atau catatan pada commit yang memiliki perubahan bermakna | Klaim penyelesaian dapat ditelusuri ke diff, test, atau run CI yang relevan; commit kosong tidak dipakai sebagai bukti implementasi | Perlu disiplin proses |
 
-## 6. Batas verifikasi
+### Urutan penyelesaian yang disarankan
+
+1. Selesaikan AUD-01 dan AUD-02 terlebih dahulu. Keduanya menentukan apakah fitur Milestone 5 benar-benar dapat digunakan dan diverifikasi dari antarmuka yang didokumentasikan.
+2. Selesaikan AUD-03 agar scope schema dan kemampuan mapping memiliki satu kebijakan yang konsisten.
+3. Rancang AUD-04 sebelum mencoba memvalidasi collection non-inti. Kontrak proyek tidak boleh dipaksakan ke Page atau Article hanya agar lolos validator.
+4. Kerjakan AUD-05 dan AUD-06 untuk membuktikan penerapan pada korpus nyata dan memastikan test terkait masuk ke CI.
+5. Terapkan AUD-07 sebagai standar pencatatan bukti untuk milestone berikutnya.
+
+## 6. Penilaian
+
+Kelima milestone telah menghasilkan fondasi yang berarti: kontrak menjadi dapat diuji, relasi dapat diverifikasi, registry mulai memusatkan aturan, dan fungsi Quality Gates tersedia. Namun, status implementasi tidak boleh disamakan dengan status kesiapan operasional. Secara khusus, Milestone 5 belum selesai pada jalur CLI karena `main()` belum memanggil seluruh pemeriksaan yang diklaim; workflow CI juga belum memuat smoke-test CLI. Milestone 4 masih memiliki ketidaksinkronan antara daftar tipe dalam scope dan entri schema registry.
+
+Karena itu, berdasarkan bukti yang tersedia, Milestone 1–3 memiliki bukti implementasi dan test yang dicatat; Milestone 4 memerlukan konsistensi registry; dan Milestone 5 belum layak dinyatakan selesai secara end-to-end. Korpus `pusattraining` menambah kebutuhan desain: `training` dan `schedule` merupakan collection domain yang sah, tetapi belum memiliki kontrak dalam enam jenis inti. Validator PRD tidak dapat dijalankan langsung terhadap korpus tersebut sampai kontrak tambahan dan mekanisme ekstensi ditetapkan.
+
+## 7. Batas verifikasi
 
 Catatan ini disusun dengan membaca isi berkas, riwayat git, dan status check GitHub Actions. Tidak ada build Astro, validator corpus nyata, atau pytest lokal yang dijalankan. Pemeriksaan terhadap proyek pusattraining hanya berupa pembacaan berkas dan metadata GitHub API; tidak ada test, `astro sync`, maupun build yang dijalankan di proyek tersebut. Tidak ada aturan normatif yang diubah oleh catatan ini.
