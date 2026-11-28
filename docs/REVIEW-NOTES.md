@@ -291,6 +291,8 @@ Workflow menutup kesenjangan antara starter templates dan proses pemakaiannya. G
 - [x] Schema Registry memberi status eksplisit `mapped` atau `declaration-only` untuk seluruh type pada scope page/block/entity; tipe declaration-only ditolak pada penggunaan dokumen/block sampai project mapping disediakan; test memastikan cakupan status lengkap.
 - [x] Mekanisme ekstensi kontrak v1 tersedia melalui `--contract-registry`, termasuk field wajib/tipe dasar, schema type, route prefix, dan relasi one/many.
 - [x] Fixture training/schedule dan contoh registry ditambahkan; batas validasi nested/domain-specific dijelaskan pada `docs/CONTRACT-EXTENSIONS.md`.
+- [x] Test ekstensi mencakup nilai date/datetime native hasil parsing YAML; registry menolak enum, schema mapping, route prefix, dan direktori yang tidak konsisten.
+- [x] Pemeriksaan internal link mencakup seluruh props URL yang didokumentasikan (`url`, `href`, `actionHref`, `primaryHref`, `secondaryHref`, `registrationUrl`) dengan test parametrik.
 - [ ] Verifikasi workflow CI hijau untuk commit terbaru belum tersedia; jangan menganggap konfigurasi workflow sebagai bukti test lulus.
 - [ ] Validasi penuh 249 berkas corpus pusattraining belum dijalankan. Extension v1 belum mereproduksi seluruh nested Zod schema, refinement tanggal/timezone, block discriminator, atau graph JSON-LD hasil render.
 - [ ] Workflow dan test mapping/structured-data pada repo `arisciwek/pusattraining` belum diperbarui karena akses GitHub yang tersedia tidak memiliki izin push.
