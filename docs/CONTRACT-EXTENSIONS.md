@@ -97,7 +97,7 @@ Collection inti tetap dapat dipetakan dengan `--collection KIND=DIR`. Opsi terse
 ## Batasan v1
 
 - Tipe Schema.org diperiksa terhadap `schemaTypes` dan harus memiliki `schemaMappings`; validator referensi belum menghasilkan JSON-LD.
-- Field bertipe `object` dan `array` hanya diperiksa bentuk luarnya. Validasi nested object, discriminator block, refinement lintas-field (misalnya `endDate >= startDate`), validasi timezone IANA, dan semantik domain harus ditambahkan melalui kontrak proyek atau validator khusus.
+- Field bertipe `object` dan `array` hanya diperiksa bentuk luarnya. Deklarasi enum wajib menunjuk field yang sudah memiliki tipe; setiap sumber `fieldMapping` dan `requiredFields` pada schema mapping wajib menunjuk field yang dideklarasikan pada `fieldTypes`. Direktori ekstensi tidak boleh bertumpang tindih dengan direktori ekstensi lain atau memakai nama direktori collection inti. `routePrefix` harus berupa path absolut ternormalisasi dan diakhiri `/`. Validasi nested object, discriminator block, refinement lintas-field (misalnya `endDate >= startDate`), validasi timezone IANA, dan semantik domain harus ditambahkan melalui kontrak proyek atau validator khusus.
 - Relasi hanya memeriksa ID positif, target kind, keberadaan, dan keunikan target. Tidak ada inferensi relasi otomatis.
 - Route dibangun dari `routePrefix` dan `slug`; redirect dan sitemap tetap diverifikasi melalui route manifest.
 - Ekstensi tidak mengubah kontrak inti, registry Block lintas proyek, maupun kebijakan Quality Gates.
