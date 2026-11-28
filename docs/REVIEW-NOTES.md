@@ -269,3 +269,16 @@ Workflow menutup kesenjangan antara starter templates dan proses pemakaiannya. G
   - Bukti: `quality/QUALITY-GATES.md:99` dan `content-contract/CONTENT-CONTRACT.md:123`; yang diubah hanya contoh, bukan aturan.
 - Bukti verifikasi: `git diff --check` bersih; pemeriksaan 27 berkas Markdown menemukan 0 tautan lokal rusak dan 0 code fence tidak seimbang; rujukan baris di atas dicek terhadap isi berkas tujuan.
 - Batas verifikasi: tidak ada perubahan normatif, sehingga versi dokumen tidak dinaikkan. Repository ini tetap tidak memiliki aplikasi Astro, `package.json`, validator, atau test runner; tidak ada build, automated test, atau QG-08 yang dijalankan.
+
+
+## Validator otomatis — Milestone 1 sampai 3, 2026-11-28
+
+- [x] Milestone 1: fondasi parser frontmatter ketat dan invariant global.
+- [x] Milestone 2: kontrak Homepage, Menu, Page, Article, Service, Category; fallback SEO dan validasi struktur dasar.
+- [x] Milestone 3: resolusi FK lintas dokumen untuk relasi yang target collection-nya telah ditetapkan dalam Content Contract 1.5.
+- [x] Relasi menu bertingkat, parent Page, kategori, artikel terkait, layanan terkait, serta referensi block `serviceIds` dan `content-list.categoryId` diperiksa keberadaan dan jenis targetnya.
+- [x] ID target yang tidak ditemukan atau ambigu ditolak; hierarki parent Page harus bebas siklus; self-reference relasi artikel/layanan ditolak.
+- [x] `authorId` dan `providerId` ditolak bila diisi sampai kontrak Author/Person dan Organization/Provider tersedia, mengikuti matriks relasi Content Contract.
+- Bukti: `scripts/validate_content.py`, `tests/test_validate_content.py`, `VALIDATOR-MILESTONE-3.md`.
+- Verifikasi: GitHub Actions workflow `Validator Tests`, Python 3.12, **34 passed**; run [46097423874](https://github.com/skyforgged/prd-situs-astro/actions/runs/46097423874).
+- Batas verifikasi: validasi properti block yang bersifat dinamis tetap menunggu Block Registry; relasi yang belum memiliki kontrak target tidak diaktifkan. CI ini menguji unit validator, bukan corpus konten situs Astro turunan secara penuh.
