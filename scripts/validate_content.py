@@ -231,8 +231,16 @@ def load_extension_contracts(path, content_dir):
             if "targetField" in rel and not nonempty(rel["targetField"]):
                 raise ValueError("extension relation '%s.%s'.targetField must be a non-empty string" % (kind,field))
         directory=Path(spec["directory"])
-        if not directory.is_absolute(): directory=(Path(content_dir).resolve()/directory).resolve()
-        else: directory=directory.resolve()
+        if directory.is_absolute():
+            raise ValueError("extension '%s'.directory must be relative to content_dir" % kind)
+        content_root=Path(content_dir).resolve()
+        directory=(content_root/directory).resolve()
+        try:
+            directory.relative_to(content_root)
+        except ValueError:
+            raise ValueError("extension '%s'.directory must stay inside content_dir" % kind)
+        if str(directory) in mapping:
+            raise ValueError("multiple extension kinds cannot share directory '%s'" % directory)
         mapping[str(directory)]=kind
         contracts[kind]=dict(spec)
     for kind,spec in contracts.items():
