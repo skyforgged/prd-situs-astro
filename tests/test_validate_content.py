@@ -1354,3 +1354,15 @@ def test_cli_full_static_gate_flow_fails_on_missing_asset(tmp_path: Path):
     )
     assert result.returncode == 1
     assert "QG-09 ASSET_NOT_FOUND" in result.stdout
+
+
+def test_core_contract_rejects_undeclared_frontmatter_field(tmp_path: Path):
+    source = PAGE + "\\ncustomUndeclaredField: unexpected"
+    issues = validate_document(tmp_path / "pages/page.md", __import__("yaml").safe_load(source), "page")
+    assert any("unknown field 'customUndeclaredField' for page contract" in issue.message for issue in issues)
+
+
+def test_page_contract_allows_declared_parent_page_relation_field(tmp_path: Path):
+    source = PAGE + "\\nparentPageId: 99"
+    issues = validate_document(tmp_path / "pages/page.md", __import__("yaml").safe_load(source), "page")
+    assert not any("unknown field 'parentPageId'" in issue.message for issue in issues)
