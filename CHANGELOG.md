@@ -58,6 +58,26 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 - `git diff --check` bersih; 27 berkas Markdown diperiksa menghasilkan 0 tautan lokal rusak dan 0 code fence tidak seimbang; rujukan baris pada `docs/REVIEW-NOTES.md` masih mengarah ke isi yang dimaksud.
 - Tidak ada aturan normatif yang diubah, sehingga versi dokumen tidak dinaikkan.
 
+## 2026-11-28 — Validator audit remediation
+
+### Fixed
+- Integrasi CLI Milestone 5: canonical uniqueness, slug/route, asset/internal link, route manifest, sitemap, redirect, serta penggunaan `--site-root`, `--route-manifest`, dan `--route-prefixes`.
+- CI validator: menambahkan smoke-test `--help`; suite pytest mencakup test integrasi CLI untuk canonical, internal link, route manifest, dan exit code.
+- Schema Registry: semua page-level schema type kini memiliki status eksplisit `mapped` atau `declaration-only`; SiteNavigationElement mendapat mapping sumber.
+- Project Collection Contract Extensions v1: menambahkan `--contract-registry` untuk kind proyek, field/type dasar, schema type, route prefix, dan relasi one/many; disertai contoh training/schedule.
+- Menambahkan fixture test untuk ekstensi training/schedule dan konsistensi cakupan Schema Registry.
+- Memperbarui dokumen Milestone 4/5, Quality Gates, dan analisis untuk memisahkan implementasi, bukti CI, dan batas validasi korpus.
+
+### Batas dan pekerjaan yang belum selesai
+- Hasil workflow CI pada commit terbaru belum diverifikasi sebagai hijau; perubahan workflow bukan bukti eksekusi sukses.
+- Korpus penuh pusattraining belum dijalankan melalui extension validator. Extension v1 belum mencakup validasi nested schema, block discriminator, refinement tanggal/timezone, atau graph JSON-LD hasil render.
+- Workflow dan test tambahan pada `arisciwek/pusattraining` belum diubah karena izin GitHub yang tersedia hanya read/pull, tanpa push.
+- Test lokal tidak dijalankan karena lingkungan container tidak dapat mengakses GitHub untuk clone repository.
+
+### Compatibility
+- Enam kind inti dan semantik `--collection` tidak berubah. Kind proyek tambahan harus didaftarkan secara eksplisit melalui `--contract-registry`.
+- Extension registry v1 bersifat opt-in dan memiliki batas yang dijelaskan di `docs/CONTRACT-EXTENSIONS.md`; proyek tetap wajib menambahkan validasi domain dan build/render tests sendiri.
+
 ## 2026-11-27
 
 ### Added
