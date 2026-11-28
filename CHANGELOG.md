@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-11-28 — Konsistensi contoh konfigurasi (2/5)
+
+### Changed
+- Memisahkan secara eksplisit contoh generik pada Extension Contract dari contoh konfigurasi adopsi Training/Schedule.
+- Menegaskan bahwa kontrak Training/Schedule adalah sumber normatif field wajib/opsional dan semantik domain; YAML registry hanya contoh pemetaan subset kemampuan extension v1.
+- Menyelaraskan contoh registry dengan kontrak: `ulid` dan `publisherId` tetap dapat dideklarasikan, tetapi tidak diwajibkan secara universal.
+- Memperbarui versi Training/Schedule Contract dan Templates menjadi 1.2 serta menegaskan bahwa keberadaan field pada template kosong tidak otomatis menjadikannya wajib.
+
+### Verification boundary
+- Perubahan dokumentasi dan YAML diperiksa secara tekstual melalui pembacaan ulang setelah commit.
+- Belum menjalankan validator pada fixture ini atau corpus proyek; contoh registry tetap perlu diuji saat diadopsi oleh proyek Astro.
+
 ## 2026-11-28 — Konsistensi aturan relasi (1/5)
 
 ### Changed
