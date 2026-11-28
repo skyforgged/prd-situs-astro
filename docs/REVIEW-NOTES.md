@@ -319,3 +319,13 @@ Workflow menutup kesenjangan antara starter templates dan proses pemakaiannya. G
 - [x] Kontrak dan template Training/Schedule 1.1 menetapkan `trainingSlug` sebagai relasi normatif tunggal; contoh registry menghapus field relasi paralel `trainingId`.
 - Bukti commit: Constitution `bcd185f`, Content Contract `418ddcb`, Extension Contract `b598c3f`, Training Contract `e5e8577`, Template `64507ba`, AGENTS `fa52601`, README `87ffd6a`, contoh registry `9e6fabb`.
 - Batas verifikasi: perubahan yang dilakukan adalah dokumentasi dan contoh registry; belum menjalankan validator atau pytest. Status tahap 1/5: dokumentasi diselaraskan, menunggu pemeriksaan lanjutan pada tahap berikutnya.
+
+
+## Konsistensi contoh konfigurasi — tahap 2/5, 2026-11-28
+
+- [x] Contoh generik pada `docs/CONTRACT-EXTENSIONS.md` diberi label sebagai sintaks minimal mekanisme ekstensi, bukan model domain training/schedule.
+- [x] Contoh konfigurasi `examples/content-contracts/training-schedule.yml` diposisikan sebagai ilustrasi adopsi parsial extension registry v1; kontrak domain menjadi sumber normatif field dan semantik.
+- [x] Ketidaksesuaian status opsional `ulid` dan `publisherId` diperbaiki: keduanya tetap dapat dideklarasikan di `fieldTypes`, tetapi tidak lagi dipaksakan dalam `requiredFields`.
+- [x] Versi Training/Schedule Contract dan Templates dinaikkan ke 1.2; template menegaskan bahwa field kosong yang ditampilkan tidak otomatis wajib.
+- Bukti: `docs/CONTRACT-EXTENSIONS.md`, `content-contract/TRAINING-SCHEDULE-CONTRACT.md`, `content-contract/TRAINING-SCHEDULE-TEMPLATES.md`, `examples/content-contracts/training-schedule.yml`, dan entri 2026-11-28 pada `CHANGELOG.md`.
+- Batas verifikasi: dilakukan pembacaan ulang perubahan teks dan konsistensi daftar `requiredFields`; belum menjalankan parser/validator atau test terhadap registry contoh maupun corpus proyek nyata.
