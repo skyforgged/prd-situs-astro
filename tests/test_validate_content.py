@@ -712,3 +712,111 @@ def test_cli_passes_with_route_manifest_and_sitemap(tmp_path: Path):
     )
     assert result.returncode == 0, result.stdout + result.stderr
     assert "route manifest/sitemap/redirects" in result.stdout
+
+
+def test_extension_contract_validates_training_schedule_and_foreign_keys(tmp_path: Path):
+    from validate_content import load_extension_contracts
+    content = tmp_path / "content"
+    training = write_md(content / "trainings" / "course.md", """id: 101
+slug: kursus-astro
+title: Kursus Astro
+schema:
+  type: Course
+updatedDate: 2026-11-26T03:00:00Z
+scheduleIds: [201]""")
+    schedule = write_md(content / "schedules" / "batch.md", """id: 201
+slug: batch-november
+title: Batch November
+schema:
+  type: Event
+updatedDate: 2026-11-26T03:00:00Z
+startDate: 2026-11-29""")
+    registry = tmp_path / "contracts.yml"
+    registry.write_text("""version: 1
+collections:
+  training:
+    directory: trainings
+    requiredFields: [id, slug, title, schema, updatedDate]
+    fieldTypes:
+      id: positive_int
+      slug: string
+      title: string
+      schema: object
+      updatedDate: utc_datetime
+      scheduleIds: positive_int_array
+    schemaTypes: [Course]
+    routePrefix: /training/
+    relations:
+      scheduleIds:
+        target: schedule
+        cardinality: many
+  schedule:
+    directory: schedules
+    requiredFields: [id, slug, title, schema, updatedDate, startDate]
+    fieldTypes:
+      id: positive_int
+      slug: string
+      title: string
+      schema: object
+      updatedDate: utc_datetime
+      startDate: string
+    schemaTypes: [Event]
+    routePrefix: /schedule/
+""", encoding="utf-8")
+    contracts, mapping = load_extension_contracts(registry, content)
+    issues = validate_paths([training, schedule], mapping, contracts)
+    assert issues == []
+
+
+def test_extension_contract_rejects_missing_relation_target(tmp_path: Path):
+    from validate_content import load_extension_contracts
+    content = tmp_path / "content"
+    training = write_md(content / "trainings" / "course.md", """id: 101
+slug: kursus-astro
+title: Kursus Astro
+schema:
+  type: Course
+updatedDate: 2026-11-26T03:00:00Z
+scheduleIds: [999]""")
+    registry = tmp_path / "contracts.yml"
+    registry.write_text("""version: 1
+collections:
+  training:
+    directory: trainings
+    requiredFields: [id, slug, title, schema, updatedDate]
+    fieldTypes:
+      id: positive_int
+      slug: string
+      title: string
+      schema: object
+      updatedDate: utc_datetime
+      scheduleIds: positive_int_array
+    schemaTypes: [Course]
+    routePrefix: /training/
+    relations:
+      scheduleIds:
+        target: schedule
+        cardinality: many
+  schedule:
+    directory: schedules
+    requiredFields: [id, slug, title, schema, updatedDate]
+    fieldTypes:
+      id: positive_int
+      slug: string
+      title: string
+      schema: object
+      updatedDate: utc_datetime
+    schemaTypes: [Event]
+    routePrefix: /schedule/
+""", encoding="utf-8")
+    contracts, mapping = load_extension_contracts(registry, content)
+    issues = validate_paths([training], mapping, contracts)
+    assert any("references missing schedule ID 999" in issue.message for issue in issues)
+
+
+def test_schema_registry_explicitly_accounts_for_every_page_type():
+    from registries import PAGE_TYPES, SCHEMA_REGISTRY, SCHEMA_DECLARATION_ONLY, SCHEMA_TYPE_STATUS
+    mapped = {name for name, entry in SCHEMA_REGISTRY.items() if entry.get("scope") == "page"}
+    assert PAGE_TYPES == mapped | SCHEMA_DECLARATION_ONLY
+    assert set(SCHEMA_TYPE_STATUS) == PAGE_TYPES
+    assert all(SCHEMA_TYPE_STATUS[name] == "declaration-only" for name in SCHEMA_DECLARATION_ONLY)
