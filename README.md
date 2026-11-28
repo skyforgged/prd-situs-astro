@@ -3,6 +3,8 @@
 Repository ini menyimpan standar reusable untuk analisis kebutuhan, perancangan, dan pengembangan situs berbasis Astro.
 
 ## Standar inti
+- Matriks traceability persyaratan PRD: [`docs/REQUIREMENTS-TRACEABILITY-MATRIX.md`](docs/REQUIREMENTS-TRACEABILITY-MATRIX.md) — pemetaan requirement ke dokumen normatif, aturan implementasi, test/verifikasi, dan acceptance criteria.
+
 
 - [Website Constitution](constitution/WEBSITE-CONSTITUTION.md) — aturan universal lintas proyek.
 - [Content Contract](content-contract/CONTENT-CONTRACT.md) — kontrak Markdown terpisah berdasarkan jenis konten.
