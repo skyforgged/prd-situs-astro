@@ -60,4 +60,4 @@ Validasi route/slug collision, Schema Registry dan pemetaan JSON-LD, Block Regis
 
 ## Bukti pengujian
 
-Suite mencakup target tersedia, target hilang, target salah jenis, menu bertingkat, target Homepage, relasi block, larangan penggunaan Author/Person dan Organization/Provider sebelum kontrak target tersedia, self-reference, serta siklus parent Page. Jumlah akhir dan status CI dicatat setelah workflow GitHub Actions selesai.
+Suite mencakup target tersedia, target hilang, target salah jenis, menu bertingkat, target Homepage, relasi block, larangan penggunaan Author/Person dan Organization/Provider sebelum kontrak target tersedia, self-reference, serta siklus parent Page. GitHub Actions pada Python 3.12 menjalankan suite sebanyak **34 test passed** (verifikasi akhir dicatat pada commit implementasi milestone).
