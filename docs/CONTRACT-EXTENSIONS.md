@@ -38,7 +38,7 @@ collections:
 
   schedule:
     directory: schedules
-    requiredFields: [id, slug, title, schema, updatedDate, startDate]
+    requiredFields: [id, slug, title, schema, updatedDate, startDate, endDate]
     fieldTypes:
       id: positive_int
       slug: string
@@ -46,6 +46,7 @@ collections:
       schema: object
       updatedDate: utc_datetime
       startDate: string
+      endDate: string
     schemaTypes: [Event]
     schemaMappings:
       Event:
