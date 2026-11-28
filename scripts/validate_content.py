@@ -316,6 +316,9 @@ def validate_extension_document(path,data,kind,spec):
     issues=[]
     def err(message): issues.append(Issue(path,"extension '%s': %s"%(kind,message)))
     if not posint(data.get("id")): err("field 'id' must be a positive integer")
+    declared_fields=set(spec.get("fieldTypes",{})) | {"id"}
+    for field in sorted(set(data)-declared_fields):
+        err("unknown field '%s'; declare it in extension fieldTypes before use"%field)
     for field in spec.get("requiredFields",[]):
         if field not in data: err("missing required field '%s'"%field)
     validators={
