@@ -5,14 +5,13 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 ## 2026-11-28
 
 ### Fixed
-- Laporan evaluasi dan audit proyek dipindahkan keluar dari repository standar; entri terkait di `README.md` dihapus.
-- `docs/REVIEW-NOTES.md`: status, versi, dan rujukan baris diselaraskan dengan Content Contract 1.5, Frontmatter Templates 1.4, dan Quality Gates 0.6; rujukan CI kini mengarah ke `quality/QUALITY-GATES.md:120`; bukti yang menunjuk laporan proyek diganti dengan artefak lokal.
+- `docs/REVIEW-NOTES.md`: status, versi, dan rujukan baris diselaraskan dengan Content Contract 1.5, Frontmatter Templates 1.4, dan Quality Gates 0.6; rujukan CI kini mengarah ke `quality/QUALITY-GATES.md:120`.
+- `projects/tnvcertification/CONTENT-CONTRACT-EVALUATION.md`: catatan status memperbarui tindak lanjut ke 1.5/1.4 tanpa mengubah objek snapshot 1.3/1.2.
 - `CHANGELOG.md`: entri adopsi Content Contract 1.4 dipulihkan agar tidak tertimpa entri 1.5.
 - `quality/QUALITY-GATES.md`: contoh kelulusan QG-08 memakai "page-level type yang valid (misalnya `WebPage`)", selaras dengan `content-contract/CONTENT-CONTRACT.md:123`; aturan gate tidak diubah.
-- Catatan analisis dan inventaris komponen non-normatif dipindahkan keluar dari repository standar; jejak repo dan commit eksternal tidak lagi disimpan di sini agar agen AI tidak menelusuri sumber di luar repository yang sedang dikerjakan.
 
 ### Verification
-- `git diff --check` bersih; 22 berkas Markdown diperiksa menghasilkan 0 tautan lokal rusak dan 0 code fence tidak seimbang; rujukan baris pada `docs/REVIEW-NOTES.md` masih mengarah ke isi yang dimaksud; pencarian nama repo proyek, hash commit eksternal, dan pola tautan ke hosting kode menghasilkan 0 temuan.
+- `git diff --check` bersih; 27 berkas Markdown diperiksa menghasilkan 0 tautan lokal rusak dan 0 code fence tidak seimbang; rujukan baris pada `docs/REVIEW-NOTES.md` masih mengarah ke isi yang dimaksud.
 - Tidak ada aturan normatif yang diubah, sehingga versi dokumen tidak dinaikkan.
 
 ## 2026-11-27
@@ -26,14 +25,14 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 - Technical Architecture 0.3: Schema Registry menjadi keputusan yang harus ditetapkan sebelum implementasi.
 - Project Architecture Templates 0.3 dan `projects/_template/TECHNICAL-ARCHITECTURE.md` 0.2: menyediakan tempat keputusan Schema Registry pada artefak proyek.
 - Quality Gates 0.6: memperluas test matrix untuk validasi bentuk dan keterlihatan `intro`, pemisahan page/entity schema, pola definisi `DefinedTerm`, serta sumber `DefinedTerm.description`.
-- README: menautkan laporan evaluasi proyek (dibatalkan 2026-11-28; lihat bagian tersebut).
+- README: menautkan laporan evaluasi proyek pada `projects/tnvcertification/`.
 
 ### Rationale and impact
 - Memisahkan paragraf pembuka substantif (`intro`) dari ringkasan dokumen (`description`) dan meta description (`seo.description`).
 - Menghindari ambiguitas antara tipe schema halaman dan entitas utama yang didefinisikan halaman.
 - Mencegah penggunaan tipe Schema.org hanya karena tersedia di katalog; setiap tipe harus memiliki sumber data, batas penggunaan, dan verifikasi status.
 - Menurunkan kewajiban Schema Registry ke artefak proyek dan gate yang dapat diuji, bukan hanya pernyataan di kontrak konten.
-- Catatan evaluasi implementasi dipisahkan dari standar agar repository standar tetap mandiri.
+- Menandai laporan TNV Certification sebagai snapshot sebelum revisi 1.4/1.5 agar tidak dibaca sebagai penolakan terhadap standar terbaru.
 
 ### Compatibility
 - Proyek yang sebelumnya memakai `schema.type: DefinedTerm` harus memindahkan deklarasi entitas ke `schema.mainEntity.type: DefinedTerm` dan mempertahankan page-level type pada `schema.type`.
@@ -49,7 +48,7 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 - Technical Architecture Specification untuk implementasi Astro.
 - Quality Gates dan acceptance criteria.
 - Instruksi repository untuk agen melalui `AGENTS.md`.
-- Catatan non-normatif berisi verifikasi pola artikel 1–3 dan 4–6, footer dinamis, CTA layanan/WhatsApp, serta pagination pada implementasi rujukan; dipindahkan keluar repository standar pada 2026-11-28.
+- `docs/ANALISIS-POLA-SITUS.md`: catatan non-normatif berisi verifikasi pola artikel 1–3 dan 4–6, footer dinamis, CTA layanan/WhatsApp, serta pagination pada lima repo Astro rujukan.
 
 ### Changed
 - AGENTS.md: mewajibkan agen membaca standar Content & Information Architecture saat menyusun sitemap, route, navigasi, internal linking, listing, atau konversi.
@@ -149,7 +148,7 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 - `projects/_template/README.md`: versi paket diselaraskan ke 0.2 sesuai catatan di dalam berkas dan entri Template Pack 0.2.
 - `projects/_template/TECHNICAL-ARCHITECTURE.md`: QG-12 dipisahkan dari gate otomatis; template tidak lagi mewajibkan perintah dan fixture CI untuk review editorial.
 - `docs/REVIEW-NOTES.md`: checklist yang sudah dibuktikan ditandai selesai dan rujukan baris README diperbarui.
-- Catatan analisis non-normatif: rujukan baris README diperbarui setelah penambahan tautan IA; berkas dipindahkan keluar repository standar pada 2026-11-28.
+- `docs/ANALISIS-POLA-SITUS.md`: rujukan baris README diperbarui setelah penambahan tautan IA.
 
 ### Rationale and impact
 - Koreksi ini menjaga konsistensi internal paket template dan catatan bukti tanpa mengubah aturan normatif.
