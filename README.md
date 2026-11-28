@@ -35,7 +35,7 @@ Repository ini menyimpan standar reusable untuk analisis kebutuhan, perancangan,
 2. Schema block opsional dan hanya digunakan bila relevan.
 3. Kontrak Markdown dipisahkan berdasarkan jenis konten.
 4. Timestamp konten memakai ISO 8601 UTC presisi detik; timestamp tidak harus unik.
-5. Relasi pada enam kontrak inti menggunakan foreign key numerik dengan target dan kardinalitas eksplisit; collection ekstensi proyek dapat mendeklarasikan natural key secara eksplisit melalui `targetField`.
+5. Relasi pada enam collection inti menggunakan foreign key numerik dengan target dan kardinalitas eksplisit. Collection ekstensi secara default juga menggunakan FK numerik; natural key hanya menjadi pengecualian terdaftar melalui extension registry dengan targetField yang unik dan stabil. Satu relasi tidak boleh memiliki dua sumber kebenaran.
 
 ## Struktur pengembangan
 
