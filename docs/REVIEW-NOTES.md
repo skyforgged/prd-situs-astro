@@ -1,3 +1,12 @@
+## Dokumentasi batas kemampuan — tahap 5/5, 2026-11-28
+
+- [x] Ditambahkan `docs/CAPABILITY-BOUNDARIES.md` yang memisahkan dukungan validator aktual, kontrak normatif tanpa runtime lengkap, dan pekerjaan wajib proyek Astro turunan.
+- [x] Inventaris validator dicocokkan dengan fungsi aktual di `scripts/validate_content.py`, registry, CLI options, dan test suite.
+- [x] Batas QG-01–QG-13 dipetakan; QG-10 accessibility render, QG-11 production build, QG-12 editorial approval, serta bagian runtime QG lainnya tidak diklaim tersedia dari validator referensi.
+- [x] README, AGENTS.md, Quality Gates, dan Validator Milestone 5 menautkan dokumen batas kemampuan.
+- [x] Matriks traceability ditambah PRD-035.
+- Batas verifikasi: pemeriksaan ini adalah audit dokumentasi terhadap implementasi validator dan test suite repository standar. Tidak menjalankan aplikasi Astro turunan, browser audit, deployment, atau validasi corpus situs tertentu.
+
 ## Matriks traceability persyaratan — tahap 4/5, 2026-11-28
 
 - [x] Ditambahkan `docs/REQUIREMENTS-TRACEABILITY-MATRIX.md` dengan 34 requirement ID yang mencakup konstitusi, content contract, frontmatter, relasi, SEO, schema, block registry, route/asset/link, IA, editorial, accessibility, build, extension, project initialization, dan governance.
