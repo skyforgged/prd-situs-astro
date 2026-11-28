@@ -845,11 +845,15 @@ collections:
 
 
 def test_schema_registry_explicitly_accounts_for_every_page_type():
-    from registries import PAGE_TYPES, SCHEMA_REGISTRY, SCHEMA_DECLARATION_ONLY, SCHEMA_TYPE_STATUS
+    from registries import PAGE_TYPES, SCHEMA_REGISTRY, SCHEMA_DECLARATION_ONLY, SCHEMA_TYPE_STATUS, SCHEMA_TYPES, SCHEMA_SCOPE_STATUS, SCHEMA_DECLARATION_ONLY_BY_SCOPE
     mapped = {name for name, entry in SCHEMA_REGISTRY.items() if entry.get("scope") == "page"}
     assert PAGE_TYPES == mapped | SCHEMA_DECLARATION_ONLY
     assert set(SCHEMA_TYPE_STATUS) == PAGE_TYPES
     assert all(SCHEMA_TYPE_STATUS[name] == "declaration-only" for name in SCHEMA_DECLARATION_ONLY)
+    for scope, types in SCHEMA_TYPES.items():
+        mapped_types = {name for name, entry in SCHEMA_REGISTRY.items() if entry.get("scope") == scope}
+        assert set(SCHEMA_SCOPE_STATUS[scope]) == types
+        assert types == mapped_types | SCHEMA_DECLARATION_ONLY_BY_SCOPE[scope]
 
 
 def test_cli_loads_project_extension_registry(tmp_path: Path):
@@ -1074,3 +1078,16 @@ status: invalid""")
     contracts, mapping = load_extension_contracts(registry, content)
     issues = validate_paths([item], mapping, contracts)
     assert any("field 'status' must be one of" in issue.message for issue in issues)
+
+
+def test_block_schema_rejects_declaration_only_type(tmp_path: Path):
+    source = PAGE.replace("component: rich-text", "component: faq\n    schema:\n      type: Quiz")
+    issues = validate_document(tmp_path / "pages/a.md", __import__("yaml").safe_load(source), "page")
+    assert any("declaration-only" in issue.message for issue in issues)
+
+
+def test_block_schema_registry_maps_table_and_image_object(tmp_path: Path):
+    table = PAGE.replace("component: rich-text", "component: table\n    schema:\n      type: Table\n    headers: [A]\n    rows: [[B]]")
+    image = PAGE.replace("component: rich-text", "component: image\n    schema:\n      type: ImageObject\n    src: /a.webp\n    alt: Gambar.")
+    assert validate_document(tmp_path / "pages/table.md", __import__("yaml").safe_load(table), "page") == []
+    assert validate_document(tmp_path / "pages/image.md", __import__("yaml").safe_load(image), "page") == []
