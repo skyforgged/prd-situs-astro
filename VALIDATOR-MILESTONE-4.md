@@ -15,6 +15,19 @@ Milestone ini membuat deklarasi Schema.org dan block dapat diperiksa oleh valida
 - Menolak properti schema tingkat frontmatter yang belum didefinisikan.
 - Memvalidasi schema block berdasarkan tipe terdaftar dan pasangan component–schema yang diizinkan.
 
+### Pemetaan JSON-LD yang diregistrasikan
+
+Registry menyediakan pemetaan sumber untuk tipe yang mempunyai kontrak eksplisit:
+- WebPage: document.title → name, document.description → description, canonical route → url.
+- Article: document.title → headline, description → description, tanggal publikasi/pembaruan → datePublished/dateModified, featuredImage → image.
+- Service: document.title → name dan document.description → description.
+- FAQPage: items[].question + items[].answer → mainEntity Question/acceptedAnswer.
+- HowTo: title/description/steps[].name/steps[].text → HowTo dan HowToStep.
+- ItemList: items[] → itemListElement.
+- DefinedTerm: document.title → name dan document.intro → description.
+
+Pemetaan ini adalah kontrak sumber data bagi implementasi JSON-LD. Validator saat ini memeriksa scope, tipe, pasangan block–schema, dan keberadaan sumber wajib pada block; ia belum merender graph atau memvalidasi setiap properti keluaran JSON-LD.
+
 ### Block Registry
 - Menambahkan daftar identifier block dari Content Contract dan katalog gabungan komponen.
 - Memisahkan block dari UI component; komponen UI yang tidak dideklarasikan sebagai block tidak otomatis dapat dipakai pada frontmatter.
