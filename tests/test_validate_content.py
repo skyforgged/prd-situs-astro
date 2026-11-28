@@ -743,8 +743,11 @@ collections:
       id: positive_int
       slug: string
       title: string
+      description: string
       schema: object
       updatedDate: utc_datetime
+      startDate: iso_date_or_datetime
+      endDate: iso_date_or_datetime
       scheduleIds: positive_int_array
     schemaTypes: [Course]
     schemaMappings:
@@ -765,8 +768,11 @@ collections:
       id: positive_int
       slug: string
       title: string
+      description: string
       schema: object
       updatedDate: utc_datetime
+      startDate: iso_date_or_datetime
+      endDate: iso_date_or_datetime
       startDate: string
       endDate: string
     schemaTypes: [Event]
@@ -805,8 +811,11 @@ collections:
       id: positive_int
       slug: string
       title: string
+      description: string
       schema: object
       updatedDate: utc_datetime
+      startDate: iso_date_or_datetime
+      endDate: iso_date_or_datetime
       scheduleIds: positive_int_array
     schemaTypes: [Course]
     schemaMappings:
@@ -827,8 +836,11 @@ collections:
       id: positive_int
       slug: string
       title: string
+      description: string
       schema: object
       updatedDate: utc_datetime
+      startDate: iso_date_or_datetime
+      endDate: iso_date_or_datetime
     schemaTypes: [Event]
     schemaMappings:
       Event:
@@ -884,8 +896,11 @@ collections:
       id: positive_int
       slug: string
       title: string
+      description: string
       schema: object
       updatedDate: utc_datetime
+      startDate: iso_date_or_datetime
+      endDate: iso_date_or_datetime
     schemaTypes: [Course]
     schemaMappings:
       Course:
@@ -901,8 +916,11 @@ collections:
       id: positive_int
       slug: string
       title: string
+      description: string
       schema: object
       updatedDate: utc_datetime
+      startDate: iso_date_or_datetime
+      endDate: iso_date_or_datetime
     schemaTypes: [Event]
     schemaMappings:
       Event:
