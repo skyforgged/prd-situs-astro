@@ -1221,3 +1221,22 @@ def test_extension_registry_rejects_inconsistent_contracts(tmp_path: Path, regis
     registry.write_text(registry_text, encoding="utf-8")
     with pytest.raises(ValueError, match=expected):
         load_extension_contracts(registry, content)
+
+
+def test_route_manifest_missing_sitemap_reports_error_without_crashing(tmp_path: Path):
+    from validate_content import validate_route_manifest
+    manifest = tmp_path / "routes.yml"
+    manifest.write_text("routes: []\nsitemap: public/missing.xml\n", encoding="utf-8")
+    issues = validate_route_manifest(manifest, tmp_path, {})
+    assert any("SITEMAP_NOT_FOUND" in issue.message for issue in issues)
+
+
+def test_route_manifest_rejects_source_path_escape(tmp_path: Path):
+    from validate_content import validate_route_manifest
+    manifest = tmp_path / "routes.yml"
+    manifest.write_text(
+        "routes:\n  - path: /private/\n    source: ../outside.astro\n    indexable: true\n",
+        encoding="utf-8",
+    )
+    issues = validate_route_manifest(manifest, tmp_path, {})
+    assert any("INVALID_SOURCE" in issue.message for issue in issues)
