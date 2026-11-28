@@ -2,15 +2,27 @@ version: 1
 collections:
   training:
     directory: trainings
-    requiredFields: [id, slug, title, schema, updatedDate]
+    requiredFields: [id, ulid, trainingSlug, slug, title, description, pubDate, updatedDate]
     fieldTypes:
       id: positive_int
+      ulid: ulid
+      type: string
+      trainingSlug: string
       slug: string
       title: string
-      schema: object
-      updatedDate: utc_datetime
-      scheduleIds: positive_int_array
+      description: string
+      categoryIds: positive_int_array
+      pubDate: offset_datetime
+      updatedDate: offset_datetime
+      draft: boolean
+      image: string
+      hero: object
+      blocks: array
+      trainingId: positive_int
+    fieldEnums:
+      type: [training]
     schemaTypes: [Course]
+    schemaType: Course
     schemaMappings:
       Course:
         fieldMapping:
@@ -18,22 +30,38 @@ collections:
           description: description
         requiredFields: [title, description]
     routePrefix: /training/
-    relations:
-      scheduleIds:
-        target: schedule
-        cardinality: many
+
   schedule:
     directory: schedules
-    requiredFields: [id, slug, title, schema, updatedDate, startDate, endDate]
+    requiredFields: [id, ulid, scheduleId, publisherId, trainingSlug, batchNo, slug, title, description, startDate, endDate, dateLabel, timezone, pubDate, updatedDate, status]
     fieldTypes:
       id: positive_int
+      ulid: ulid
+      type: string
+      scheduleId: string
+      publisherId: string
+      trainingSlug: string
+      batchNo: string
       slug: string
       title: string
-      schema: object
-      updatedDate: utc_datetime
-      startDate: string
-      endDate: string
+      description: string
+      startDate: iso_date_or_datetime
+      endDate: iso_date_or_datetime
+      dateLabel: string
+      timezone: string
+      pubDate: offset_datetime
+      updatedDate: offset_datetime
+      status: string
+      registration: object
+      delivery: object
+      venue: object
+      completion: object
+      sites: object
+    fieldEnums:
+      type: [schedule]
+      status: [scheduled, ongoing, completed, postponed, cancelled]
     schemaTypes: [Event]
+    schemaType: Event
     schemaMappings:
       Event:
         fieldMapping:
@@ -42,3 +70,8 @@ collections:
           endDate: endDate
         requiredFields: [title, startDate, endDate]
     routePrefix: /schedule/
+    relations:
+      trainingSlug:
+        target: training
+        targetField: trainingSlug
+        cardinality: one
