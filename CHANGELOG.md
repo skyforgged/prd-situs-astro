@@ -10,6 +10,9 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 - Menolak component, schema type, dan props yang tidak terdaftar.
 - Menambahkan suite pengujian Schema Registry dan Block Registry serta dokumentasi VALIDATOR-MILESTONE-4.md.
 
+### Verification
+- GitHub Actions pada Python 3.12: **45 passed**; workflow `Validator Tests` berstatus success pada commit `03610b8`.
+
 ### Scope and limitations
 - Katalog komponen lintas proyek adalah inventaris adopsi, bukan daftar implementasi wajib. Props yang belum memiliki kontrak lintas proyek eksplisit tetap harus ditetapkan pada registry proyek.
 - Validator belum menghasilkan atau memvalidasi graph JSON-LD hasil render. Validasi route, slug collision, aset, tautan, dan integrasi Quality Gates tetap menjadi Milestone 5.
