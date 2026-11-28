@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-11-28 — Konsistensi aturan relasi (1/5)
+
+### Changed
+- Constitution 1.4 membedakan aturan FK numerik untuk enam collection inti dan pengecualian natural key yang harus dideklarasikan untuk collection ekstensi.
+- Content Contract 1.6 dan AGENTS.md diselaraskan dengan hierarki aturan tersebut.
+- Extension Contract memperjelas syarat natural key: target unik, stabil, tidak kosong, tipe kompatibel, target/cardinality eksplisit, dan satu sumber kebenaran.
+- Kontrak Training/Schedule 1.1 menetapkan `schedule.trainingSlug -> training.trainingSlug` sebagai relasi tunggal normatif; alternatif FK numerik harus menggantikan, bukan menduplikasi, natural key.
+- Template dan contoh registry diperbarui; field `trainingId` yang tidak digunakan sebagai relasi dihapus dari contoh.
+
+### Verification boundary
+- Perubahan dokumentasi dan contoh konfigurasi diperiksa ulang melalui pembacaan file setelah commit.
+- Tidak menjalankan pytest atau validasi corpus; pekerjaan 1/5 ini adalah penyelarasan aturan dokumentasi dan contoh, bukan perubahan validator.
+- Collection inti tidak berubah perilakunya. Extension v1 tetap mensyaratkan pengujian relasi pada proyek yang mengadopsinya.
+
 ## 2026-11-28 — Kontrak collection Training dan Schedule
 
 ### Added
