@@ -51,6 +51,8 @@ SCHEMA_REGISTRY = {
  "Article":{"scope":"page","fieldMapping":{"headline":"document.title","description":"document.description","datePublished":"document.publishedDate","dateModified":"document.updatedDate","image":"document.featuredImage"},"requiredFields":["document.title"],"optionalFields":["document.description","document.publishedDate","document.updatedDate","document.featuredImage"],"googleRichResultSupport":"unknown","mergeStrategy":"merge-by-stable-node-id","prohibitedUsage":["invented author or publication dates"],"documentationUrl":["https://schema.org/Article"]},
  "Service":{"scope":"page","fieldMapping":{"name":"document.title","description":"document.description"},"requiredFields":["document.title"],"optionalFields":["document.description"],"googleRichResultSupport":"not-applicable","mergeStrategy":"merge-by-stable-node-id","prohibitedUsage":["inventing provider or offer data"],"documentationUrl":["https://schema.org/Service"]},
  "FAQPage":{"scope":"block","supportedComponents":["faq"],"fieldMapping":{"mainEntity":"items[].question+items[].answer"},"requiredFields":["items","items[].question","items[].answer"],"optionalFields":["title"],"googleRichResultSupport":"not-supported","mergeStrategy":"merge-by-stable-node-id","prohibitedUsage":["hidden or non-visible questions and answers"],"documentationUrl":["https://schema.org/FAQPage"]},
+ "Table":{"scope":"block","supportedComponents":["table"],"fieldMapping":{"about":"title","hasPart":"headers+rows"},"requiredFields":["headers","rows"],"optionalFields":["title","description"],"googleRichResultSupport":"not-applicable","mergeStrategy":"merge-by-stable-node-id","prohibitedUsage":["tables whose visible rows differ from structured data"],"documentationUrl":["https://schema.org/Table"]},
+ "ImageObject":{"scope":"block","supportedComponents":["image"],"fieldMapping":{"contentUrl":"src","caption":"caption","description":"alt"},"requiredFields":["src","alt"],"optionalFields":["caption"],"googleRichResultSupport":"not-applicable","mergeStrategy":"merge-by-stable-node-id","prohibitedUsage":["image nodes without a visible corresponding image"],"documentationUrl":["https://schema.org/ImageObject"]},
  "HowTo":{"scope":"block","supportedComponents":["how-to","howto","steps"],"fieldMapping":{"name":"title","description":"description","step":"steps[].name+steps[].text"},"requiredFields":["title","steps","steps[].name","steps[].text"],"optionalFields":["description"],"googleRichResultSupport":"not-supported","mergeStrategy":"merge-by-stable-node-id","prohibitedUsage":["benefit lists or unordered service lists"],"documentationUrl":["https://schema.org/HowTo"]},
  "ItemList":{"scope":"block","supportedComponents":["item-list"],"fieldMapping":{"itemListElement":"items[]"},"requiredFields":["items"],"optionalFields":["title","description"],"googleRichResultSupport":"not-applicable","mergeStrategy":"merge-by-stable-node-id","prohibitedUsage":["schema items that differ from visible items"],"documentationUrl":["https://schema.org/ItemList"]},
  "DefinedTerm":{"scope":"entity","entitySource":"document.title+document.intro","fieldMapping":{"name":"document.title","description":"document.intro"},"requiredFields":["document.title","document.intro"],"optionalFields":[],"googleRichResultSupport":"not-applicable","mergeStrategy":"reuse-entity-node","prohibitedUsage":["ordinary articles that do not define a single term"],"documentationUrl":["https://schema.org/DefinedTerm"]},
@@ -65,6 +67,18 @@ SCHEMA_DECLARATION_ONLY = PAGE_TYPES - {name for name, entry in SCHEMA_REGISTRY.
 SCHEMA_TYPE_STATUS = {
  name: ("mapped" if name in SCHEMA_REGISTRY and SCHEMA_REGISTRY[name].get("scope") == "page" else "declaration-only")
  for name in PAGE_TYPES
+}
+
+SCHEMA_SCOPE_STATUS = {
+ scope: {
+  name: ("mapped" if name in SCHEMA_REGISTRY and SCHEMA_REGISTRY[name].get("scope") == scope else "declaration-only")
+  for name in SCHEMA_TYPES[scope]
+ }
+ for scope in ("block","page","entity")
+}
+SCHEMA_DECLARATION_ONLY_BY_SCOPE = {
+ scope: {name for name,status in SCHEMA_SCOPE_STATUS[scope].items() if status == "declaration-only"}
+ for scope in SCHEMA_SCOPE_STATUS
 }
 
 
@@ -88,6 +102,7 @@ def validate_schema_object(schema, scope, kind=None, component=None):
    elif kind!="page": issues.append("schema.mainEntity.type 'DefinedTerm' is only allowed for Page documents")
  else:
   if st not in SCHEMA_TYPES["block"]: issues.append("block schema.type '%s' is not in the block Schema Registry" % st)
+  elif SCHEMA_SCOPE_STATUS["block"][st] == "declaration-only": issues.append("block schema.type '%s' is declaration-only and has no reference field mapping" % st)
   elif component and st not in SCHEMA_BLOCKS.get(component,set()):
    issues.append("schema type '%s' is not permitted for component '%s'" % (st,component))
  return issues
