@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Validate PRD Astro Markdown frontmatter and per-kind content contracts."""
 from __future__ import annotations
-import argparse, re, sys
+import argparse, json, re, sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -468,24 +468,79 @@ def validate_route_manifest(manifest_path, site_root, routes):
     return issues
 
 
+def _load_route_prefixes(path):
+    if path is None: return {}
+    try:
+        value=json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError,UnicodeError,json.JSONDecodeError) as exc:
+        raise ValueError("cannot read route-prefix JSON: %s" % exc)
+    if not isinstance(value,dict) or any(not isinstance(k,str) or not isinstance(v,str) for k,v in value.items()):
+        raise ValueError("route-prefix JSON must be an object of string keys and string values")
+    return value
+
+
+def _load_documents(files, collection_map):
+    documents=[]
+    for path in files:
+        data,error=parse_frontmatter(path)
+        if error or data is None: continue
+        kind=ALIASES.get(path.parent.name.lower())
+        for directory,mapped_kind in collection_map.items():
+            try:
+                path.resolve().relative_to(Path(directory))
+                kind=mapped_kind
+                break
+            except ValueError:
+                pass
+        documents.append((path,data,kind))
+    return documents
+
+
 def main(argv=None):
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("content_dir",type=Path)
     parser.add_argument("--collection",action="append",default=[],metavar="KIND=DIR",
-        help="Explicit collection mapping; repeat for homepage, menu, page, article, service, category")
-    parser.add_argument("--site-root",type=Path,default=None,help="Project root for local asset resolution and IA checks")
+        help="Explicit mapping to one of the six core contract kinds")
+    parser.add_argument("--site-root",type=Path,default=None,help="Project root for local asset resolution")
     parser.add_argument("--route-manifest",type=Path,default=None,help="YAML route manifest for QG-13")
-    parser.add_argument("--route-prefixes",type=Path,default=None,help="Optional JSON mapping of collection kinds to route prefixes")
+    parser.add_argument("--route-prefixes",type=Path,default=None,help="JSON mapping of collection kinds to route prefixes")
     args=parser.parse_args(argv)
-    if not args.content_dir.is_dir(): print(f"ERROR: content directory does not exist: {args.content_dir}",file=sys.stderr); return 2
-    try: mapping=parse_collection_args(args.collection)
-    except argparse.ArgumentTypeError as exc: parser.error(str(exc))
+    if not args.content_dir.is_dir():
+        print(f"ERROR: content directory does not exist: {args.content_dir}",file=sys.stderr)
+        return 2
+    try:
+        mapping=parse_collection_args(args.collection)
+        prefixes=_load_route_prefixes(args.route_prefixes)
+    except (argparse.ArgumentTypeError,ValueError) as exc:
+        parser.error(str(exc))
+    if args.route_manifest and not args.site_root:
+        parser.error("--route-manifest requires --site-root")
     files=sorted(p for p in args.content_dir.rglob("*.md") if p.is_file())
-    if not files: print(f"ERROR: no Markdown files found under {args.content_dir}",file=sys.stderr); return 2
+    if not files:
+        print(f"ERROR: no Markdown files found under {args.content_dir}",file=sys.stderr)
+        return 2
+
     issues=validate_paths(files,mapping)
+    documents=_load_documents(files,mapping)
+    issues.extend(validate_seo_uniqueness(documents))
+    route_issues,routes=validate_routes(documents,prefixes)
+    issues.extend(route_issues)
+    if args.site_root:
+        if not args.site_root.is_dir():
+            parser.error(f"--site-root does not exist or is not a directory: {args.site_root}")
+        issues.extend(validate_assets_and_links(documents,args.site_root,routes))
+    if args.route_manifest:
+        issues.extend(validate_route_manifest(args.route_manifest,args.site_root,routes))
+
     if issues:
-        for issue in issues: print(f"ERROR: {issue}")
-        print(f"\nValidation failed: {len(issues)} issue(s) across {len(files)} Markdown file(s)."); return 1
-    print(f"Validation passed: {len(files)} Markdown file(s); content, relations, routes, and configured asset/link/IA checks are valid."); return 0
+        for issue in issues:
+            print(f"ERROR: {issue}")
+        print(f"\nValidation failed: {len(issues)} issue(s) across {len(files)} Markdown file(s).")
+        return 1
+    checks=["frontmatter","relations","schema/block registry","canonical uniqueness","slug/routes"]
+    if args.site_root: checks.append("assets/internal links")
+    if args.route_manifest: checks.append("route manifest/sitemap/redirects")
+    print("Validation passed: %d Markdown file(s); checks: %s."%(len(files),", ".join(checks)))
+    return 0
 
 if __name__=="__main__": raise SystemExit(main())
