@@ -1,6 +1,8 @@
 # Instruksi Agen — PRD Situs Astro
 
 ## Baca sebelum bekerja
+- Untuk perubahan standar, kontrak, validator, template, atau quality gate, periksa [`docs/REQUIREMENTS-TRACEABILITY-MATRIX.md`](docs/REQUIREMENTS-TRACEABILITY-MATRIX.md). Pertahankan ID requirement; perbarui matriks bila sumber normatif atau bukti berubah. Jangan mengklaim gate PROJECT/MANUAL lulus dari test repository standar.
+
 1. Baca `README.md` untuk peta standar.
 2. Patuhi `constitution/WEBSITE-CONSTITUTION.md` sebagai aturan tertinggi.
 3. Gunakan `content-contract/CONTENT-CONTRACT.md` untuk bentuk data Markdown.
