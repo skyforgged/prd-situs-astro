@@ -21,7 +21,7 @@ Milestone 5 menambahkan pemeriksaan statis lintas dokumen untuk slug, route, can
 
 ### QG-09 — Aset dan tautan
 - Referensi media lokal pada field `src` dan `poster` diperiksa terhadap filesystem proyek.
-- Markdown link internal ber-path absolut dan URL internal pada props `url`/`href` diperiksa terhadap route yang dihasilkan.
+- Markdown link internal ber-path absolut dan URL internal pada props `url`, `href`, `actionHref`, `primaryHref`, `secondaryHref`, dan `registrationUrl` diperiksa terhadap route yang dihasilkan.
 - Media lokal dalam Markdown ikut diperiksa.
 - URL eksternal, mailto, tel, data URI, dan fragment tidak diakses melalui jaringan. Pemeriksaan HTTP eksternal sengaja tidak dilakukan pada validator deterministik ini.
 
