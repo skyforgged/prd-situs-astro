@@ -76,7 +76,7 @@ def validate_document(path,data,kind=None):
       "page":("slug","title","description","intro","schema","seo","blocks","updatedDate"),
       "article":("slug","title","description","intro","schema","seo","featuredImage","publishedDate","updatedDate","blocks"),
       "service":("slug","title","description","intro","schema","seo","blocks","updatedDate"),
-      "category":("slug","title","schema","updatedDate"),
+      "category":("slug","title","description","schema","seo","blocks","updatedDate"),
     }
     if kind not in required_fields: err(f"unknown document contract kind '{kind}'"); return out
     required(required_fields[kind]); string_fields(("slug","title","description"))
