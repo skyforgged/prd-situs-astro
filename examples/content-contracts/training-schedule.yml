@@ -11,6 +11,12 @@ collections:
       updatedDate: utc_datetime
       scheduleIds: positive_int_array
     schemaTypes: [Course]
+    schemaMappings:
+      Course:
+        fieldMapping:
+          name: title
+          description: description
+        requiredFields: [title, description]
     routePrefix: /training/
     relations:
       scheduleIds:
@@ -27,4 +33,11 @@ collections:
       updatedDate: utc_datetime
       startDate: string
     schemaTypes: [Event]
+    schemaMappings:
+      Event:
+        fieldMapping:
+          name: title
+          startDate: startDate
+          endDate: endDate
+        requiredFields: [title, startDate, endDate]
     routePrefix: /schedule/
