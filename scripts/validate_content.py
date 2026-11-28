@@ -199,13 +199,13 @@ def load_extension_contracts(path, content_dir):
         fixed_schema_type=spec.get("schemaType")
         route_prefix=spec.get("routePrefix")
         relations=spec.get("relations",{})
-        if not isinstance(required,list) or any(not isinstance(x,str) for x in required):
-            raise ValueError("extension '%s'.requiredFields must be an array of strings" % kind)
+        if not isinstance(required,list) or any(not isinstance(x,str) or not x for x in required) or len(required)!=len(set(required)):
+            raise ValueError("extension '%s'.requiredFields must contain unique non-empty field names" % kind)
         allowed_types={"string","positive_int","boolean","object","array","utc_datetime","offset_datetime","iso_date_or_datetime","ulid","string_array","positive_int_array"}
-        if not isinstance(field_types,dict) or any(not isinstance(v,str) or v not in allowed_types for v in field_types.values()):
-            raise ValueError("extension '%s'.fieldTypes contains an unsupported field type" % kind)
-        if not isinstance(field_enums,dict) or any(not isinstance(v,list) or not v or any(not isinstance(x,str) for x in v) for v in field_enums.values()):
-            raise ValueError("extension '%s'.fieldEnums must map fields to non-empty arrays of strings" % kind)
+        if not isinstance(field_types,dict) or any(not isinstance(k,str) or not k or not isinstance(v,str) or v not in allowed_types for k,v in field_types.items()):
+            raise ValueError("extension '%s'.fieldTypes contains an unsupported field name or type" % kind)
+        if not isinstance(field_enums,dict) or any(not isinstance(k,str) or k not in field_types or not isinstance(v,list) or not v or any(not isinstance(x,str) or not x for x in v) or len(v)!=len(set(v)) for k,v in field_enums.items()):
+            raise ValueError("extension '%s'.fieldEnums must map declared fields to unique non-empty arrays of strings" % kind)
         if not isinstance(schema_types,list) or any(not isinstance(x,str) or not x for x in schema_types):
             raise ValueError("extension '%s'.schemaTypes must be an array of strings" % kind)
         if not isinstance(schema_mappings,dict) or set(schema_types) - set(schema_mappings):
@@ -219,10 +219,12 @@ def load_extension_contracts(path, content_dir):
             required_mapping_fields=mapping_spec.get("requiredFields",[])
             if not isinstance(field_mapping,dict) or not field_mapping or any(not isinstance(v,str) or not v for v in field_mapping.values()):
                 raise ValueError("extension '%s' schema mapping '%s' requires a fieldMapping object" % (kind,schema_type))
-            if not isinstance(required_mapping_fields,list) or any(not isinstance(v,str) for v in required_mapping_fields):
-                raise ValueError("extension '%s' schema mapping '%s' requiredFields must be an array" % (kind,schema_type))
-        if not isinstance(route_prefix,str) or not route_prefix.startswith("/") or "://" in route_prefix:
-            raise ValueError("extension '%s'.routePrefix must be an absolute site path" % kind)
+            if not isinstance(required_mapping_fields,list) or any(not isinstance(v,str) or v not in field_types for v in required_mapping_fields):
+                raise ValueError("extension '%s' schema mapping '%s' requiredFields must reference declared fieldTypes" % (kind,schema_type))
+            if any(source_field not in field_types for source_field in field_mapping.values()):
+                raise ValueError("extension '%s' schema mapping '%s' fieldMapping sources must reference declared fieldTypes" % (kind,schema_type))
+        if not isinstance(route_prefix,str) or not re.fullmatch(r"/(?:[A-Za-z0-9._~-]+/)*",route_prefix) or "//" in route_prefix:
+            raise ValueError("extension '%s'.routePrefix must be a normalized absolute site path ending in '/'" % kind)
         if not isinstance(relations,dict):
             raise ValueError("extension '%s'.relations must be an object" % kind)
         for field,rel in relations.items():
@@ -246,8 +248,13 @@ def load_extension_contracts(path, content_dir):
             directory.relative_to(content_root)
         except ValueError:
             raise ValueError("extension '%s'.directory must stay inside content_dir" % kind)
-        if str(directory) in mapping:
-            raise ValueError("multiple extension kinds cannot share directory '%s'" % directory)
+        core_directories={"homepages","menus","pages","articles","services","categories"}
+        if directory.name.lower() in core_directories:
+            raise ValueError("extension '%s' cannot reuse a core collection directory name" % kind)
+        for existing in mapping:
+            existing_path=Path(existing)
+            if directory == existing_path or directory in existing_path.parents or existing_path in directory.parents:
+                raise ValueError("extension collection directories must not overlap: '%s' and '%s'" % (directory,existing_path))
         mapping[str(directory)]=kind
         contracts[kind]=dict(spec)
     for kind,spec in contracts.items():
