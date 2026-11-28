@@ -3,7 +3,7 @@
 from __future__ import annotations
 import argparse, json, re, sys
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
@@ -255,6 +255,8 @@ def load_extension_contracts(path, content_dir):
 
 def _has_timezone(value):
     try:
+        if isinstance(value,datetime):
+            return value.tzinfo is not None and value.utcoffset() is not None
         parsed=datetime.fromisoformat(value.replace("Z","+00:00"))
         return parsed.tzinfo is not None and parsed.utcoffset() is not None
     except (ValueError,AttributeError):
@@ -263,6 +265,8 @@ def _has_timezone(value):
 
 def _is_iso_date_or_datetime(value):
     try:
+        if isinstance(value,(date,datetime)):
+            return True
         if re.fullmatch(r"\d{4}-\d{2}-\d{2}",value):
             datetime.strptime(value,"%Y-%m-%d")
         else:
