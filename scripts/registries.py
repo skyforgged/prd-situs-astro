@@ -54,7 +54,18 @@ SCHEMA_REGISTRY = {
  "HowTo":{"scope":"block","supportedComponents":["how-to","howto","steps"],"fieldMapping":{"name":"title","description":"description","step":"steps[].name+steps[].text"},"requiredFields":["title","steps","steps[].name","steps[].text"],"optionalFields":["description"],"googleRichResultSupport":"not-supported","mergeStrategy":"merge-by-stable-node-id","prohibitedUsage":["benefit lists or unordered service lists"],"documentationUrl":["https://schema.org/HowTo"]},
  "ItemList":{"scope":"block","supportedComponents":["item-list"],"fieldMapping":{"itemListElement":"items[]"},"requiredFields":["items"],"optionalFields":["title","description"],"googleRichResultSupport":"not-applicable","mergeStrategy":"merge-by-stable-node-id","prohibitedUsage":["schema items that differ from visible items"],"documentationUrl":["https://schema.org/ItemList"]},
  "DefinedTerm":{"scope":"entity","entitySource":"document.title+document.intro","fieldMapping":{"name":"document.title","description":"document.intro"},"requiredFields":["document.title","document.intro"],"optionalFields":[],"googleRichResultSupport":"not-applicable","mergeStrategy":"reuse-entity-node","prohibitedUsage":["ordinary articles that do not define a single term"],"documentationUrl":["https://schema.org/DefinedTerm"]},
+ "SiteNavigationElement":{"scope":"page","fieldMapping":{"name":"document.title"},"requiredFields":["document.title"],"optionalFields":[],"mappingStatus":"supported","googleRichResultSupport":"not-applicable","mergeStrategy":"merge-by-stable-node-id","prohibitedUsage":["inventing navigation targets"],"documentationUrl":["https://schema.org/SiteNavigationElement"]},
 }
+
+# Explicitly accepted page types without a generic source mapping. These are
+# declaration-only: projects must add a project registry mapping before using
+# them as generated JSON-LD types.
+SCHEMA_DECLARATION_ONLY = PAGE_TYPES - {name for name, entry in SCHEMA_REGISTRY.items() if entry.get("scope") == "page"}
+SCHEMA_TYPE_STATUS = {
+ name: ("mapped" if name in SCHEMA_REGISTRY and SCHEMA_REGISTRY[name].get("scope") == "page" else "declaration-only")
+ for name in PAGE_TYPES
+}
+
 
 def validate_schema_object(schema, scope, kind=None, component=None):
  issues=[]
@@ -66,6 +77,7 @@ def validate_schema_object(schema, scope, kind=None, component=None):
  if not isinstance(st,str) or not st: return issues+["schema.type must be a non-empty string"]
  if scope=="document":
   if st not in (PAGE_TYPES | ({"SiteNavigationElement"} if kind=="menu" else set()) | ({"Service"} if kind=="service" else set())): issues.append("schema.type '%s' is not an allowed page-level Schema.org type" % st)
+  elif st not in SCHEMA_TYPE_STATUS: issues.append("schema.type '%s' has no explicit registry status" % st)
   main=schema.get("mainEntity")
   if main is not None:
    if not isinstance(main,dict) or set(main)!={"type"} or main.get("type") not in ENTITY_TYPES:
