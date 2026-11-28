@@ -1,195 +1,220 @@
 #!/usr/bin/env python3
-"""Validate core PRD Astro content invariants across Markdown collections.
-
-This first validator milestone intentionally covers repository-wide invariants:
-frontmatter parsing, document IDs, block IDs, schema declarations, and timestamps.
-Collection-specific fields, relations, block props, routes, and assets are layered
-on in subsequent milestones through explicit registries rather than guesses.
-"""
+"""Validate PRD Astro Markdown frontmatter and per-kind content contracts."""
 from __future__ import annotations
-
-import argparse
-import re
-import sys
+import argparse, re, sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
-
+from urllib.parse import urlparse
 import yaml
 
 FRONTMATTER_RE = re.compile(r"\A---\s*\r?\n(.*?)\r?\n---(?:\r?\n|\Z)", re.DOTALL)
-TIMESTAMP_FIELDS = {"publishedDate", "updatedDate"}
-
-
-class DuplicateKeyError(ValueError):
-    pass
-
-
-class StrictLoader(yaml.SafeLoader):
-    """Safe YAML loader that rejects duplicate mapping keys."""
-
-
-def _construct_mapping(loader: StrictLoader, node: yaml.MappingNode, deep: bool = False) -> dict:
-    loader.flatten_mapping(node)
-    mapping: dict[Any, Any] = {}
-    for key_node, value_node in node.value:
-        key = loader.construct_object(key_node, deep=deep)
-        try:
-            duplicate = key in mapping
-        except TypeError as exc:
-            raise yaml.constructor.ConstructorError(
-                "while constructing a mapping", node.start_mark,
-                "found an unhashable key", key_node.start_mark,
-            ) from exc
-        if duplicate:
-            raise DuplicateKeyError(f"duplicate YAML key {key!r} at line {key_node.start_mark.line + 1}")
-        mapping[key] = loader.construct_object(value_node, deep=deep)
-    return mapping
-
-
-StrictLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, _construct_mapping)
-
+ALIASES = {
+ "homepage":"homepage","homepages":"homepage","home":"homepage",
+ "menu":"menu","menus":"menu","navigation":"menu","navigations":"menu",
+ "page":"page","pages":"page","article":"article","articles":"article","post":"article","posts":"article",
+ "service":"service","services":"service","category":"category","categories":"category",
+}
+class DuplicateKeyError(ValueError): pass
+class StrictLoader(yaml.SafeLoader): pass
+def _mapping(loader, node, deep=False):
+    loader.flatten_mapping(node); result={}
+    for kn,vn in node.value:
+        key=loader.construct_object(kn,deep=deep)
+        if key in result: raise DuplicateKeyError(f"duplicate YAML key {key!r} at line {kn.start_mark.line+1}")
+        result[key]=loader.construct_object(vn,deep=deep)
+    return result
+StrictLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,_mapping)
 
 @dataclass(frozen=True)
 class Issue:
     path: Path
     message: str
+    def __str__(self): return f"{self.path}: {self.message}"
 
-    def __str__(self) -> str:
-        return f"{self.path}: {self.message}"
+def parse_frontmatter(path):
+    try: source=path.read_text(encoding="utf-8")
+    except (OSError,UnicodeError) as exc: return None,f"cannot read UTF-8 Markdown: {exc}"
+    match=FRONTMATTER_RE.match(source)
+    if not match: return None,"missing or malformed YAML frontmatter"
+    try: data=yaml.load(match.group(1),Loader=StrictLoader)
+    except (yaml.YAMLError,DuplicateKeyError) as exc: return None,f"invalid YAML frontmatter: {exc}"
+    if not isinstance(data,dict): return None,"frontmatter must be a YAML mapping/object"
+    return data,None
 
+def posint(v): return isinstance(v,int) and not isinstance(v,bool) and v>0
+def nonempty(v): return isinstance(v,str) and bool(v.strip())
+def absolute_url(v):
+    if not isinstance(v,str): return False
+    u=urlparse(v.strip())
+    return u.scheme in {"http","https"} and bool(u.netloc)
+def utc_date(v):
+    if isinstance(v,datetime):
+        return v if v.tzinfo and v.utcoffset()==timezone.utc.utcoffset(v) and not v.microsecond else None
+    if not isinstance(v,str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z",v): return None
+    try: return datetime.strptime(v,"%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+    except ValueError: return None
 
-def parse_frontmatter(path: Path) -> tuple[dict[str, Any] | None, str | None]:
-    try:
-        source = path.read_text(encoding="utf-8")
-    except (OSError, UnicodeError) as exc:
-        return None, f"cannot read UTF-8 Markdown: {exc}"
-    match = FRONTMATTER_RE.match(source)
-    if not match:
-        return None, "missing or malformed YAML frontmatter (expected opening and closing ---)"
-    try:
-        data = yaml.load(match.group(1), Loader=StrictLoader)
-    except (yaml.YAMLError, DuplicateKeyError) as exc:
-        return None, f"invalid YAML frontmatter: {exc}"
-    if not isinstance(data, dict):
-        return None, "frontmatter must be a YAML mapping/object"
-    return data, None
-
-
-def _is_positive_int(value: Any) -> bool:
-    return isinstance(value, int) and not isinstance(value, bool) and value > 0
-
-
-def _parse_utc_timestamp(value: Any) -> datetime | None:
-    # PyYAML parses ISO timestamp scalars into datetime instances. Strings are
-    # also accepted only when they match the exact canonical UTC representation.
-    if isinstance(value, datetime):
-        parsed = value
-        if parsed.tzinfo is None or parsed.utcoffset() != timezone.utc.utcoffset(parsed):
-            return None
-        if parsed.microsecond != 0:
-            return None
-        return parsed
-    if not isinstance(value, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z", value):
-        return None
-    try:
-        return datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
-    except ValueError:
-        return None
-
-
-def validate_document(path: Path, data: dict[str, Any]) -> list[Issue]:
-    issues: list[Issue] = []
-    doc_id = data.get("id")
-    if not _is_positive_int(doc_id):
-        issues.append(Issue(path, "field 'id' must be a positive integer (boolean is not an integer ID)"))
-
-    if "slug" in data and (not isinstance(data["slug"], str) or not data["slug"].strip()):
-        issues.append(Issue(path, "field 'slug' must be a non-empty string when present"))
-
-    if "schema" in data:
-        schema = data["schema"]
-        if not isinstance(schema, dict) or not isinstance(schema.get("type"), str) or not schema["type"].strip():
-            issues.append(Issue(path, "field 'schema' must be an object with a non-empty string 'type'"))
-    else:
-        issues.append(Issue(path, "missing required field 'schema'"))
-
-    if "blocks" in data:
-        blocks = data["blocks"]
-        if not isinstance(blocks, list):
-            issues.append(Issue(path, "field 'blocks' must be an array when present"))
+def validate_document(path,data,kind=None):
+    out=[]
+    def err(msg): out.append(Issue(path,msg))
+    def required(fields):
+        for f in fields:
+            if f not in data: err(f"missing required field '{f}'")
+    def string_fields(fields):
+        for f in fields:
+            if f in data and not nonempty(data[f]): err(f"field '{f}' must be a non-empty string")
+    if not posint(data.get("id")): err("field 'id' must be a positive integer (boolean is not an integer ID)")
+    kind=kind or ALIASES.get(path.parent.name.lower())
+    if kind is None:
+        err("cannot infer document contract from collection directory; pass --collection KIND=DIR")
+        return out
+    required_fields={
+      "homepage":("slug","title","description","schema","seo","blocks","updatedDate"),
+      "menu":("slug","title","schema","location","items","updatedDate"),
+      "page":("slug","title","description","intro","schema","seo","blocks","updatedDate"),
+      "article":("slug","title","description","intro","schema","seo","featuredImage","publishedDate","updatedDate","blocks"),
+      "service":("slug","title","description","intro","schema","seo","blocks","updatedDate"),
+      "category":("slug","title","schema","updatedDate"),
+    }
+    if kind not in required_fields: err(f"unknown document contract kind '{kind}'"); return out
+    required(required_fields[kind]); string_fields(("slug","title","description"))
+    schema=data.get("schema")
+    if not isinstance(schema,dict) or not nonempty(schema.get("type")): err("field 'schema' must be an object with a non-empty string 'type'")
+    elif schema.get("mainEntity") is not None and (not isinstance(schema["mainEntity"],dict) or not nonempty(schema["mainEntity"].get("type"))):
+        err("field 'schema.mainEntity' must be an object with a non-empty string 'type'")
+    if kind in {"homepage","page","article","service","category"}:
+        seo=data.get("seo")
+        if not isinstance(seo,dict): err("field 'seo' must be an object")
         else:
-            seen_block_ids: set[int] = set()
-            for index, block in enumerate(blocks):
-                prefix = f"blocks[{index}]"
-                if not isinstance(block, dict):
-                    issues.append(Issue(path, f"{prefix} must be an object"))
-                    continue
-                block_id = block.get("id")
-                if not _is_positive_int(block_id):
-                    issues.append(Issue(path, f"{prefix}.id must be a positive integer"))
-                elif block_id in seen_block_ids:
-                    issues.append(Issue(path, f"duplicate block ID {block_id} within this document"))
+            for f in ("title","description"):
+                if f in seo and not isinstance(seo[f],str): err(f"field 'seo.{f}' must be a string")
+                if not nonempty(seo.get(f)) and not nonempty(data.get(f)): err(f"SEO fallback is empty: provide 'seo.{f}' or document '{f}'")
+            if "canonical" in seo and not absolute_url(seo["canonical"]): err("field 'seo.canonical' must be an absolute HTTP(S) URL")
+            for f in ("robots","openGraph","twitter"):
+                if f in seo and not isinstance(seo[f],dict): err(f"field 'seo.{f}' must be an object")
+    if kind in {"page","article","service"}:
+        intro=data.get("intro")
+        if not nonempty(intro): err("field 'intro' must be a non-empty string")
+        else:
+            if "\n" in intro.strip() or "\r" in intro: err("field 'intro' must contain exactly one paragraph")
+            if re.search(r"<\s*/?\s*[A-Za-z][^>]*>|\*\*|__|\[[^\]]+\]\([^)]*\)",intro) or chr(96) in intro:
+                err("field 'intro' must be plain text without HTML/Markdown markup")
+            main=schema.get("mainEntity") if isinstance(schema,dict) else None
+            if isinstance(main,dict) and main.get("type")=="DefinedTerm":
+                if kind!="page": err("schema.mainEntity.type 'DefinedTerm' is only allowed for Page documents")
                 else:
-                    seen_block_ids.add(block_id)
-                component = block.get("component")
-                if not isinstance(component, str) or not component.strip():
-                    issues.append(Issue(path, f"{prefix}.component must be a non-empty string"))
+                    if schema.get("type")=="DefinedTerm": err("schema.type must remain a page-level type; use schema.mainEntity.type: DefinedTerm")
+                    title=re.sub(r"\s+"," ",str(data.get("title","")).strip())
+                    normalized=re.sub(r"\s+"," ",intro.strip()); prefix=f"{title} adalah "
+                    if not title or not normalized.casefold().startswith(prefix.casefold()):
+                        err("DefinedTerm intro must begin with '<title> adalah <definisi substantif>.'")
+                    elif not normalized[len(prefix):].strip(" ."): err("DefinedTerm intro must contain a substantive definition after 'adalah'")
+    if kind=="article" or "featuredImage" in data:
+        image=data.get("featuredImage")
+        if not isinstance(image,dict): err("field 'featuredImage' must be an object")
+        else:
+            for f in ("src","alt"):
+                if not nonempty(image.get(f)): err(f"field 'featuredImage.{f}' must be a non-empty string")
+            for f in ("width","height"):
+                if f in image and not posint(image[f]): err(f"field 'featuredImage.{f}' must be a positive integer")
+            for f in ("caption","credit"):
+                if f in image and not isinstance(image[f],str): err(f"field 'featuredImage.{f}' must be a string")
+    if kind=="menu":
+        if data.get("location") not in {"header","footer","mobile","utility"}: err("field 'location' must be one of: header, footer, mobile, utility")
+        def menu_items(items,depth=1):
+            if not isinstance(items,list): err(f"menu items at depth {depth} must be an array"); return
+            for i,item in enumerate(items):
+                p=f"items[{i}]" if depth==1 else f"menu child at depth {depth}, index {i}"
+                if not isinstance(item,dict): err(f"{p} must be an object"); continue
+                if not nonempty(item.get("label")): err(f"{p}.label must be a non-empty string")
+                hp="pageId" in item and item["pageId"] is not None
+                hu="url" in item and item["url"] is not None
+                if hp==hu: err(f"{p} must define exactly one target: pageId or url")
+                if hp and not posint(item["pageId"]): err(f"{p}.pageId must be a positive integer")
+                if hu and not absolute_url(item["url"]): err(f"{p}.url must be an absolute HTTP(S) URL")
+                if "external" in item:
+                    if not isinstance(item["external"],bool): err(f"{p}.external must be boolean")
+                    elif item["external"] and not hu: err(f"{p}.external: true is only allowed with url")
+                if "children" in item:
+                    if depth>=3: err(f"{p}.children exceeds maximum menu depth of 3")
+                    else: menu_items(item["children"],depth+1)
+        menu_items(data.get("items"))
+    if "blocks" in data or "blocks" in required_fields[kind]:
+        blocks=data.get("blocks")
+        if not isinstance(blocks,list): err("field 'blocks' must be an array")
+        else:
+            ids=set()
+            for i,b in enumerate(blocks):
+                p=f"blocks[{i}]"
+                if not isinstance(b,dict): err(f"{p} must be an object"); continue
+                bid=b.get("id")
+                if not posint(bid): err(f"{p}.id must be a positive integer")
+                elif bid in ids: err(f"duplicate block ID {bid} within this document")
+                else: ids.add(bid)
+                if not nonempty(b.get("component")): err(f"{p}.component must be a non-empty string")
+    scalar_rel={"article":("authorId","relatedServiceId"),"service":("providerId",)}.get(kind,())
+    for f in scalar_rel:
+        if f in data and data[f] is not None and not posint(data[f]): err(f"field '{f}' must be a positive integer")
+    array_rel={"article":("categoryIds","relatedArticleIds"),"service":("categoryIds","relatedServiceIds")}.get(kind,())
+    for f in array_rel:
+        if f in data:
+            v=data[f]
+            if not isinstance(v,list) or any(not posint(x) for x in v): err(f"field '{f}' must be an array of positive integers")
+            elif len(v)!=len(set(v)): err(f"field '{f}' must not contain duplicate IDs")
+    if kind=="page" and "parentPageId" in data and data["parentPageId"] is not None and not posint(data["parentPageId"]):
+        err("field 'parentPageId' must be a positive integer")
+    dates={}
+    for f in ("publishedDate","updatedDate"):
+        if f in data:
+            d=utc_date(data[f])
+            if d is None: err(f"field '{f}' must use ISO 8601 UTC seconds: YYYY-MM-DDTHH:mm:ssZ")
+            else: dates[f]=d
+    if len(dates)==2 and dates["updatedDate"]<dates["publishedDate"]: err("field 'updatedDate' must be equal to or later than 'publishedDate'")
+    return out
 
-    parsed_dates: dict[str, datetime] = {}
-    for field in TIMESTAMP_FIELDS:
-        if field in data:
-            parsed = _parse_utc_timestamp(data[field])
-            if parsed is None:
-                issues.append(Issue(path, f"field '{field}' must use ISO 8601 UTC seconds: YYYY-MM-DDTHH:mm:ssZ"))
-            else:
-                parsed_dates[field] = parsed
-    if "publishedDate" in parsed_dates and "updatedDate" in parsed_dates:
-        if parsed_dates["updatedDate"] < parsed_dates["publishedDate"]:
-            issues.append(Issue(path, "field 'updatedDate' must be equal to or later than 'publishedDate'"))
-    return issues
+def parse_collection_args(values):
+    result={}
+    for value in values:
+        if "=" not in value: raise argparse.ArgumentTypeError(f"invalid --collection '{value}'; expected KIND=DIR")
+        kind,directory=value.split("=",1)
+        if kind not in {"homepage","menu","page","article","service","category"} or not directory:
+            raise argparse.ArgumentTypeError(f"invalid --collection '{value}'")
+        result[str(Path(directory).resolve())]=kind
+    return result
 
-
-def validate_paths(paths: list[Path]) -> list[Issue]:
-    issues: list[Issue] = []
-    seen_ids: dict[int, Path] = {}
+def validate_paths(paths,collection_map=None):
+    issues=[]; seen={}; collection_map=collection_map or {}
     for path in sorted(paths):
-        data, error = parse_frontmatter(path)
-        if error:
-            issues.append(Issue(path, error))
-            continue
-        assert data is not None
-        issues.extend(validate_document(path, data))
-        doc_id = data.get("id")
-        if _is_positive_int(doc_id):
-            if doc_id in seen_ids:
-                issues.append(Issue(path, f"duplicate global document ID {doc_id}; first used in {seen_ids[doc_id]}"))
-            else:
-                seen_ids[doc_id] = path
+        data,error=parse_frontmatter(path)
+        if error: issues.append(Issue(path,error)); continue
+        kind=ALIASES.get(path.parent.name.lower())
+        for directory,mapped_kind in collection_map.items():
+            try: path.resolve().relative_to(Path(directory)); kind=mapped_kind; break
+            except ValueError: pass
+        issues.extend(validate_document(path,data,kind))
+        docid=data.get("id")
+        if posint(docid):
+            if docid in seen: issues.append(Issue(path,f"duplicate global document ID {docid}; first used in {seen[docid]}"))
+            else: seen[docid]=path
     return issues
 
-
-def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("content_dir", type=Path, help="Root directory containing Markdown content collections")
-    args = parser.parse_args(argv)
-    if not args.content_dir.is_dir():
-        print(f"ERROR: content directory does not exist: {args.content_dir}", file=sys.stderr)
-        return 2
-    files = sorted(path for path in args.content_dir.rglob("*.md") if path.is_file())
-    if not files:
-        print(f"ERROR: no Markdown files found under {args.content_dir}", file=sys.stderr)
-        return 2
-    issues = validate_paths(files)
+def main(argv=None):
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("content_dir",type=Path)
+    parser.add_argument("--collection",action="append",default=[],metavar="KIND=DIR",
+        help="Explicit collection mapping; repeat for homepage, menu, page, article, service, category")
+    args=parser.parse_args(argv)
+    if not args.content_dir.is_dir(): print(f"ERROR: content directory does not exist: {args.content_dir}",file=sys.stderr); return 2
+    try: mapping=parse_collection_args(args.collection)
+    except argparse.ArgumentTypeError as exc: parser.error(str(exc))
+    files=sorted(p for p in args.content_dir.rglob("*.md") if p.is_file())
+    if not files: print(f"ERROR: no Markdown files found under {args.content_dir}",file=sys.stderr); return 2
+    issues=validate_paths(files,mapping)
     if issues:
-        for issue in issues:
-            print(f"ERROR: {issue}")
-        print(f"\nValidation failed: {len(issues)} issue(s) across {len(files)} Markdown file(s).")
-        return 1
-    print(f"Validation passed: {len(files)} Markdown file(s); core invariants are valid.")
-    return 0
+        for issue in issues: print(f"ERROR: {issue}")
+        print(f"\nValidation failed: {len(issues)} issue(s) across {len(files)} Markdown file(s)."); return 1
+    print(f"Validation passed: {len(files)} Markdown file(s); core and inferred document contracts are valid."); return 0
 
-
-if __name__ == "__main__":
-    raise SystemExit(main())
+if __name__=="__main__": raise SystemExit(main())
