@@ -193,6 +193,7 @@ def load_extension_contracts(path, content_dir):
             raise ValueError("extension '%s' requires a directory" % kind)
         required=spec.get("requiredFields",[])
         field_types=spec.get("fieldTypes",{})
+        field_enums=spec.get("fieldEnums",{})
         schema_types=spec.get("schemaTypes",[])
         schema_mappings=spec.get("schemaMappings",{})
         fixed_schema_type=spec.get("schemaType")
@@ -203,6 +204,8 @@ def load_extension_contracts(path, content_dir):
         allowed_types={"string","positive_int","boolean","object","array","utc_datetime","offset_datetime","iso_date_or_datetime","ulid","string_array","positive_int_array"}
         if not isinstance(field_types,dict) or any(not isinstance(v,str) or v not in allowed_types for v in field_types.values()):
             raise ValueError("extension '%s'.fieldTypes contains an unsupported field type" % kind)
+        if not isinstance(field_enums,dict) or any(not isinstance(v,list) or not v or any(not isinstance(x,str) for x in v) for v in field_enums.values()):
+            raise ValueError("extension '%s'.fieldEnums must map fields to non-empty arrays of strings" % kind)
         if not isinstance(schema_types,list) or any(not isinstance(x,str) or not x for x in schema_types):
             raise ValueError("extension '%s'.schemaTypes must be an array of strings" % kind)
         if not isinstance(schema_mappings,dict) or set(schema_types) - set(schema_mappings):
@@ -291,6 +294,9 @@ def validate_extension_document(path,data,kind,spec):
     for field,field_type in spec.get("fieldTypes",{}).items():
         if field in data and not validators[field_type](data[field]):
             err("field '%s' must be %s"%(field,field_type))
+    for field,allowed_values in spec.get("fieldEnums",{}).items():
+        if field in data and data[field] not in allowed_values:
+            err("field '%s' must be one of: %s"%(field,", ".join(allowed_values)))
     schema=data.get("schema")
     allowed=spec.get("schemaTypes",[])
     schema_type=spec.get("schemaType")
