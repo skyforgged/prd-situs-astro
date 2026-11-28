@@ -1,3 +1,12 @@
+## Pembersihan catatan analisis — 2026-11-28
+
+- [x] `docs/ANALISIS-POLA-SITUS.md` dihapus. Kesimpulan umum tetap ada di `architecture/CONTENT-AND-INFORMATION-ARCHITECTURE.md` §§7.4–7.5, 8, 10, 12–14; ringkasan historis tetap di bagian "Analisis pola situs referensi 2026-11-26" dan entri 2026-11-26 pada `CHANGELOG.md`.
+- [x] `docs/ANALISIS-VALIDATOR-MILESTONE.md` dihapus. Temuan yang belum tercatat di tempat lain dipindahkan ke bagian ini dan `CHANGELOG.md`.
+- Status tindak lanjut AUD-01 sampai AUD-04: diterapkan di repo PRD dan disertai test. AUD-05: fixture representatif tersedia; korpus penuh tidak diverifikasi. AUD-06: di luar cakupan repo PRD; pusattraining hanya contoh training/schedule. AUD-07: diterapkan sebagai disiplin commit bermakna.
+- Penyebab kegagalan `validator-tests` pada `df76715`: assertion test masih mengharapkan `references missing schedule ID 999`, sedangkan validator memakai `extension relation 'scheduleIds' references missing schedule.id value 999`. Perbaikan assertion di `1af324d`; verifikasi lokal 81 passed dan CI `completed/success`. Catatan hasil CI di `8086d43`.
+- Enam commit tanpa diff yang dipakai sebagai bukti pada audit awal: `b1138b2`, `cf7f662`, `898f966`, `1d4b962`, `eae9efa`, `6228f1e`. Catatan ini dipertahankan sebagai pelajaran proses, bukan sebagai bukti implementasi.
+- Batas verifikasi: penghapusan hanya menyasar dua dokumen analisis non-normatif. Tidak ada aturan, kontrak, validator, atau test yang diubah. Tidak ada klaim build Astro atau uji korpus eksternal.
+
 ## Penyelarasan status bukti MANUAL — 2026-11-28
 
 - [x] `quality/CAPABILITY-BOUNDARIES.md` versi 1.1 membedakan empat status bukti: VALIDATOR, CONTRACT, PROJECT, dan MANUAL.
@@ -147,10 +156,10 @@ Perubahan diverifikasi dengan membaca ulang isi file dan pencarian teks terhadap
 ## Analisis pola situs referensi 2026-11-26
 
 - [x] Pola artikel 1–3, artikel 4–6, footer dinamis, CTA layanan/WhatsApp, dan pagination dicatat dalam berkas analisis tersendiri.
-  - Bukti: `docs/ANALISIS-POLA-SITUS.md`; tautan di `README.md:20`.
+  - Bukti: bagian ini dan entri 2026-11-26 pada `CHANGELOG.md`; berkas aslinya dihapus pada 2026-11-28 seperti dicatat pada "Pembersihan catatan analisis — 2026-11-28".
   - Verifikasi: lima repo dibaca via GitHub API dan `raw.githubusercontent.com`; `skyforgged/konsultan-slf` dipakai sebagai rujukan utama, empat repo `arisciwek/*` sebagai pembanding.
 - [x] Temuan dibedakan menjadi fakta implementasi, bagian yang sudah tercakup standar, bagian yang belum diatur, dan saran non-normatif.
-  - Bukti: `docs/ANALISIS-POLA-SITUS.md` bagian 2, 4, dan 5.
+  - Bukti: `architecture/CONTENT-AND-INFORMATION-ARCHITECTURE.md` §§7.4–7.5 dan 8; ringkasan historis pada entri 2026-11-26 di `CHANGELOG.md`.
   - Verifikasi: tidak ada versi dokumen standar yang diubah; sesuai `AGENTS.md`, pola referensi tidak dijadikan kewajiban global tanpa dasar Constitution.
 - Batas verifikasi: analisis hanya membaca kode, tanpa build, validator, atau test runner. Klaim "pola ada di setiap repo" tidak diterima apa adanya; tiga dari lima pola ternyata tidak konsisten lintas repo.
 
@@ -254,7 +263,7 @@ Workflow menutup kesenjangan antara starter templates dan proses pemakaiannya. G
 - [x] Versi paket template diselaraskan: `projects/_template/README.md:4` menjadi 0.2, mengikuti `projects/_template/README.md:66` dan entri Template Pack 0.2 di `CHANGELOG.md` (kini 0.3; lihat bagian 2026-11-27).
 - [x] `projects/_template/TECHNICAL-ARCHITECTURE.md:66-67,95` memisahkan QG-12 dari gate otomatis sesuai `quality/QUALITY-GATES.md:120`; review editorial tidak lagi diwajibkan memiliki perintah dan fixture CI.
 - [x] Checklist yang sudah dibuktikan pada `docs/REVIEW-NOTES.md:149-151,184` ditandai selesai dengan rujukan ke bagian yang memuat buktinya.
-- [x] Rujukan baris diperbarui: `docs/ANALISIS-POLA-SITUS.md:19,117` mengarah ke `README.md:35`, dan `docs/REVIEW-NOTES.md:125` mengarah ke `README.md:20`.
+- [x] Rujukan baris diperbarui pada berkas yang dipertahankan: `docs/REVIEW-NOTES.md:125` mengarah ke `README.md:20`. Rujukan lama di `docs/ANALISIS-POLA-SITUS.md` ikut dihapus bersama berkas tersebut pada 2026-11-28.
 - Bukti: perubahan pada empat berkas di atas, entri `Fixed — tindak lanjut pull 2026-11-26` di `CHANGELOG.md`, serta pemeriksaan tautan lokal Markdown tanpa tautan rusak.
 - Batas verifikasi: koreksi hanya menyelaraskan metadata, pemetaan gate, dan rujukan; tidak ada aturan normatif baru. Repository tetap tidak memiliki aplikasi, `package.json`, validator, atau test runner sehingga tidak ada build/test yang dijalankan.
 
@@ -273,7 +282,7 @@ Workflow menutup kesenjangan antara starter templates dan proses pemakaiannya. G
   - Bukti: `projects/tnvcertification/CONTENT-CONTRACT-EVALUATION.md` bagian "Catatan status 2026-11-27"; `projects/tnvcertification/README.md`; `README.md`.
   - Verifikasi: laporan masih menyebut standar 1.3/1.2 sebagai objek yang diperiksa, dengan catatan tindak lanjut ke 1.5/1.4.
 - [x] Rujukan baris yang bergeser diperbarui setelah penambahan field dan baris tabel.
-  - Bukti: `docs/ANALISIS-POLA-SITUS.md:19,117` dan `docs/REVIEW-NOTES.md:232` kini mengarah ke `README.md:35`; `docs/REVIEW-NOTES.md:230` mengarah ke `projects/_template/TECHNICAL-ARCHITECTURE.md:66-67,95` dan `quality/QUALITY-GATES.md:120`; rujukan QG pada `docs/REVIEW-NOTES.md:28,90,114` diselaraskan dengan test matrix saat ini.
+  - Bukti: `docs/REVIEW-NOTES.md:232` kini mengarah ke `README.md:35`; `docs/REVIEW-NOTES.md:230` mengarah ke `projects/_template/TECHNICAL-ARCHITECTURE.md:66-67,95` dan `quality/QUALITY-GATES.md:120`; rujukan QG pada `docs/REVIEW-NOTES.md:28,90,114` diselaraskan dengan test matrix saat ini. Rujukan lama di `docs/ANALISIS-POLA-SITUS.md` ikut dihapus bersama berkas tersebut pada 2026-11-28.
   - Verifikasi: pencarian rujukan baris lama tidak menemukan kecocokan di luar catatan ini.
 - [x] `CHANGELOG.md` memperbarui versi, alasan, dampak, dan kompatibilitas untuk perubahan di atas.
   - Bukti: `CHANGELOG.md` bagian 2026-11-27.
@@ -318,11 +327,11 @@ Workflow menutup kesenjangan antara starter templates dan proses pemakaiannya. G
 - [x] Fixture training/schedule dan contoh registry ditambahkan; batas validasi nested/domain-specific dijelaskan pada `content-contract/CONTRACT-EXTENSIONS.md`.
 - [x] Test ekstensi mencakup nilai date/datetime native hasil parsing YAML; registry menolak enum, schema mapping, route prefix, dan direktori yang tidak konsisten.
 - [x] Pemeriksaan internal link mencakup seluruh props URL yang didokumentasikan (`url`, `href`, `actionHref`, `primaryHref`, `secondaryHref`, `registrationUrl`) dengan test parametrik.
-- [ ] Verifikasi workflow CI hijau untuk commit terbaru belum tersedia; jangan menganggap konfigurasi workflow sebagai bukti test lulus.
+- [x] Verifikasi workflow CI tersedia: `validator-tests` completed/success pada `dc8e16e` melalui GitHub API; test lokal 87 passed. Rincian perbaikan assertion ada pada "Pembersihan catatan analisis — 2026-11-28".
 - [ ] Validasi penuh 249 berkas corpus pusattraining belum dijalankan. Extension v1 belum mereproduksi seluruh nested Zod schema, refinement tanggal/timezone, block discriminator, atau graph JSON-LD hasil render.
 - [ ] Workflow dan test mapping/structured-data pada repo `arisciwek/pusattraining` belum diperbarui karena akses GitHub yang tersedia tidak memiliki izin push.
-- Bukti perubahan: `scripts/validate_content.py`, `scripts/registries.py`, `tests/test_validate_content.py`, `.github/workflows/validator-tests.yml`, `content-contract/CONTRACT-EXTENSIONS.md`, `examples/content-contracts/training-schedule.yml`, `VALIDATOR-MILESTONE-4.md`, `VALIDATOR-MILESTONE-5.md`, `quality/QUALITY-GATES.md`, dan `docs/ANALISIS-VALIDATOR-MILESTONE.md`.
-- Batas verifikasi: test lokal tidak dapat dijalankan karena container tidak dapat mengakses GitHub untuk clone repo. Hasil GitHub Actions pada commit terbaru harus diperiksa sebelum menyatakan suite lulus. Repository standar ini bukan aplikasi Astro; build produksi dan validasi graph hasil render tetap dilakukan pada setiap proyek turunan.
+- Bukti perubahan: `scripts/validate_content.py`, `scripts/registries.py`, `tests/test_validate_content.py`, `.github/workflows/validator-tests.yml`, `content-contract/CONTRACT-EXTENSIONS.md`, `examples/content-contracts/training-schedule.yml`, `VALIDATOR-MILESTONE-4.md`, `VALIDATOR-MILESTONE-5.md`, dan `quality/QUALITY-GATES.md`. Catatan audit pendukung dihapus pada 2026-11-28; temuan uniknya dipindahkan ke bagian "Pembersihan catatan analisis — 2026-11-28".
+- Batas verifikasi: repository standar ini bukan aplikasi Astro; build produksi dan validasi graph hasil render tetap dilakukan pada setiap proyek turunan. Test lokal dijalankan pada checkout saat ini dan CI diverifikasi untuk `dc8e16e`, tetapi tidak ada uji korpus eksternal atau build Astro yang dijalankan di repo ini.
 
 
 ## Penambahan kontrak collection Training dan Schedule — 2026-11-28

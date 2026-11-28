@@ -27,8 +27,7 @@ Repository ini menyimpan standar reusable untuk analisis kebutuhan, perancangan,
 
 - [AGENTS.md](AGENTS.md) — instruksi agen yang bekerja di repository.
 - [Role System Analyst](ROLE-SYSTEM-ANALYST.md) — pedoman analisis dan penyusunan PRD.
-- [Review Notes](docs/REVIEW-NOTES.md) — audit dan tindak lanjut standar.
-- [Analisis Pola Situs Referensi](docs/ANALISIS-POLA-SITUS.md) — temuan artikel, footer, CTA, dan pagination dari repo rujukan; bukan aturan wajib.
+- [Review Notes](docs/REVIEW-NOTES.md) — audit, bukti verifikasi, dan tindak lanjut standar.
 - [Changelog](CHANGELOG.md) — riwayat perubahan standar.
 - [License](LICENSE) — lisensi repository.
 

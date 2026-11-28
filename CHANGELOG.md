@@ -11,6 +11,9 @@
 - `quality/CAPABILITY-BOUNDARIES.md` versi 1.1 menambahkan MANUAL sebagai kategori dan status bukti keempat, sejajar dengan empat jenis bukti pada AGENTS.md dan matriks traceability. Cakupan validator, test, dan kontrak tidak berubah.
 - Dokumen normatif dipindahkan keluar dari `docs/`: `quality/CAPABILITY-BOUNDARIES.md` dan `content-contract/CONTRACT-EXTENSIONS.md`. Referensi aktif di README, AGENTS.md, Quality Gates, Validator Milestone 5, matriks traceability, dan Review Notes mengikuti jalur baru. Penyebutan jalur lama pada entri sebelumnya dipertahankan sebagai catatan historis, bukan tautan aktif.
 
+### Removed
+- `docs/ANALISIS-POLA-SITUS.md` dan `docs/ANALISIS-VALIDATOR-MILESTONE.md`: dua catatan analisis non-normatif dihapus setelah temuan penting dipindahkan. Kesimpulan pola tetap pada `architecture/CONTENT-AND-INFORMATION-ARCHITECTURE.md` §§7.4–7.5, 8, 10, 12–14; status AUD, penyebab kegagalan CI `df76715`, dan pelajaran commit kosong tercatat pada `docs/REVIEW-NOTES.md` bagian "Pembersihan catatan analisis — 2026-11-28". Tidak ada aturan, kontrak, validator, atau test yang diubah.
+
 # Changelog
 
 ## 2026-11-28 — Integrasi validator (3/5)
@@ -190,7 +193,7 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 - Technical Architecture Specification untuk implementasi Astro.
 - Quality Gates dan acceptance criteria.
 - Instruksi repository untuk agen melalui `AGENTS.md`.
-- `docs/ANALISIS-POLA-SITUS.md`: catatan non-normatif berisi verifikasi pola artikel 1–3 dan 4–6, footer dinamis, CTA layanan/WhatsApp, serta pagination pada lima repo Astro rujukan.
+- `docs/ANALISIS-POLA-SITUS.md`: catatan non-normatif berisi verifikasi pola artikel 1–3 dan 4–6, footer dinamis, CTA layanan/WhatsApp, serta pagination pada lima repo Astro rujukan. Berkas dihapus pada 2026-11-28; kesimpulan umum tetap pada IA §§7.4–7.5, 8, 10, 12–14.
 
 ### Changed
 - AGENTS.md: mewajibkan agen membaca standar Content & Information Architecture saat menyusun sitemap, route, navigasi, internal linking, listing, atau konversi.
@@ -290,7 +293,7 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 - `projects/_template/README.md`: versi paket diselaraskan ke 0.2 sesuai catatan di dalam berkas dan entri Template Pack 0.2.
 - `projects/_template/TECHNICAL-ARCHITECTURE.md`: QG-12 dipisahkan dari gate otomatis; template tidak lagi mewajibkan perintah dan fixture CI untuk review editorial.
 - `docs/REVIEW-NOTES.md`: checklist yang sudah dibuktikan ditandai selesai dan rujukan baris README diperbarui.
-- `docs/ANALISIS-POLA-SITUS.md`: rujukan baris README diperbarui setelah penambahan tautan IA.
+- `docs/ANALISIS-POLA-SITUS.md`: rujukan baris README diperbarui setelah penambahan tautan IA. Berkas dihapus pada 2026-11-28; catatan ini historis.
 
 ### Rationale and impact
 - Koreksi ini menjaga konsistensi internal paket template dan catatan bukti tanpa mengubah aturan normatif.
