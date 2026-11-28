@@ -11,6 +11,7 @@ Repository ini menyimpan standar reusable untuk analisis kebutuhan, perancangan,
 - [Content & Information Architecture](architecture/CONTENT-AND-INFORMATION-ARCHITECTURE.md) — model konten, sitemap, navigasi, URL, internal linking, listing, halaman lokal, dan konversi.
 - [Quality Gates](quality/QUALITY-GATES.md) — acceptance criteria dan verifikasi.
 - [Content Quality Standard](quality/CONTENT-QUALITY-STANDARD.md) — standar kualitas editorial, kedalaman, akurasi, orisinalitas, dan people-first content.
+- [Validator Milestone 1](VALIDATOR-MILESTONE-1.md) — cakupan implementasi validator otomatis tahap pertama.
 
 ## Instruksi dan analisis
 
@@ -40,7 +41,6 @@ Perubahan standar harus memperbarui versi dokumen terkait, mencatat alasan dan d
 ## Project Architecture Templates
 
 - [Project Architecture Templates](projects/_template/README.md) — starter pack dokumen proyek untuk brief, intent, sitemap/route, content model, relasi, navigasi, internal linking, listing, cakupan lokal, konversi, governance, dan keputusan teknis.
-
 
 ## Project initialization
 
