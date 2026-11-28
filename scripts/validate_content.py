@@ -223,7 +223,8 @@ def load_extension_contracts(path, content_dir):
                 raise ValueError("extension '%s' schema mapping '%s' requiredFields must reference declared fieldTypes" % (kind,schema_type))
             if any(source_field not in field_types for source_field in field_mapping.values()):
                 raise ValueError("extension '%s' schema mapping '%s' fieldMapping sources must reference declared fieldTypes" % (kind,schema_type))
-        if not isinstance(route_prefix,str) or not re.fullmatch(r"/(?:[A-Za-z0-9._~-]+/)*",route_prefix) or "//" in route_prefix:
+        if (not isinstance(route_prefix,str) or not re.fullmatch(r"/(?:[A-Za-z0-9._~-]+/)*",route_prefix)
+                or "//" in route_prefix or any(part in {".",".."} for part in route_prefix.split("/"))):
             raise ValueError("extension '%s'.routePrefix must be a normalized absolute site path ending in '/'" % kind)
         if not isinstance(relations,dict):
             raise ValueError("extension '%s'.relations must be an object" % kind)
@@ -534,8 +535,10 @@ def validate_seo_uniqueness(documents):
 def _route_for(kind, slug, prefixes):
     if kind == "homepage": return "/"
     prefix = prefixes.get(kind, {"page":"/", "article":"/articles/", "service":"/services/", "category":"/categories/"}.get(kind, "/"))
-    if not isinstance(prefix,str) or not prefix.startswith("/") or "://" in prefix:
-        raise ValueError("route prefix for %s must be an absolute site path" % kind)
+    if (not isinstance(prefix,str) or not prefix.startswith("/") or "://" in prefix
+            or any(char in prefix for char in "?#\\") or "//" in prefix
+            or any(part in {".",".."} for part in prefix.split("/"))):
+        raise ValueError("route prefix for %s must be a normalized absolute site path" % kind)
     return prefix.rstrip("/") + "/" + slug.strip("/") + "/"
 
 def validate_routes(documents, route_prefixes=None):
