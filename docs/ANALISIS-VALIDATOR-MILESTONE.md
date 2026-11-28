@@ -232,3 +232,14 @@ Bagian ini memperbarui status pekerjaan tanpa mengubah tabel historis "Status sa
 - Workflow validator di repo PRD telah diperbarui, tetapi hasil run hijau untuk commit terbaru belum diperoleh pada saat pembaruan ini.
 - Extension v1 dan fixture sekarang mencakup subset model training/schedule, bukan reproduksi penuh Zod schema pusattraining. Validasi nested schema, block discriminator, aturan tanggal lintas-field, timezone IANA, dan graph JSON-LD hasil render tetap harus dijalankan di proyek pusattraining.
 - Tidak ada perubahan pada repository `arisciwek/pusattraining` karena hak akses tulis tidak tersedia.
+
+## 9. Verifikasi CI lanjutan (2026-11-28)
+
+Bagian ini memperbarui pernyataan status CI pada Bagian 8. Pernyataan lama dipertahankan sebagai catatan pada saat penulisannya.
+
+- CI `validator-tests` pada commit `df76715` berstatus **failure**, bukan hijau.
+- Penyebabnya adalah ekspektasi test yang tertinggal: `tests/test_validate_content.py` masih mencari pesan `references missing schedule ID 999`, sedangkan validator memakai format `extension relation 'scheduleIds' references missing schedule.id value 999` sejak dukungan relasi natural-key ditambahkan. Validasi relasinya sendiri berjalan dan menghasilkan error yang benar.
+- Perbaikan hanya menyelaraskan assertion tersebut pada commit `1af324d`; tidak ada perubahan pada logika validator.
+- Verifikasi lokal: pytest 9.2.0 pada Python 3.14 menghasilkan **81 passed**. Perintah `python scripts/validate_content.py --help` berhasil dengan exit code 0.
+- Setelah push, GitHub Actions `validator-tests` pada commit `1af324d` berstatus **completed / success**. Ini membuktikan workflow hijau, bukan membuktikan bahwa seluruh QG-01 sampai QG-13 terpenuhi pada proyek turunan.
+- AUD-06 tidak berubah karena tidak ada perubahan pada repository pusattraining.
