@@ -11,7 +11,7 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 - Ditambahkan suite pengujian kontrak dan dokumentasi `VALIDATOR-MILESTONE-2.md`.
 
 ### Verification
-- CI akhir milestone: menunggu hasil workflow pada commit terbaru.
+- GitHub Actions pada Python 3.12: **22 passed**; workflow `Validator Tests` berstatus success.
 - Validasi keberadaan target FK lintas dokumen, target type/kardinalitas, Block Registry/props, Schema Registry menyeluruh, route/assets/internal links, dan quality gates lanjutan tetap di luar cakupan milestone ini.
 
 
