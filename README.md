@@ -6,7 +6,9 @@ Repository ini menyimpan standar reusable untuk analisis kebutuhan, perancangan,
 
 - [Website Constitution](constitution/WEBSITE-CONSTITUTION.md) — aturan universal lintas proyek.
 - [Content Contract](content-contract/CONTENT-CONTRACT.md) — kontrak Markdown terpisah berdasarkan jenis konten.
-- [Frontmatter Templates](content-contract/FRONTMATTER-TEMPLATES.md) — kerangka field kosong untuk setiap jenis konten, sebagai checklist saat membuat dokumen.
+- [Frontmatter Templates](content-contract/FRONTMATTER-TEMPLATES.md) — kerangka field kosong untuk enam jenis konten inti.
+- [Training & Schedule Contract](content-contract/TRAINING-SCHEDULE-CONTRACT.md) — kontrak collection ekstensi untuk program pelatihan dan pelaksanaan/batch.
+- [Training & Schedule Templates](content-contract/TRAINING-SCHEDULE-TEMPLATES.md) — kerangka field kosong untuk dokumen training dan schedule.
 - [Technical Architecture](architecture/TECHNICAL-ARCHITECTURE.md) — panduan penerapan standar pada Astro.
 - [Content & Information Architecture](architecture/CONTENT-AND-INFORMATION-ARCHITECTURE.md) — model konten, sitemap, navigasi, URL, internal linking, listing, halaman lokal, dan konversi.
 - [Quality Gates](quality/QUALITY-GATES.md) — acceptance criteria dan verifikasi.
