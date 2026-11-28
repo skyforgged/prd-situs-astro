@@ -282,3 +282,12 @@ Workflow menutup kesenjangan antara starter templates dan proses pemakaiannya. G
 - Bukti: `scripts/validate_content.py`, `tests/test_validate_content.py`, `VALIDATOR-MILESTONE-3.md`.
 - Verifikasi: GitHub Actions workflow `Validator Tests`, Python 3.12, **34 passed**; run [46097423874](https://github.com/skyforgged/prd-situs-astro/actions/runs/46097423874).
 - Batas verifikasi: validasi properti block yang bersifat dinamis tetap menunggu Block Registry; relasi yang belum memiliki kontrak target tidak diaktifkan. CI ini menguji unit validator, bukan corpus konten situs Astro turunan secara penuh.
+
+## Validator otomatis — Milestone 4 dan 5, 2026-11-28
+
+- [x] Milestone 4: Schema Registry, Block Registry, tipe props, pasangan block-schema, dan pemetaan sumber JSON-LD dasar.
+- [x] Milestone 5: slug/route collision, canonical duplikat, aset lokal, internal links, route manifest, sitemap, dan redirect dasar.
+- [x] CLI validator menggabungkan pemeriksaan konten, relasi, registry, route, aset, tautan, dan manifest melalui satu pemanggilan.
+- [x] CI menjalankan unit test validator dan smoke-test CLI.
+- Bukti: `scripts/registries.py`, `scripts/validate_content.py`, `tests/test_validate_content.py`, `.github/workflows/validator-tests.yml`, `VALIDATOR-MILESTONE-4.md`, dan `VALIDATOR-MILESTONE-5.md`.
+- Batas verifikasi: validator generik belum memeriksa graph JSON-LD hasil render, accessibility browser, production build Astro, atau kualitas editorial. QG-12 tetap manual; QG-08/QG-10/QG-11 harus dihubungkan pada workflow setiap proyek Astro.
