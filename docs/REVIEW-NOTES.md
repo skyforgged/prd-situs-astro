@@ -306,5 +306,16 @@ Workflow menutup kesenjangan antara starter templates dan proses pemakaiannya. G
 - [x] Ditambahkan `content-contract/TRAINING-SCHEDULE-TEMPLATES.md` berisi kerangka field kosong dan checklist dokumen.
 - [x] README dan `docs/CONTRACT-EXTENSIONS.md` menautkan dokumen domain; AGENTS mewajibkan agen membaca kontrak ekstensi saat collection tersebut diaktifkan.
 - [x] Changelog mencatat ruang lingkup serta batas dukungan validator ekstensi v1.
-- Keputusan: satu schedule wajib berelasi ke tepat satu training; satu training dapat memiliki banyak schedule. Referensi menggunakan natural key `trainingSlug` yang harus unik/stabil, atau dapat diganti FK numerik melalui keputusan proyek eksplisit.
+- Keputusan model referensi: satu schedule wajib berelasi ke tepat satu training; satu training dapat memiliki banyak schedule. `schedule.trainingSlug -> training.trainingSlug` adalah satu-satunya sumber kebenaran relasi. Penggantian ke FK numerik hanya boleh melalui keputusan proyek eksplisit dan harus menghapus natural key dari relasi; jangan memakai keduanya secara paralel.
 - Batas: dokumen ini menetapkan kontrak referensi, bukan bukti bahwa nested Zod validation, date/timezone refinement, rendering Course/Event, atau registrasi telah diimplementasikan.
+
+
+## Konsistensi aturan relasi — tahap 1/5, 2026-11-28
+
+- [x] Constitution 1.4 membedakan relasi enam collection inti (FK numerik) dari pengecualian natural key pada collection ekstensi.
+- [x] Content Contract 1.6 menyelaraskan aturan umum dan menjelaskan batas penerapan pengecualian ekstensi.
+- [x] `docs/CONTRACT-EXTENSIONS.md` menetapkan syarat target natural key unik/stabil, tipe kompatibel, kardinalitas eksplisit, dan satu sumber kebenaran.
+- [x] `AGENTS.md` menginstruksikan AI agent mengikuti aturan inti/ekstensi yang sama.
+- [x] Kontrak dan template Training/Schedule 1.1 menetapkan `trainingSlug` sebagai relasi normatif tunggal; contoh registry menghapus field relasi paralel `trainingId`.
+- Bukti commit: Constitution `bcd185f`, Content Contract `418ddcb`, Extension Contract `b598c3f`, Training Contract `e5e8577`, Template `64507ba`, AGENTS `fa52601`, README `87ffd6a`, contoh registry `9e6fabb`.
+- Batas verifikasi: perubahan yang dilakukan adalah dokumentasi dan contoh registry; belum menjalankan validator atau pytest. Status tahap 1/5: dokumentasi diselaraskan, menunggu pemeriksaan lanjutan pada tahap berikutnya.
