@@ -1,3 +1,12 @@
+## Matriks traceability persyaratan — tahap 4/5, 2026-11-28
+
+- [x] Ditambahkan `docs/REQUIREMENTS-TRACEABILITY-MATRIX.md` dengan 34 requirement ID yang mencakup konstitusi, content contract, frontmatter, relasi, SEO, schema, block registry, route/asset/link, IA, editorial, accessibility, build, extension, project initialization, dan governance.
+- [x] Setiap requirement memiliki empat dimensi: dokumen acuan, aturan implementasi, test/verifikasi, dan kriteria penerimaan.
+- [x] Nama test otomatis dicocokkan dengan fungsi yang tersedia pada `tests/test_validate_content.py`; kebutuhan PROJECT dan MANUAL dipisahkan agar tidak diklaim lulus oleh CI repository standar.
+- [x] QG-01 sampai QG-13 dipetakan kembali ke requirement dan bukti minimum.
+- [x] README menautkan matriks; AGENTS.md mewajibkan agen memperbarui matriks saat sumber normatif atau bukti berubah.
+- Batas verifikasi: matriks adalah baseline traceability standar. Build Astro, rendered output, accessibility browser, IA proyek, dan approval editorial tetap harus dibuktikan pada masing-masing proyek.
+
 # Catatan Review Standar PRD Situs Astro
 
 > Tanggal tindak lanjut: 2026-11-26, diperbarui 2026-11-28
