@@ -2,6 +2,10 @@
 
 > Status: integrasi CLI diperketat dengan mode proyek lengkap; smoke-test dan test integrasi CI tersedia. Uji korpus nyata dan hasil workflow tetap merupakan bukti terpisah.
 
+## Batas dukungan validator dan proyek turunan
+
+Untuk klasifikasi lengkap kemampuan yang benar-benar tersedia, kontrak yang belum memiliki runtime, dan kewajiban proyek Astro turunan, lihat [Batas Kemampuan Standar dan Validator](docs/CAPABILITY-BOUNDARIES.md). Dokumen ini menjelaskan batas otomatisasi QG dan tidak boleh dibaca sebagai klaim bahwa seluruh aplikasi situs telah diimplementasikan.
+
 ## Tujuan
 
 Milestone 5 menambahkan pemeriksaan statis lintas dokumen untuk slug, route, canonical, aset, tautan, dan route manifest. Entry point CLI sekarang menjalankan canonical uniqueness dan route checks setiap kali dipanggil; pemeriksaan aset/internal link aktif bila `--site-root` diberikan; pemeriksaan manifest/sitemap/redirect aktif bila `--route-manifest` diberikan (dan mensyaratkan `--site-root`).
