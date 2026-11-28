@@ -1,7 +1,7 @@
 # Kontrak Collection Training dan Schedule
 
 > Status: standar ekstensi domain siap diadopsi proyek
-> Versi: 1.1
+> Versi: 1.2
 > Basis: Project Collection Contract Extensions v1
 
 ## 1. Tujuan dan posisi dalam arsitektur
@@ -119,7 +119,7 @@ Field tambahan seperti `provider`, `hasCourseInstance`, `courseMode`, `education
 | `completion` | Opsional | object | Informasi pascapelaksanaan/sertifikat |
 | `sites` | Opsional | object | Referensi situs/publisher bila model proyek memerlukannya |
 
-Jika proyek tidak memakai multi-publisher, `publisherId` dapat dihilangkan dari requiredFields. Bila dipakai, target dan integritasnya harus didefinisikan; jangan membiarkannya menjadi string bebas tanpa makna.
+Jika proyek tidak memakai multi-publisher, `publisherId` harus dihilangkan dari `requiredFields` dan boleh dihilangkan seluruhnya dari dokumen. Bila dipakai, target dan integritasnya harus didefinisikan; jangan membiarkannya menjadi string bebas tanpa makna.
 
 ### 5.2 Validasi domain yang wajib ditambahkan proyek
 
@@ -160,9 +160,11 @@ Mapping produksi sebaiknya juga mencakup, bila tersedia: `eventStatus`, `eventAt
 - Schedule yang sudah selesai tetap dapat diakses bila berguna sebagai arsip, tetapi tidak boleh tampil sebagai jadwal mendatang.
 - Navigasi, breadcrumb, canonical, pagination, sitemap, dan internal links mengikuti Content & Information Architecture serta route manifest proyek.
 
-## 7. Contoh registry ekstensi
+## 7. Contoh konfigurasi registry ekstensi (ilustratif, bukan sumber normatif)
 
-Contoh berikut merupakan konfigurasi referensi. Sesuaikan required fields dengan kebutuhan proyek, terutama `publisherId`, `ulid`, dan nested object. Field yang tidak dideklarasikan di `fieldTypes` tidak boleh digunakan pada konfigurasi v1.
+Bagian ini hanya menunjukkan cara menerjemahkan sebagian model domain pada Bagian 1–6 ke sintaks extension registry v1. **Kontrak normatif tetap Bagian 1–6 dan 8–9 pada dokumen ini**, bukan daftar `requiredFields` dalam contoh YAML. Jika terdapat perbedaan, kontrak domain mengikat dan contoh konfigurasi wajib diselaraskan.
+
+Contoh ini bukan schema Zod lengkap dan bukan jaminan bahwa seluruh aturan domain dapat dinyatakan di registry. Field opsional seperti `ulid` dan `publisherId` boleh dideklarasikan pada `fieldTypes`, tetapi tidak boleh dimasukkan ke `requiredFields` kecuali proyek secara eksplisit memilihnya sebagai kewajiban. Field yang tidak dideklarasikan di `fieldTypes` tidak boleh digunakan pada konfigurasi v1.
 
 ```yaml
 version: 1
@@ -244,8 +246,9 @@ collections:
 ```
 
 Catatan:
-- Bila `ulid` tidak diwajibkan, hapus dari `requiredFields` tetapi tetap boleh dideklarasikan sebagai field opsional.
-- Jika `publisherId` digunakan, tambahkan kontrak target/pemeriksaan relasi yang sesuai; contoh generik ini tidak mendefinisikan collection publisher.
+- `ulid` dideklarasikan sebagai field opsional dan sengaja tidak dimasukkan ke `requiredFields`, sesuai tabel field Training/Schedule.
+- `publisherId` dideklarasikan sebagai field opsional dan sengaja tidak dimasukkan ke `requiredFields`; jika proyek mengaktifkan multi-publisher, proyek harus menambahkan kontrak target dan pemeriksaan relasi yang sesuai.
+- Contoh ini hanya fixture konfigurasi parsial; bukan daftar lengkap validasi domain.
 - Tambahkan `fieldTypes` dan validasi nested khusus untuk setiap properti domain yang benar-benar dipakai.
 - Validator ekstensi memeriksa mapping sumber minimum, bukan membangun JSON-LD atau memvalidasi seluruh aturan Course/Event.
 
