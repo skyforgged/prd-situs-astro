@@ -80,6 +80,14 @@ Setiap `schemaType` wajib memiliki `schemaMappings` yang mendefinisikan `fieldMa
 Relasi v1 mendukung kardinalitas `one` atau `many` dengan target kind dan `targetField`. Default `targetField` adalah `id`; untuk extension collection, relasi juga dapat memakai natural key seperti `trainingSlug`. Tipe field sumber dan target diperiksa kesesuaiannya. Target yang hilang atau ambigu menggagalkan validasi. Semua extension document tetap wajib memakai `id` integer positif yang unik secara global.
 
 
+## Kontrak domain training dan schedule
+
+Kontrak domain dan template frontmatter yang lebih lengkap dipisahkan agar mekanisme ekstensi tetap generik:
+- [Training dan Schedule Contract](../content-contract/TRAINING-SCHEDULE-CONTRACT.md)
+- [Training dan Schedule Frontmatter Templates](../content-contract/TRAINING-SCHEDULE-TEMPLATES.md)
+
+Dokumen tersebut menetapkan makna collection, field, relasi, route, mapping Course/Event, validasi domain yang harus ditambahkan proyek, serta checklist adopsi. Contoh registry di bawah tetap menjadi fixture konfigurasi minimal.
+
 ## Contoh berbasis collection training/schedule
 
 File `examples/content-contracts/training-schedule.yml` memperlihatkan bentuk ekstensi yang lebih dekat dengan collection training dan schedule: ULID tambahan, `pubDate` ber-offset, tanggal schedule, enum status, tipe schema statis `Course`/`Event`, pemetaan field JSON-LD, route prefix, dan relasi natural key `schedule.trainingSlug -> training.trainingSlug`. Contoh ini tetap hanya memvalidasi tipe field dan relasi yang dideklarasikan; nested Zod schema dan refinement domain proyek belum seluruhnya direplikasi.
