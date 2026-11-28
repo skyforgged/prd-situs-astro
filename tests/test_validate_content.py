@@ -552,7 +552,7 @@ def test_block_schema_must_be_allowed_for_component(tmp_path: Path):
 
 
 def test_block_schema_registry_accepts_faq_page(tmp_path: Path):
-    source = PAGE.replace("component: rich-text", "component: faq\n    schema:\n      type: FAQPage\n    items: []")
+    source = PAGE.replace("component: rich-text", "component: faq\n    schema:\n      type: FAQPage\n    items:\n      - question: Apa ini?\n        answer: Penjelasan.")
     assert validate_document(tmp_path / "pages/a.md", __import__("yaml").safe_load(source), "page") == []
 
 
