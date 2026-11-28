@@ -4,6 +4,17 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 
 ## 2026-11-28
 
+### Added — Validator milestone 2
+- Validator mengenali kontrak Homepage, Menu, Page, Article, Service, dan Category dengan field wajib dan pemeriksaan tipe/struktur spesifik per jenis.
+- Ditambahkan validasi SEO fallback dan canonical, intro satu paragraf teks biasa, DefinedTerm pada Page, featuredImage, menu target/URL/enum/depth, serta bentuk dasar relasi numerik dan array ID unik.
+- Nama collection umum diinferensikan dari direktori; proyek dengan nama collection khusus dapat memakai opsi `--collection KIND=DIR`. Collection yang tidak dikenali gagal secara eksplisit.
+- Ditambahkan suite pengujian kontrak dan dokumentasi `VALIDATOR-MILESTONE-2.md`.
+
+### Verification
+- CI akhir milestone: menunggu hasil workflow pada commit terbaru.
+- Validasi keberadaan target FK lintas dokumen, target type/kardinalitas, Block Registry/props, Schema Registry menyeluruh, route/assets/internal links, dan quality gates lanjutan tetap di luar cakupan milestone ini.
+
+
 ### Fixed
 - `docs/REVIEW-NOTES.md`: status, versi, dan rujukan baris diselaraskan dengan Content Contract 1.5, Frontmatter Templates 1.4, dan Quality Gates 0.6; rujukan CI kini mengarah ke `quality/QUALITY-GATES.md:120`.
 - `projects/tnvcertification/CONTENT-CONTRACT-EVALUATION.md`: catatan status memperbarui tindak lanjut ke 1.5/1.4 tanpa mengubah objek snapshot 1.3/1.2.
