@@ -176,13 +176,108 @@ def validate_document(path,data,kind=None):
     if len(dates)==2 and dates["updatedDate"]<dates["publishedDate"]: err("field 'updatedDate' must be equal to or later than 'publishedDate'")
     return out
 
+def load_extension_contracts(path, content_dir):
+    if path is None: return {}, {}
+    try:
+        raw=yaml.safe_load(Path(path).read_text(encoding="utf-8"))
+    except (OSError,UnicodeError,yaml.YAMLError) as exc:
+        raise ValueError("cannot read contract registry: %s" % exc)
+    if not isinstance(raw,dict) or raw.get("version") != 1 or not isinstance(raw.get("collections"),dict):
+        raise ValueError("contract registry must have version: 1 and a collections object")
+    contracts={}; mapping={}
+    for kind,spec in raw["collections"].items():
+        if kind in {"homepage","menu","page","article","service","category"} or not re.fullmatch(r"[a-z][a-z0-9_-]*",str(kind)):
+            raise ValueError("extension collection kind must be a new lowercase identifier: %r" % kind)
+        if not isinstance(spec,dict) or not nonempty(spec.get("directory")):
+            raise ValueError("extension '%s' requires a directory" % kind)
+        required=spec.get("requiredFields",[])
+        field_types=spec.get("fieldTypes",{})
+        schema_types=spec.get("schemaTypes",[])
+        route_prefix=spec.get("routePrefix")
+        relations=spec.get("relations",{})
+        if not isinstance(required,list) or any(not isinstance(x,str) for x in required):
+            raise ValueError("extension '%s'.requiredFields must be an array of strings" % kind)
+        allowed_types={"string","positive_int","boolean","object","array","utc_datetime","string_array","positive_int_array"}
+        if not isinstance(field_types,dict) or any(k not in allowed_types for k in field_types.values()):
+            raise ValueError("extension '%s'.fieldTypes contains an unsupported field type" % kind)
+        if not isinstance(schema_types,list) or any(not isinstance(x,str) or not x for x in schema_types):
+            raise ValueError("extension '%s'.schemaTypes must be an array of strings" % kind)
+        if not isinstance(route_prefix,str) or not route_prefix.startswith("/") or "://" in route_prefix:
+            raise ValueError("extension '%s'.routePrefix must be an absolute site path" % kind)
+        if not isinstance(relations,dict):
+            raise ValueError("extension '%s'.relations must be an object" % kind)
+        for field,rel in relations.items():
+            if not isinstance(rel,dict) or not nonempty(rel.get("target")) or rel.get("cardinality") not in {"one","many"}:
+                raise ValueError("extension relation '%s.%s' requires target and cardinality one|many" % (kind,field))
+        directory=Path(spec["directory"])
+        if not directory.is_absolute(): directory=(Path(content_dir).resolve().parent/directory).resolve()
+        else: directory=directory.resolve()
+        mapping[str(directory)]=kind
+        contracts[kind]=dict(spec)
+    return contracts,mapping
+
+
+def validate_extension_document(path,data,kind,spec):
+    issues=[]
+    def err(message): issues.append(Issue(path,"extension '%s': %s"%(kind,message)))
+    for field in spec.get("requiredFields",[]):
+        if field not in data: err("missing required field '%s'"%field)
+    validators={
+        "string":lambda v:isinstance(v,str),
+        "positive_int":posint,
+        "boolean":lambda v:isinstance(v,bool),
+        "object":lambda v:isinstance(v,dict),
+        "array":lambda v:isinstance(v,list),
+        "utc_datetime":lambda v:utc_date(v) is not None,
+        "string_array":lambda v:isinstance(v,list) and all(isinstance(x,str) for x in v),
+        "positive_int_array":lambda v:isinstance(v,list) and all(posint(x) for x in v),
+    }
+    for field,field_type in spec.get("fieldTypes",{}).items():
+        if field in data and not validators[field_type](data[field]):
+            err("field '%s' must be %s"%(field,field_type))
+    schema=data.get("schema")
+    allowed=spec.get("schemaTypes",[])
+    if not isinstance(schema,dict) or schema.get("type") not in allowed:
+        err("schema.type must be one of the extension's declared schemaTypes: %s"%", ".join(allowed))
+    slug=data.get("slug")
+    if "slug" in data and (not nonempty(slug) or not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*",slug)):
+        err("slug must use lowercase ASCII letters/numbers separated by single hyphens")
+    return issues
+
+
+def validate_extension_relations(documents,contracts):
+    issues=[]
+    by_kind_id={}
+    for path,data,kind in documents:
+        docid=data.get("id")
+        if posint(docid): by_kind_id.setdefault((kind,docid),[]).append(path)
+    for path,data,kind in documents:
+        spec=contracts.get(kind,{})
+        for field,rel in spec.get("relations",{}).items():
+            value=data.get(field)
+            if value is None: continue
+            targets=value if rel["cardinality"]=="many" else [value]
+            if rel["cardinality"]=="many" and not isinstance(value,list):
+                issues.append(Issue(path,"extension relation '%s' must be an array"%field)); continue
+            if rel["cardinality"]=="one" and not posint(value):
+                issues.append(Issue(path,"extension relation '%s' must be a positive integer"%field)); continue
+            if rel["cardinality"]=="many" and (any(not posint(x) for x in targets) or len(targets)!=len(set(targets))):
+                issues.append(Issue(path,"extension relation '%s' must contain unique positive integer IDs"%field)); continue
+            for target_id in targets:
+                matches=by_kind_id.get((rel["target"],target_id),[])
+                if len(matches)!=1:
+                    reason="missing" if not matches else "ambiguous"
+                    issues.append(Issue(path,"extension relation '%s' references %s %s ID %s"%(field,reason,rel["target"],target_id)))
+    return issues
+
+
 def parse_collection_args(values):
     result={}
     for value in values:
         if "=" not in value: raise argparse.ArgumentTypeError(f"invalid --collection '{value}'; expected KIND=DIR")
         kind,directory=value.split("=",1)
         if kind not in {"homepage","menu","page","article","service","category"} or not directory:
-            raise argparse.ArgumentTypeError(f"invalid --collection '{value}'")
+            raise argparse.ArgumentTypeError(f"invalid --collection '{value}'; --collection maps only the six core kinds")
         result[str(Path(directory).resolve())]=kind
     return result
 
@@ -294,7 +389,7 @@ def validate_relations(documents):
     for node in parent_edges: visit(node,[])
     return issues
 
-def validate_paths(paths,collection_map=None):
+def validate_paths(paths,collection_map=None,extension_contracts=None):
     issues=[]; seen={}; collection_map=collection_map or {}; documents=[]
     for path in sorted(paths):
         data,error=parse_frontmatter(path)
@@ -303,13 +398,17 @@ def validate_paths(paths,collection_map=None):
         for directory,mapped_kind in collection_map.items():
             try: path.resolve().relative_to(Path(directory)); kind=mapped_kind; break
             except ValueError: pass
-        issues.extend(validate_document(path,data,kind))
+        if kind in (extension_contracts or {}):
+            issues.extend(validate_extension_document(path,data,kind,extension_contracts[kind]))
+        else:
+            issues.extend(validate_document(path,data,kind))
         documents.append((path,data,kind))
         docid=data.get("id")
         if posint(docid):
             if docid in seen: issues.append(Issue(path,f"duplicate global document ID {docid}; first used in {seen[docid]}"))
             else: seen[docid]=path
     issues.extend(validate_relations(documents))
+    issues.extend(validate_extension_relations(documents,extension_contracts or {}))
     return issues
 
 
@@ -504,13 +603,19 @@ def main(argv=None):
     parser.add_argument("--site-root",type=Path,default=None,help="Project root for local asset resolution")
     parser.add_argument("--route-manifest",type=Path,default=None,help="YAML route manifest for QG-13")
     parser.add_argument("--route-prefixes",type=Path,default=None,help="JSON mapping of collection kinds to route prefixes")
+    parser.add_argument("--contract-registry",type=Path,default=None,help="YAML registry for project-specific collection contracts (version 1)")
     args=parser.parse_args(argv)
     if not args.content_dir.is_dir():
         print(f"ERROR: content directory does not exist: {args.content_dir}",file=sys.stderr)
         return 2
     try:
         mapping=parse_collection_args(args.collection)
+        contracts,extension_mapping=load_extension_contracts(args.contract_registry,args.content_dir)
+        mapping.update(extension_mapping)
         prefixes=_load_route_prefixes(args.route_prefixes)
+        for kind,spec in contracts.items():
+            if kind in prefixes: raise ValueError("route prefix for '%s' is defined in both contract registry and --route-prefixes"%kind)
+            prefixes[kind]=spec["routePrefix"]
     except (argparse.ArgumentTypeError,ValueError) as exc:
         parser.error(str(exc))
     if args.route_manifest and not args.site_root:
@@ -520,7 +625,7 @@ def main(argv=None):
         print(f"ERROR: no Markdown files found under {args.content_dir}",file=sys.stderr)
         return 2
 
-    issues=validate_paths(files,mapping)
+    issues=validate_paths(files,mapping,contracts)
     documents=_load_documents(files,mapping)
     issues.extend(validate_seo_uniqueness(documents))
     route_issues,routes=validate_routes(documents,prefixes)
@@ -537,7 +642,7 @@ def main(argv=None):
             print(f"ERROR: {issue}")
         print(f"\nValidation failed: {len(issues)} issue(s) across {len(files)} Markdown file(s).")
         return 1
-    checks=["frontmatter","relations","schema/block registry","canonical uniqueness","slug/routes"]
+    checks=["core and extension contracts","relations","schema/block registry","canonical uniqueness","slug/routes"]
     if args.site_root: checks.append("assets/internal links")
     if args.route_manifest: checks.append("route manifest/sitemap/redirects")
     print("Validation passed: %d Markdown file(s); checks: %s."%(len(files),", ".join(checks)))
