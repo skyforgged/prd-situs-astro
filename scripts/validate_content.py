@@ -195,17 +195,20 @@ def load_extension_contracts(path, content_dir):
         field_types=spec.get("fieldTypes",{})
         schema_types=spec.get("schemaTypes",[])
         schema_mappings=spec.get("schemaMappings",{})
+        fixed_schema_type=spec.get("schemaType")
         route_prefix=spec.get("routePrefix")
         relations=spec.get("relations",{})
         if not isinstance(required,list) or any(not isinstance(x,str) for x in required):
             raise ValueError("extension '%s'.requiredFields must be an array of strings" % kind)
-        allowed_types={"string","positive_int","boolean","object","array","utc_datetime","string_array","positive_int_array"}
+        allowed_types={"string","positive_int","boolean","object","array","utc_datetime","offset_datetime","iso_date_or_datetime","ulid","string_array","positive_int_array"}
         if not isinstance(field_types,dict) or any(not isinstance(v,str) or v not in allowed_types for v in field_types.values()):
             raise ValueError("extension '%s'.fieldTypes contains an unsupported field type" % kind)
         if not isinstance(schema_types,list) or any(not isinstance(x,str) or not x for x in schema_types):
             raise ValueError("extension '%s'.schemaTypes must be an array of strings" % kind)
         if not isinstance(schema_mappings,dict) or set(schema_types) - set(schema_mappings):
             raise ValueError("extension '%s' must define schemaMappings for every schemaType" % kind)
+        if fixed_schema_type is not None and fixed_schema_type not in schema_types:
+            raise ValueError("extension '%s'.schemaType must be one of schemaTypes" % kind)
         for schema_type,mapping_spec in schema_mappings.items():
             if schema_type not in schema_types or not isinstance(mapping_spec,dict):
                 raise ValueError("extension '%s' has an invalid schemaMappings entry for '%s'" % (kind,schema_type))
@@ -222,6 +225,8 @@ def load_extension_contracts(path, content_dir):
         for field,rel in relations.items():
             if not isinstance(rel,dict) or not nonempty(rel.get("target")) or rel.get("cardinality") not in {"one","many"}:
                 raise ValueError("extension relation '%s.%s' requires target and cardinality one|many" % (kind,field))
+            if "targetField" in rel and not nonempty(rel["targetField"]):
+                raise ValueError("extension relation '%s.%s'.targetField must be a non-empty string" % (kind,field))
         directory=Path(spec["directory"])
         if not directory.is_absolute(): directory=(Path(content_dir).resolve()/directory).resolve()
         else: directory=directory.resolve()
@@ -229,9 +234,34 @@ def load_extension_contracts(path, content_dir):
         contracts[kind]=dict(spec)
     for kind,spec in contracts.items():
         for field,rel in spec.get("relations",{}).items():
-            if rel["target"] not in core_kinds and rel["target"] not in contracts:
-                raise ValueError("extension relation '%s.%s' targets undeclared collection '%s'"%(kind,field,rel["target"]))
+            target=rel["target"]
+            if target not in core_kinds and target not in contracts:
+                raise ValueError("extension relation '%s.%s' targets undeclared collection '%s'"%(kind,field,target))
+            target_field=rel.get("targetField","id")
+            if target in contracts and target_field != "id" and target_field not in contracts[target].get("fieldTypes",{}):
+                raise ValueError("extension relation '%s.%s' targets undeclared field '%s.%s'"%(kind,field,target,target_field))
+            if target in core_kinds and target_field != "id":
+                raise ValueError("extension relation '%s.%s' may target only document ID on a core collection"%(kind,field))
     return contracts,mapping
+
+
+def _has_timezone(value):
+    try:
+        parsed=datetime.fromisoformat(value.replace("Z","+00:00"))
+        return parsed.tzinfo is not None and parsed.utcoffset() is not None
+    except (ValueError,AttributeError):
+        return False
+
+
+def _is_iso_date_or_datetime(value):
+    try:
+        if re.fullmatch(r"\\d{4}-\\d{2}-\\d{2}",value):
+            datetime.strptime(value,"%Y-%m-%d")
+        else:
+            datetime.fromisoformat(value.replace("Z","+00:00"))
+        return True
+    except (ValueError,AttributeError):
+        return False
 
 
 def validate_extension_document(path,data,kind,spec):
@@ -247,6 +277,9 @@ def validate_extension_document(path,data,kind,spec):
         "object":lambda v:isinstance(v,dict),
         "array":lambda v:isinstance(v,list),
         "utc_datetime":lambda v:utc_date(v) is not None,
+        "offset_datetime":lambda v:isinstance(v,str) and _has_timezone(v),
+        "iso_date_or_datetime":lambda v:isinstance(v,str) and _is_iso_date_or_datetime(v),
+        "ulid":lambda v:isinstance(v,str) and bool(re.fullmatch(r"[0-9A-HJKMNP-TV-Z]{26}",v)),
         "string_array":lambda v:isinstance(v,list) and all(isinstance(x,str) for x in v),
         "positive_int_array":lambda v:isinstance(v,list) and all(posint(x) for x in v),
     }
@@ -255,14 +288,19 @@ def validate_extension_document(path,data,kind,spec):
             err("field '%s' must be %s"%(field,field_type))
     schema=data.get("schema")
     allowed=spec.get("schemaTypes",[])
-    if not isinstance(schema,dict) or schema.get("type") not in allowed:
-        err("schema.type must be one of the extension's declared schemaTypes: %s"%", ".join(allowed))
-    else:
-        mapping_spec=spec.get("schemaMappings",{}).get(schema.get("type"),{})
+    schema_type=spec.get("schemaType")
+    if schema_type is None:
+        schema_type=schema.get("type") if isinstance(schema,dict) else None
+        if schema_type not in allowed:
+            err("schema.type must be one of the extension's declared schemaTypes: %s"%", ".join(allowed))
+    elif schema_type not in allowed:
+        err("schemaType must be one of the extension's declared schemaTypes")
+    if schema_type in allowed:
+        mapping_spec=spec.get("schemaMappings",{}).get(schema_type,{})
         for field in mapping_spec.get("requiredFields",[]):
-            if field not in data: err("schema mapping '%s' requires source field '%s'"%(schema.get("type"),field))
+            if field not in data: err("schema mapping '%s' requires source field '%s'"%(schema_type,field))
         for output_field,source_field in mapping_spec.get("fieldMapping",{}).items():
-            if source_field not in data: err("schema mapping '%s.%s' references missing source field '%s'"%(schema.get("type"),output_field,source_field))
+            if source_field not in data: err("schema mapping '%s.%s' references missing source field '%s'"%(schema_type,output_field,source_field))
     slug=data.get("slug")
     if "slug" in data and (not nonempty(slug) or not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*",slug)):
         err("slug must use lowercase ASCII letters/numbers separated by single hyphens")
@@ -271,27 +309,33 @@ def validate_extension_document(path,data,kind,spec):
 
 def validate_extension_relations(documents,contracts):
     issues=[]
-    by_kind_id={}
+    indexes={}
     for path,data,kind in documents:
-        docid=data.get("id")
-        if posint(docid): by_kind_id.setdefault((kind,docid),[]).append(path)
+        for field,value in data.items():
+            if isinstance(value,(str,int)) and not isinstance(value,bool):
+                indexes.setdefault((kind,field,value),[]).append(path)
     for path,data,kind in documents:
         spec=contracts.get(kind,{})
         for field,rel in spec.get("relations",{}).items():
             value=data.get(field)
             if value is None: continue
-            targets=value if rel["cardinality"]=="many" else [value]
-            if rel["cardinality"]=="many" and not isinstance(value,list):
+            target_field=rel.get("targetField","id")
+            source_type=spec.get("fieldTypes",{}).get(field)
+            is_many=rel["cardinality"]=="many"
+            targets=value if is_many and isinstance(value,list) else [value]
+            if is_many and not isinstance(value,list):
                 issues.append(Issue(path,"extension relation '%s' must be an array"%field)); continue
-            if rel["cardinality"]=="one" and not posint(value):
-                issues.append(Issue(path,"extension relation '%s' must be a positive integer"%field)); continue
-            if rel["cardinality"]=="many" and (any(not posint(x) for x in targets) or len(targets)!=len(set(targets))):
-                issues.append(Issue(path,"extension relation '%s' must contain unique positive integer IDs"%field)); continue
-            for target_id in targets:
-                matches=by_kind_id.get((rel["target"],target_id),[])
+            if is_many and len(targets)!=len(set(targets)):
+                issues.append(Issue(path,"extension relation '%s' must not contain duplicate values"%field)); continue
+            for target_value in targets:
+                valid=nonempty(target_value) if source_type=="string" else posint(target_value)
+                if not valid:
+                    expected="non-empty strings" if source_type=="string" else "positive integer IDs"
+                    issues.append(Issue(path,"extension relation '%s' must contain %s"%(field,expected))); continue
+                matches=indexes.get((rel["target"],target_field,target_value),[])
                 if len(matches)!=1:
                     reason="missing" if not matches else "ambiguous"
-                    issues.append(Issue(path,"extension relation '%s' references %s %s ID %s"%(field,reason,rel["target"],target_id)))
+                    issues.append(Issue(path,"extension relation '%s' references %s %s.%s value %r"%(field,reason,rel["target"],target_field,target_value)))
     return issues
 
 
