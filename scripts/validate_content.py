@@ -557,7 +557,7 @@ def _walk_references(value, prefix=""):
     if isinstance(value,dict):
         for key,item in value.items():
             where=(prefix+"."+str(key)).strip(".")
-            if isinstance(item,str) and key in {"url","href"}:
+            if isinstance(item,str) and key in {"url","href","actionHref","primaryHref","secondaryHref","registrationUrl"}:
                 yield ("link",item,where)
             elif isinstance(item,str) and key in {"src","poster"}:
                 yield ("asset",item,where)
@@ -633,20 +633,27 @@ def validate_route_manifest(manifest_path, site_root, routes):
         if not isinstance(item,dict) or not nonempty(item.get("path")) or not item["path"].startswith("/"):
             issues.append(Issue(Path(manifest_path),"[QG-13 INVALID_ROUTE] routes[%d] requires an absolute path"%i)); continue
         route=item["path"]
-        if route in declared: issues.append(Issue(Path(manifest_path),"[QG-13 ROUTE_COLLISION] duplicate manifest route '%s'"%route))
-        declared.add(route)
+        normalized="/" + "/".join(part for part in route.split("/") if part)
+        if route.endswith("/") and normalized!="/": normalized+="/"
+        if normalized in declared: issues.append(Issue(Path(manifest_path),"[QG-13 ROUTE_COLLISION] duplicate manifest route '%s'"%normalized))
+        declared.add(normalized)
         source=item.get("source")
-        if source:
+        if source is not None and not nonempty(source):
+            issues.append(Issue(Path(manifest_path),"[QG-13 INVALID_SOURCE] route '%s' source must be a non-empty relative path"%normalized))
+        elif source:
             source_path=(Path(site_root)/source).resolve()
-            if not source_path.is_file(): issues.append(Issue(Path(manifest_path),"[QG-13 SOURCE_NOT_FOUND] route '%s' source '%s' does not exist"%(route,source)))
-        if item.get("indexable") is True and route not in routes and route.rstrip("/")+"/" not in routes:
-            # The manifest is authoritative; an explicit source can represent routes outside the content collections.
-            if not source: issues.append(Issue(Path(manifest_path),"[QG-13 INDEXABLE_ROUTE_UNMAPPED] indexable route '%s' has no source"%route))
+            if not source_path.is_file(): issues.append(Issue(Path(manifest_path),"[QG-13 SOURCE_NOT_FOUND] route '%s' source '%s' does not exist"%(normalized,source)))
+        if "indexable" in item and not isinstance(item["indexable"],bool):
+            issues.append(Issue(Path(manifest_path),"[QG-13 INVALID_INDEXABILITY] route '%s' indexable must be boolean"%normalized))
+        if item.get("indexable") is True and not source:
+            issues.append(Issue(Path(manifest_path),"[QG-13 INDEXABLE_ROUTE_UNMAPPED] indexable route '%s' has no source"%normalized))
     for route,path in routes.items():
         if route not in declared:
             issues.append(Issue(Path(manifest_path),"[QG-13 ROUTE_NOT_IN_MANIFEST] generated route '%s' from %s is absent from manifest"%(route,path)))
     sitemap=manifest.get("sitemap")
-    if sitemap:
+    if sitemap is not None and not nonempty(sitemap):
+        issues.append(Issue(Path(manifest_path),"[QG-13 INVALID_SITEMAP] sitemap must be a non-empty relative path"))
+    if nonempty(sitemap):
         sitemap_path=Path(site_root)/sitemap
         if not sitemap_path.is_file(): issues.append(Issue(Path(manifest_path),"[QG-13 SITEMAP_NOT_FOUND] sitemap '%s' does not exist"%sitemap))
         else:
