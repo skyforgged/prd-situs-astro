@@ -60,4 +60,4 @@ Milestone ini belum memeriksa keberadaan target relasi di seluruh dokumen, jenis
 
 ## Bukti pengujian
 
-Suite unit menguji enam kontrak, fallback SEO, intro/DefinedTerm, featured image, target dan kedalaman menu, relasi bertipe, pemetaan collection khusus, serta invariant Milestone 1. Hasil CI dicatat setelah workflow pada commit akhir milestone selesai.
+Suite unit menguji enam kontrak, fallback SEO, intro/DefinedTerm, featured image, target dan kedalaman menu, relasi bertipe, pemetaan collection khusus, serta invariant Milestone 1. GitHub Actions pada Python 3.12: **22 passed**.
