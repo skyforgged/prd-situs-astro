@@ -43,7 +43,9 @@ pytest -q
 python scripts/validate_content.py src/content --site-root . --route-manifest projects/your-site/route-manifest.yml
 ```
 
-Perintah di atas menjalankan validator yang terintegrasi saat ini, bukan seluruh rangkaian Milestone 5. Pemetaan collection dapat ditambahkan berulang:
+Perintah di atas menjalankan validator yang terintegrasi saat ini, bukan seluruh rangkaian Milestone 5. Opsi `--collection` hanya menerima enam kind kontrak inti (`homepage`, `menu`, `page`, `article`, `service`, `category`). Opsi ini memetakan kind yang sudah dikenal ke direktori; opsi ini **tidak** mendaftarkan kind/collection baru seperti `training` atau `schedule`. Untuk collection proyek tambahan diperlukan mekanisme ekstensi kontrak yang belum tersedia.
+
+Pemetaan enam collection inti dapat ditambahkan berulang:
 
 ```bash
 python scripts/validate_content.py src/content \
