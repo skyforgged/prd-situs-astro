@@ -230,5 +230,5 @@ Bagian ini memperbarui status pekerjaan tanpa mengubah tabel historis "Status sa
 
 - Clone dan test lokal tidak dapat dilakukan pada lingkungan ini karena akses jaringan container ke GitHub tidak tersedia.
 - Workflow validator di repo PRD telah diperbarui, tetapi hasil run hijau untuk commit terbaru belum diperoleh pada saat pembaruan ini.
-- Extension v1 adalah fondasi generik, bukan reproduksi penuh Zod schema pusattraining. Validasi nested schema, aturan tanggal lintas-field, timezone IANA, dan graph JSON-LD hasil render tetap harus dijalankan di proyek pusattraining.
+- Extension v1 dan fixture sekarang mencakup subset model training/schedule, bukan reproduksi penuh Zod schema pusattraining. Validasi nested schema, block discriminator, aturan tanggal lintas-field, timezone IANA, dan graph JSON-LD hasil render tetap harus dijalankan di proyek pusattraining.
 - Tidak ada perubahan pada repository `arisciwek/pusattraining` karena hak akses tulis tidak tersedia.
