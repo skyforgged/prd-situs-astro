@@ -1,7 +1,7 @@
 # Website Constitution — PRD Astro
 
 > Status: Standar dasar proyek  
-> Versi: 1.3
+> Versi: 1.4
 > Bahasa: Indonesia
 
 ## 1. Tujuan dan cakupan
@@ -56,13 +56,18 @@ Satu situs wajib memiliki mekanisme pencatatan atau validasi ID dokumen global a
 
 ## 5. Relasi antarkonten
 
-1. Relasi antardokumen konten wajib menggunakan ID numerik milik dokumen tujuan (foreign key).
-2. Relasi tunggal menggunakan satu nilai numerik, misalnya `serviceId: 12`.
-3. Relasi jamak menggunakan daftar ID numerik, misalnya `relatedArticleIds: [102, 103]`.
-4. Relasi tidak boleh menggunakan slug, judul, URL, nama file, atau label tampilan sebagai pengenal utama.
-5. Setiap relasi wajib mendefinisikan collection/jenis konten tujuan, kardinalitas, kewajiban atau opsionalitas, dan perilaku ketika target tidak ditemukan. Matriks relasi tersebut harus menjadi bagian Content Contract atau spesifikasi data proyek.
-6. Referensi yang tidak ditemukan, bertipe salah, atau menunjuk ke ID duplikat harus menyebabkan validasi gagal.
-7. Relasi dua arah tidak otomatis diwajibkan. Jika dibutuhkan, aturan sinkronisasi kedua arah harus ditetapkan secara eksplisit.
+Aturan relasi dibedakan menurut jenis collection agar kontrak inti tetap konsisten tanpa menutup kebutuhan domain khusus.
+
+1. **Enam collection inti** (`homepage`, `menu`, `page`, `article`, `service`, dan `category`) wajib menggunakan ID numerik dokumen target sebagai foreign key.
+2. Relasi tunggal pada collection inti menggunakan satu nilai numerik, misalnya `serviceId: 12`; relasi jamak menggunakan daftar ID numerik, misalnya `relatedArticleIds: [102, 103]`.
+3. **Collection ekstensi proyek** secara default juga menggunakan ID numerik. Natural key hanya boleh digunakan sebagai pengecualian eksplisit apabila mekanisme extension registry mendukungnya dan proyek mendeklarasikan `target`, `targetField`, kardinalitas, serta tipe field sumber dan target.
+4. Natural key yang dipakai sebagai target relasi wajib unik dalam collection target, stabil, tidak kosong, dan tidak boleh bergantung pada judul, URL, nama file, atau label tampilan yang dapat berubah. Slug route tidak otomatis menjadi natural key.
+5. Satu relasi hanya boleh memiliki satu sumber kebenaran. Jangan menyimpan FK numerik dan natural key untuk relasi logis yang sama kecuali salah satunya secara eksplisit merupakan data turunan yang disinkronkan dan divalidasi.
+6. Setiap relasi wajib mendefinisikan collection/jenis konten tujuan, field target, kardinalitas, kewajiban atau opsionalitas, dan perilaku ketika target tidak ditemukan. Matriks relasi tersebut harus menjadi bagian Content Contract atau spesifikasi data proyek.
+7. Referensi yang tidak ditemukan, bertipe salah, ambigu, atau menunjuk ke target yang tidak unik harus menyebabkan validasi gagal.
+8. Relasi dua arah tidak otomatis diwajibkan. Relasi balik sebaiknya dihitung dari relasi sumber; jika disimpan, aturan sinkronisasi kedua arah harus ditetapkan secara eksplisit.
+
+**Invariant identitas:** pengecualian natural key hanya mengubah cara sebuah relasi menemukan target. Setiap dokumen ekstensi tetap wajib memiliki `id` numerik positif yang unik global lintas seluruh collection situs.
 
 ## 6. Schema.org
 
