@@ -922,3 +922,29 @@ def test_schema_registry_rejects_declaration_only_page_type(tmp_path: Path):
     source = PAGE.replace("type: WebPage", "type: AboutPage")
     issues = validate_document(tmp_path / "pages/a.md", __import__("yaml").safe_load(source), "page")
     assert any("declaration-only" in issue.message for issue in issues)
+
+
+def test_cli_uses_route_prefix_override(tmp_path: Path):
+    import json
+    import subprocess
+    content = tmp_path / "content"
+    write_md(content / "pages" / "page.md", PAGE)
+    site_root = tmp_path / "site"
+    (site_root / "public").mkdir(parents=True)
+    (site_root / "public" / "sitemap.xml").write_text(
+        "<urlset><loc>https://example.test/custom/tentang/</loc></urlset>", encoding="utf-8"
+    )
+    prefixes = tmp_path / "prefixes.json"
+    prefixes.write_text(json.dumps({"page": "/custom/"}), encoding="utf-8")
+    manifest = site_root / "routes.yml"
+    manifest.write_text(
+        "routes:\n  - path: /custom/tentang/\n    source: public/sitemap.xml\n    indexable: true\nsitemap: public/sitemap.xml\n",
+        encoding="utf-8",
+    )
+    result = subprocess.run(
+        [sys.executable, str(Path(__file__).resolve().parents[1] / "scripts" / "validate_content.py"),
+         str(content), "--site-root", str(site_root), "--route-prefixes", str(prefixes),
+         "--route-manifest", str(manifest)],
+        text=True, capture_output=True,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
