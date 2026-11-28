@@ -37,4 +37,4 @@ pytest -q
 
 ## Hasil uji milestone 1
 
-Uji unit mencakup frontmatter valid, duplicate YAML key, ID dokumen lintas direktori, ID block lokal, timestamp nonkanonis, urutan tanggal, dan penolakan boolean sebagai ID. Hasil aktual dicatat setelah test suite dijalankan pada lingkungan target.
+Uji unit lokal dan GitHub Actions (Python 3.12): **10 passed**. Cakupan mencakup frontmatter valid, duplicate YAML key, ID dokumen lintas direktori, ID block lokal, timestamp nonkanonis, urutan tanggal, dan penolakan boolean sebagai ID.
