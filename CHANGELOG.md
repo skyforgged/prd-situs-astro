@@ -98,6 +98,8 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 - Menambahkan dokumentasi `VALIDATOR-MILESTONE-5.md`, memperbarui README dan Quality Gates menjadi versi 0.7, serta mencatat batas otomatisasi tiap gate.
 - QG-12 tetap manual. QG-08 rendered JSON-LD, QG-10 audit accessibility browser, dan QG-11 production build tetap harus dijalankan oleh setiap proyek Astro; repository standar tidak memiliki aplikasi Astro.
 
+## 2026-11-28
+
 ### Added — Validator milestone 4
 - Menambahkan Schema Registry referensi untuk scope block, page, dan entity; validator memeriksa tipe schema dokumen, scope mainEntity, properti schema yang dikenal, serta pasangan schema block dan component.
 - Menambahkan Block Registry referensi yang mengenali identifier block dari Content Contract dan katalog gabungan; memvalidasi component, props, tipe props, dan subset props spesifik komponen yang kontraknya eksplisit.
