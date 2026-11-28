@@ -12,8 +12,10 @@ Repository ini menyimpan standar reusable untuk analisis kebutuhan, perancangan,
 - [Quality Gates](quality/QUALITY-GATES.md) — acceptance criteria dan verifikasi.
 - [Content Quality Standard](quality/CONTENT-QUALITY-STANDARD.md) — standar kualitas editorial, kedalaman, akurasi, orisinalitas, dan people-first content.
 - [Validator Milestone 1](VALIDATOR-MILESTONE-1.md) — fondasi parser dan invariant global.
-- [Validator Milestone 2](VALIDATOR-MILESTONE-2.md) — validasi kontrak Homepage, Menu, Page, Article, Service, dan Category.\n- [Validator Milestone 3](VALIDATOR-MILESTONE-3.md) — validasi FK lintas dokumen, target collection, kardinalitas, dan siklus relasi.
-- [Validator Milestone 4](VALIDATOR-MILESTONE-4.md) — validasi Schema Registry, Block Registry, dan props komponen.\n- [Validator Milestone 5](VALIDATOR-MILESTONE-5.md) — validasi route, aset, tautan, manifest IA, dan integrasi Quality Gates.
+- [Validator Milestone 2](VALIDATOR-MILESTONE-2.md) — validasi kontrak Homepage, Menu, Page, Article, Service, dan Category.
+- [Validator Milestone 3](VALIDATOR-MILESTONE-3.md) — validasi FK lintas dokumen, target collection, kardinalitas, dan siklus relasi.
+- [Validator Milestone 4](VALIDATOR-MILESTONE-4.md) — validasi Schema Registry, Block Registry, dan props komponen.
+- [Validator Milestone 5](VALIDATOR-MILESTONE-5.md) — validasi route, aset, tautan, manifest IA, dan integrasi Quality Gates.
 
 ## Instruksi dan analisis
 
