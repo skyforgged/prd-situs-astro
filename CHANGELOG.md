@@ -1,19 +1,15 @@
 ## [Unreleased] — 2026-11-28
 
 ### Added
-- `docs/CAPABILITY-BOUNDARIES.md` mengklasifikasikan dukungan validator aktual, kontrak normatif yang belum menjadi runtime, dan implementasi wajib proyek Astro turunan; memetakan batas QG-01–QG-13 dan Definition of Done adopsi.
+- `quality/CAPABILITY-BOUNDARIES.md` mengklasifikasikan dukungan validator aktual, kontrak normatif yang belum menjadi runtime, dan implementasi wajib proyek Astro turunan; memetakan batas QG-01–QG-13 dan Definition of Done adopsi.
+- Matriks traceability `docs/REQUIREMENTS-TRACEABILITY-MATRIX.md` dengan 34 requirement ID, referensi dokumen normatif, aturan implementasi, test/verifikasi, acceptance criteria, dan pemetaan QG-01–QG-13.
 - Matriks traceability diperluas dengan PRD-035 untuk dokumentasi batas kemampuan.
 - README, AGENTS.md, Quality Gates, dan Validator Milestone 5 ditautkan ke batas kemampuan agar klaim dukungan tetap akurat.
+- Tautan matriks ditambahkan ke README dan kewajiban pemeliharaannya ke AGENTS.md.
 
 ### Changed
-- `docs/CAPABILITY-BOUNDARIES.md` versi 1.1 menambahkan MANUAL sebagai kategori dan status bukti keempat, sejajar dengan empat jenis bukti pada AGENTS.md dan matriks traceability. Cakupan validator, test, dan kontrak tidak berubah.
+- `quality/CAPABILITY-BOUNDARIES.md` versi 1.1 menambahkan MANUAL sebagai kategori dan status bukti keempat, sejajar dengan empat jenis bukti pada AGENTS.md dan matriks traceability. Cakupan validator, test, dan kontrak tidak berubah.
 - Dokumen normatif dipindahkan keluar dari `docs/`: `quality/CAPABILITY-BOUNDARIES.md` dan `content-contract/CONTRACT-EXTENSIONS.md`. Referensi aktif di README, AGENTS.md, Quality Gates, Validator Milestone 5, matriks traceability, dan Review Notes mengikuti jalur baru. Penyebutan jalur lama pada entri sebelumnya dipertahankan sebagai catatan historis, bukan tautan aktif.
-
-## [Unreleased] — 2026-11-28
-
-### Added
-- Matriks traceability `docs/REQUIREMENTS-TRACEABILITY-MATRIX.md` dengan 34 requirement ID, referensi dokumen normatif, aturan implementasi, test/verifikasi, acceptance criteria, dan pemetaan QG-01–QG-13.
-- Tautan matriks ditambahkan ke README dan kewajiban pemeliharaannya ke AGENTS.md.
 
 # Changelog
 
@@ -72,7 +68,6 @@
 
 Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 
-
 ## 2026-11-28 — Penyempurnaan remediasi audit validator
 
 ### Fixed
@@ -84,7 +79,6 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 ### Verification boundary
 - Test lokal belum dijalankan dari sesi ini. Workflow CI telah dikonfigurasi untuk smoke-test CLI dan pytest, tetapi hasil hijau commit terbaru belum dapat diverifikasi melalui status check yang tersedia.
 - Korpus penuh pusattraining dan workflow di repo tersebut tetap belum dijalankan/diubah; extension v1 masih memerlukan validasi nested/domain-specific di proyek pemakai.
-
 
 ## 2026-11-28 — Koreksi hasil audit validator
 
@@ -103,8 +97,6 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 - Mendeklarasikan opsi CLI `--site-root`, `--route-manifest`, dan `--route-prefixes`; pada audit 2026-11-28, opsi tersebut belum terhubung ke pemeriksaan Milestone 5. CI menjalankan unit tests (`pytest -q`); smoke-test CLI belum tersedia.
 - Menambahkan dokumentasi `VALIDATOR-MILESTONE-5.md`, memperbarui README dan Quality Gates menjadi versi 0.7, serta mencatat batas otomatisasi tiap gate.
 - QG-12 tetap manual. QG-08 rendered JSON-LD, QG-10 audit accessibility browser, dan QG-11 production build tetap harus dijalankan oleh setiap proyek Astro; repository standar tidak memiliki aplikasi Astro.
-
-## 2026-11-28
 
 ### Added — Validator milestone 4
 - Menambahkan Schema Registry referensi untuk scope block, page, dan entity; validator memeriksa tipe schema dokumen, scope mainEntity, properti schema yang dikenal, serta pasangan schema block dan component.
@@ -160,7 +152,7 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 
 ### Compatibility
 - Enam kind inti dan semantik `--collection` tidak berubah. Kind proyek tambahan harus didaftarkan secara eksplisit melalui `--contract-registry`.
-- Extension registry v1 bersifat opt-in dan memiliki batas yang dijelaskan di `docs/CONTRACT-EXTENSIONS.md`; proyek tetap wajib menambahkan validasi domain dan build/render tests sendiri.
+- Extension registry v1 bersifat opt-in dan memiliki batas yang dijelaskan di `content-contract/CONTRACT-EXTENSIONS.md`; proyek tetap wajib menambahkan validasi domain dan build/render tests sendiri.
 
 ## 2026-11-27
 
@@ -240,7 +232,7 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 - README: menautkan Content & Information Architecture sebagai standar arsitektur konten dan IA.
 
 ### Rationale and impact
-- Menetapkan kerangka IA yang menghubungkan kebutuhan pengguna, model konten, navigasi, route, internal linking, dan konversi tanpa menjadikan pola satu situs sebagai kewajiban universal.
+- Menetapkan kerangka IA yang menghubungkan kebutuhan pengguna, model konten, navigasi, route, internal linking, listing, dan konversi tanpa menjadikan pola satu situs sebagai kewajiban universal.
 
 ### Compatibility
 - Dokumen IA 0.1 berstatus draft. Setiap proyek tetap harus menetapkan sitemap, route, relasi, listing, pagination, footer, CTA, dan kebijakan lokalnya sendiri. Tidak ada jumlah halaman, kata, atau tautan yang diwajibkan secara global.
