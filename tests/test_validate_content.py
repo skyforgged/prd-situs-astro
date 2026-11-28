@@ -153,7 +153,10 @@ blocks: []"""
     assert any("featuredImage" in issue.message for issue in issues)
 
 def test_intro_rejects_multiple_paragraphs_and_markdown(tmp_path: Path):
-    source = PAGE.replace("Intro", "Intro\n\nParagraf kedua").replace("Profil perusahaan.", "**Profil** perusahaan.")
+    source = PAGE.replace(
+        "intro: PT Contoh menyediakan layanan profesional untuk kebutuhan pelanggan.",
+        "intro: |\n  PT Contoh menyediakan layanan profesional.\n\n  Paragraf kedua."
+    ).replace("description: Profil perusahaan.", "description: '**Profil** perusahaan.'")
     issues = validate_document(tmp_path / "pages/page.md", __import__("yaml").safe_load(source), "page")
     assert any("exactly one paragraph" in issue.message for issue in issues)
     assert any("plain text" in issue.message for issue in issues)
@@ -213,3 +216,24 @@ def test_unknown_collection_requires_explicit_mapping(tmp_path: Path):
     file = write_md(tmp_path / "content/document.md", PAGE)
     issues = validate_paths([file])
     assert any("cannot infer document contract" in issue.message for issue in issues)
+
+def test_category_archive_contract_requires_metadata_and_blocks(tmp_path: Path):
+    source = """id: 30
+slug: panduan
+title: Panduan
+description: Kumpulan artikel panduan.
+schema:
+  type: CollectionPage
+seo:
+  title: Panduan
+  description: Kumpulan panduan.
+blocks:
+  - id: 1
+    component: content-list
+updatedDate: 2026-11-26T03:00:00Z"""
+    assert validate_document(tmp_path / "categories/panduan.md", __import__("yaml").safe_load(source), "category") == []
+
+def test_explicit_collection_mapping_supports_project_specific_directory_names(tmp_path: Path):
+    file = write_md(tmp_path / "content/static/a.md", PAGE)
+    issues = validate_paths([file], {str((tmp_path / "content/static").resolve()): "page"})
+    assert issues == []
