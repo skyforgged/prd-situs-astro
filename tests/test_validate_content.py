@@ -642,3 +642,73 @@ def test_unique_canonical_urls_are_accepted(tmp_path: Path):
         (tmp_path/"articles/two.md", {"seo":{"canonical":"https://example.test/news/"}}, "article"),
     ]
     assert validate_seo_uniqueness(docs) == []
+
+
+def test_cli_help_smoke():
+    import subprocess
+    result = subprocess.run(
+        [sys.executable, str(Path(__file__).resolve().parents[1] / "scripts" / "validate_content.py"), "--help"],
+        text=True, capture_output=True,
+    )
+    assert result.returncode == 0
+    assert "--site-root" in result.stdout
+    assert "--route-manifest" in result.stdout
+
+
+def test_cli_runs_route_and_canonical_checks(tmp_path: Path):
+    import subprocess
+    content = tmp_path / "content"
+    page1 = write_md(content / "pages" / "one.md", PAGE.replace("canonical", "canonical"))
+    page2_source = PAGE.replace("id: 1", "id: 2").replace("slug: tentang", "slug: about")
+    page2_source = page2_source.replace("  type: AboutPage", "  type: AboutPage")
+    page2 = write_md(content / "pages" / "two.md", page2_source)
+    # Add duplicate canonical metadata to both documents.
+    for file in (page1, page2):
+        source = file.read_text(encoding="utf-8")
+        source = source.replace("  description: Profil perusahaan.\nblocks:", "  description: Profil perusahaan.\n  canonical: https://example.test/shared/\nblocks:")
+        file.write_text(source, encoding="utf-8")
+    result = subprocess.run(
+        [sys.executable, str(Path(__file__).resolve().parents[1] / "scripts" / "validate_content.py"), str(content)],
+        text=True, capture_output=True,
+    )
+    assert result.returncode == 1
+    assert "DUPLICATE_CANONICAL" in result.stdout
+
+
+def test_cli_fails_when_internal_link_is_missing(tmp_path: Path):
+    import subprocess
+    content = tmp_path / "content"
+    page = write_md(content / "pages" / "page.md", PAGE.replace(
+        "component: rich-text", "component: cta\\n    url: /missing/"
+    ))
+    site_root = tmp_path / "site"
+    site_root.mkdir()
+    result = subprocess.run(
+        [sys.executable, str(Path(__file__).resolve().parents[1] / "scripts" / "validate_content.py"),
+         str(content), "--site-root", str(site_root)],
+        text=True, capture_output=True,
+    )
+    assert result.returncode == 1
+    assert "INTERNAL_LINK_NOT_FOUND" in result.stdout
+
+
+def test_cli_passes_with_route_manifest_and_sitemap(tmp_path: Path):
+    import subprocess
+    content = tmp_path / "content"
+    write_md(content / "pages" / "page.md", PAGE)
+    site_root = tmp_path / "site"
+    (site_root / "public").mkdir(parents=True)
+    (site_root / "public" / "sitemap.xml").write_text(
+        "<urlset><loc>https://example.test/tentang/</loc></urlset>", encoding="utf-8"
+    )
+    (site_root / "routes.yml").write_text(
+        "routes:\\n  - path: /tentang/\\n    source: public/sitemap.xml\\n    indexable: true\\nsitemap: public/sitemap.xml\\n",
+        encoding="utf-8",
+    )
+    result = subprocess.run(
+        [sys.executable, str(Path(__file__).resolve().parents[1] / "scripts" / "validate_content.py"),
+         str(content), "--site-root", str(site_root), "--route-manifest", str(site_root / "routes.yml")],
+        text=True, capture_output=True,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "route manifest/sitemap/redirects" in result.stdout
