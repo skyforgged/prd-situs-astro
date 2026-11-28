@@ -396,7 +396,7 @@ updatedDate: 2026-11-26T03:00:00Z""")
 
 def test_content_list_category_id_is_resolved(tmp_path: Path):
     page = write_md(tmp_path / "pages/page.md", PAGE.replace(
-        "component: rich-text", "component: content-list\\n    categoryId: 999"
+        "component: rich-text", "component: content-list\n    categoryId: 999"
     ))
     issues = validate_paths([page])
     assert any("blocks[0].categoryId references missing categoryId target ID 999" in issue.message for issue in issues)
@@ -442,8 +442,8 @@ blocks: []"""
 
 
 def test_parent_page_cycle_is_rejected(tmp_path: Path):
-    first = write_md(tmp_path / "pages/one.md", PAGE.replace("id: 1", "id: 1") + "\\nparentPageId: 2")
-    second = write_md(tmp_path / "pages/two.md", PAGE.replace("id: 1", "id: 2") + "\\nparentPageId: 1")
+    first = write_md(tmp_path / "pages/one.md", PAGE.replace("id: 1", "id: 1") + "\nparentPageId: 2")
+    second = write_md(tmp_path / "pages/two.md", PAGE.replace("id: 1", "id: 2") + "\nparentPageId: 1")
     issues = validate_paths([first, second])
     assert any("parentPageId hierarchy contains a cycle" in issue.message for issue in issues)
 
