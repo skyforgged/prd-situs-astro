@@ -18,7 +18,6 @@ collections:
       image: string
       hero: object
       blocks: array
-      trainingId: positive_int
     fieldEnums:
       type: [training]
     schemaTypes: [Course]
