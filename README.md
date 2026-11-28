@@ -16,6 +16,7 @@ Repository ini menyimpan standar reusable untuk analisis kebutuhan, perancangan,
 - [Validator Milestone 3](VALIDATOR-MILESTONE-3.md) — validasi FK lintas dokumen, target collection, kardinalitas, dan siklus relasi.
 - [Validator Milestone 4](VALIDATOR-MILESTONE-4.md) — validasi Schema Registry, Block Registry, dan props komponen.
 - [Validator Milestone 5](VALIDATOR-MILESTONE-5.md) — validasi route, aset, tautan, manifest IA, dan integrasi Quality Gates.
+- [Project Collection Contract Extensions](docs/CONTRACT-EXTENSIONS.md) — mekanisme eksplisit untuk collection domain di luar enam kind inti.
 
 ## Instruksi dan analisis
 
