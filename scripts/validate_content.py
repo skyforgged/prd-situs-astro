@@ -185,8 +185,9 @@ def load_extension_contracts(path, content_dir):
     if not isinstance(raw,dict) or raw.get("version") != 1 or not isinstance(raw.get("collections"),dict):
         raise ValueError("contract registry must have version: 1 and a collections object")
     contracts={}; mapping={}
+    core_kinds={"homepage","menu","page","article","service","category"}
     for kind,spec in raw["collections"].items():
-        if kind in {"homepage","menu","page","article","service","category"} or not re.fullmatch(r"[a-z][a-z0-9_-]*",str(kind)):
+        if kind in core_kinds or not re.fullmatch(r"[a-z][a-z0-9_-]*",str(kind)):
             raise ValueError("extension collection kind must be a new lowercase identifier: %r" % kind)
         if not isinstance(spec,dict) or not nonempty(spec.get("directory")):
             raise ValueError("extension '%s' requires a directory" % kind)
@@ -214,6 +215,10 @@ def load_extension_contracts(path, content_dir):
         else: directory=directory.resolve()
         mapping[str(directory)]=kind
         contracts[kind]=dict(spec)
+    for kind,spec in contracts.items():
+        for field,rel in spec.get("relations",{}).items():
+            if rel["target"] not in core_kinds and rel["target"] not in contracts:
+                raise ValueError("extension relation '%s.%s' targets undeclared collection '%s'"%(kind,field,rel["target"]))
     return contracts,mapping
 
 
