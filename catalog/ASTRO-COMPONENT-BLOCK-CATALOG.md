@@ -399,6 +399,116 @@ Status berikut adalah rekomendasi konsolidasi berdasarkan implementasi yang dipe
 6. **Multi-instance aman:** hindari id statis dan selector global yang menyebabkan benturan ketika komponen muncul lebih dari sekali.
 7. **Bukti implementasi:** catat file, repository, dan commit yang diperiksa; jangan menganggap kesamaan nama sebagai kesamaan kontrak.
 
+## 3.4 Audit inventaris implementasi seluruh komponen
+
+Audit file dilakukan pada branch `main` dari ketiga repositori sumber. Cakupan inventaris mencakup 42 file komponen/registry di SLF, 48 di SNI/TKDN, dan 26 di TNV Certification (116 file sumber, termasuk registry, renderer, dan deklarasi modul). Jumlah file bukan jumlah komponen unik karena ada komponen dengan nama sama dan implementasi berbeda.
+
+### A. SLF — komponen dan kontrak yang diperiksa
+
+| Komponen | Kontrak / data utama | Dependensi dan catatan audit |
+|---|---|---|
+| `ArticleListBlock` | `id?`, `heading`, `description?`, `mode?: "listing" \| "latest"`, `limit?: number`, `offset?: number` | Mengambil collection `articles` sendiri; membuang draft dan `contentType: local-seo`; urut `pubDate` lalu ID. Tidak menerima array artikel dari pemanggil. |
+| `ArticlePreviousArticles` | `article`, `articles?`, `limit?: number` (default 5) | Memilih artikel dengan ID lebih kecil dari artikel aktif; mengecualikan draft/local-SEO; urut ID menurun. |
+| `ArticleRelatedArticles` | `articles?`, `relatedIds?: number[]`, `heading?` | Urutan hasil mengikuti `relatedIds`; mengabaikan ID yang tidak ditemukan, draft, dan local-SEO. |
+| `ArticleSectionBlock` | `id?`, `heading`, `content: Part[]` | Part yang didukung: `{type:"p", text}`, `{type:"list", items, ordered?}`; heading ID dibuat dari slug heading bila `id` tidak diberikan. |
+| `Badge` | `variant?: default\|primary\|success\|warning\|danger\|info`, `size?: sm\|md`; slot teks | Komponen inline presentasional. |
+| `ComparisonTable` | `id`, `title`, `intro?`, `headers: string[]`, `rows: string[][]`, `note?` | Tabel perbandingan; kontrak baris berbentuk matriks string. |
+| `ContentCard` | `id?`, `heading`, `icon?`, `class?`, `body?` | `body` berisi part `p`, `list`, atau `image`; `class` adalah object slot (section/icon/heading dan slot turunannya), bukan string class tunggal. |
+| `DocumentList` | `id`, `title`, `intro?`, `items: {name, purpose?, mandatory?}[]` | Label badge wajib dari UI config. |
+| `GlossaryBlock` | `id?`, `heading?`, `items: {term, definition}[]`, `class?` | Memakai elemen definisi semantik `dl/dt/dd`; class berupa object slot. |
+| `HomeCtaBlock` | `id?` (default `konsultasi`), `eyebrow`, `heading`, `description`, `ctaLabel`, `ctaHref?` (default `/services/`) | CTA homepage dengan link tujuan yang dapat dikonfigurasi. |
+| `HomeHeroBlock` | `eyebrow`, `titleLead`, `titleHighlight`, `description`, `primaryCta`, `primaryHref`, `secondaryCta`, `secondaryHref`, `note`, `image`, `imageAlt`, `supportEyebrow`, `supportItems: {number,title,text}[]` | Kontrak hero berorientasi homepage; banyak properti wajib. |
+| `HomeProcessBlock` | `id?`, `eyebrow`, `heading`, `description`, `stepPrefix`, `steps: {title,text}[]` | Layout proses homepage; jumlah kolom visual tidak otomatis mengikuti jumlah langkah. |
+| `NotFoundBlock` | `eyebrow`, `heading`, `message`, `image`, `homeCta`, `servicesCta`, `articlesCta` | Tautan tujuan ditetapkan internal ke beranda, layanan, dan artikel; gambar diberi alt kosong karena dekoratif. |
+| `PageUpdatedArticles` | `articles?`, `heading?`, `description?` | Mengurutkan `updatedDate ?? pubDate`, mengambil tiga artikel, mengecualikan draft/local-SEO. |
+| `ProcessTimeline` | `id`, `title`, `steps: {title,description}[]` | Urutan bernomor; berbeda dari `StepsBlock` yang memakai field `heading/items` dan `text`. |
+| `QuoteBlock` | `id?`, `text`, `source?`, `class?` | Kutipan sederhana; class object slot. |
+| `RelatedArticles` | `articles?`, `type: RelatedType`, `id: number`, `excludeId?`, `heading?` | Menggunakan helper `articlesForParent`; hubungan artikel ditentukan melalui tipe dan ID induk. |
+| `SourceLinks` | `id`, `title`, `intro?`, `items: {label,url,description?}[]` | Link eksternal dibuka di tab baru dengan `rel="noopener noreferrer"`. |
+| `StepsBlock` | `id?`, `heading?`, `items: {title,text}[]`, `class?` | Class object slot; memakai ordered list. |
+| `TableBlock` | `id?`, `heading?`, `head: string[]`, `rows: string[][]`, `class?` | Class object slot; wrapper memiliki horizontal overflow. |
+| `ContactPanel` | `id`, `title`, `intro`, `hoursTitle`, `hours: string[]`, `formTitle`, `serviceOptions: string[]` | Identitas perusahaan, telepon, WhatsApp, alamat dan label bersama berasal dari `site.ts/ui.ts`; komponen juga memuat form. |
+
+Komponen SLF lain yang API utamanya sudah dicatat pada §3.1–§3.3: `FaqBlock`, `CtaBlock`, `NoteBlock`, `StatsBlock`, `StatsGrid`, `FeatureCardGrid`, `ChecklistCard`, `TestimonialGrid`, `PageHeaderBlock`, `ImagePanel`, `ServiceListBlock`, `SiteHeader`, `SiteFooter`, `Modal`, `Dropdown`, `Button`, dan `MultiStepForm`.
+
+### B. SNI/TKDN — perbedaan implementasi terhadap SLF
+
+SNI/TKDN memakai registry block dengan 26 identifier yang sama seperti SLF, tetapi banyak file `shared/*.astro` merupakan wrapper tipis yang meneruskan props ke `BlockShell`. Ini merupakan perbedaan arsitektur utama: nama komponen tetap familiar, tetapi struktur data dan fleksibilitas API berbeda.
+
+| Komponen / kelompok | Kontrak atau perilaku implementasi | Status kontrak |
+|---|---|---|
+| `BlockShell` | `kind: string` dan props bebas (`[key:string]: any`). Menormalisasi heading dari `heading/title/question/label/name`; teks dari `text/description/intro/quote/answer/subtitle`; item dari `items/steps/features/rows/documents/links/checklist/stats/faqs`; juga menerima `content`, `image`, `ctaHref`, `ctaLabel`. | API sangat longgar; bukan schema validasi. Jangan jadikan standar lintas proyek tanpa discriminated union per kind. |
+| Wrapper ke `BlockShell` | `ContentCard→card`, `FaqBlock→faq`, `CtaBlock→cta`, `TableBlock→table`, `NoteBlock→note`, `StepsBlock→steps`, `StatsBlock→stats`, `GlossaryBlock→glossary`, `ArticleSectionBlock→section`, `ProcessTimeline→process-timeline`, `ChecklistCard→checklist-card`, `ComparisonTable→comparison-table`, `DocumentList→document-list`, `ImagePanel→image-panel`, `FeatureCardGrid→feature-card-grid`, `StatsGrid→stats-grid`, `SourceLinks→source-links`, `ContactPanel→contact-panel`, `PageHeaderBlock→page-header`, `HomeHeroBlock→home-hero`, `ServiceListBlock→service-list`, `HomeProcessBlock→home-process`, `ArticleListBlock→article-list`, `HomeCtaBlock→home-cta`, `NotFoundBlock→not-found`. | Wrapper hanya menetapkan `kind` lalu spread props; bentuk data efektif ditafsirkan oleh BlockShell. |
+| `ArticleCard` | Menerima model artikel fleksibel (`article.data` atau object langsung), mengambil slug dari beberapa lokasi, dan fallback judul/description. | Lebih permisif daripada SLF/TNV; memudahkan migrasi tetapi berisiko menyamarkan data tidak lengkap. |
+| `ArticlePreviousArticles` | `currentSlug?`, `limit?` (default 3), `title?`; mengambil collection sendiri dan mengecualikan artikel aktif berdasarkan slug/ID. | Bergantung collection `articles` dan status aktif. |
+| `ArticleRelatedArticles` | `articles?`, `relatedIds?: (string|number)[]`, `heading?`; pencocokan ID atau slug. | Lebih fleksibel daripada SLF yang hanya memakai numeric ID. |
+| `RelatedArticles` | `items: {title,href,description?}[]`, `heading?`. | Komponen presentasional, tidak melakukan lookup collection. Berbeda dari ArticleRelatedArticles. |
+| `RelatedLinks` | Referensi `services/pages/articles/guides` menerima string slug/ID atau numeric ID; `currentSlug?`, `title?`. | Melakukan lookup empat collection sekaligus; membuat href berdasarkan collection. |
+| `FAQ` | `items: {question,answer}[]`, `title?`; label/kicker dari `siteConfig`. | Komponen standalone, berbeda dari block `FaqBlock`; tidak menyisipkan JSON-LD pada implementasi ini. |
+| `HowTo` | `title`, `description`, `steps: {title,text}[]`. | Merender daftar langkah dan JSON-LD HowTo melalui SeoJsonLd; heading ID `howto-title` statis, perlu dibuat unik untuk multi-instance. |
+| `PageBlocks` | `blocks?`, `class?`; memetakan block ke BlockRenderer. | Wrapper koleksi block. |
+| `ServiceCard` | `title`, `description`, `href`, `eyebrow`, `number?` (default `01`). | Presentasional; eyebrow wajib. |
+| `Modal` | `id`, `isOpen?`, `title?`, `size?: sm\|md\|lg\|xl`; native dialog, trigger melalui `data-modal-open`. | Prop kontrol awal bernama `isOpen`, berbeda dari SLF (`open`). Script binding perlu diuji agar listener dokumen tidak terpasang berulang pada navigasi client-side. |
+| `Button` | `href?`, `variant?`, `size?`, `disabled?`, `type?`, `target?`, `rel?`; jika href ada merender anchor, selain itu button. | API gabungan action/link; berbeda dari SLF Button yang selalu button. |
+| `SiteHeader` / `SiteFooter` | Header menerima `variant?`, `ariaLabel?`; footer menerima `ariaLabel?`, `brandCopy?`. Keduanya membaca konfigurasi `siteConfig`. | Terikat pada navigasi dan konfigurasi situs. |
+| `StatsBlock` / `StatsGrid` | `heading?`, `title?`, `items?`, `stats?`; menerima string atau object dengan fallback field value/number/title dan label/text/description. | API permisif dan dua komponen berperilaku hampir sama. |
+| `StepsBlock` / `ProcessTimeline` | `heading?`, `title?`, `items?`, `steps?`; item dapat string atau object title/heading dan text/description. | API lebih longgar daripada SLF; perlu standardisasi nama field jika dipindah. |
+| `TableBlock` | `title/heading`, `rows`, `headers?`, `description?`, `note?`; row dapat array atau object title/name/text. | Berbeda dari SLF yang memakai `head` dan matriks string. |
+| `TestimonialGrid` | `id?`, `title?`, `items: {quote,name,industry}[]`, `illustrative?`. | Memiliki label/notifikasi data ilustratif dari config; gunakan hanya testimoni yang nyata dan diizinkan. |
+
+**Peringatan konsolidasi SNI/TKDN:** wrapper dan BlockShell mengizinkan data bentuk bebas dan memakai fallback nama field. Ini bukan alasan untuk menganggap semua variasi input valid. Pada standar Astro baru, pertahankan schema konten yang ketat dan gunakan adapter eksplisit alih-alih meniru fallback dinamis tersebut.
+
+### C. TNV Certification — komponen layout, halaman, dan jadwal
+
+| Komponen | Kontrak / perilaku | Dependensi dan catatan |
+|---|---|---|
+| `Container` | `variant?: standard\|wide\|landing\|reading`, `as?: div\|article\|section`, `class?`, `gutter?` | Pembatas lebar responsif dengan semantic tag yang dapat dipilih. |
+| `Section` | `spacing?: compact\|default\|spacious`, `id?`, `aria-label?`, `aria-labelledby?`, `class?` | Pembungkus section dengan slot; tidak menentukan heading sendiri. |
+| `SectionHeading` | `title`, `id?`, `eyebrow?`, `level?: 2\|3`, `class?` | Heading level dapat dipilih; komponen kecil presentasional. |
+| `ButtonLink` | `href`, `variant?: primary\|secondary\|accent`, `class?`; slot label | Selalu anchor; tidak menerima disabled atau type. |
+| `MainMenuHero` | `title`, `description`, `image`, `imageAlt`, `eyebrow?`, `imagePriority?`, `variant?: default\|home\|services\|csms\|trainings\|schedules\|articles\|about`; slot actions | Hero reusable tetapi layout, warna, dan tinggi bergantung variant. Heading ID internal statis sehingga satu instance per halaman menjadi asumsi implementasi. |
+| `HomeHero` | `eyebrow?`, `title`, `description`; slot actions disusun internal | Membungkus MainMenuHero dengan ilustrasi homepage dan CTA tetap ke artikel/layanan. |
+| `PageHero` | `block: HeroBlock`, `fallbackImage: {src,alt}`, flags route seperti `isHomepage?`, `isServices?`, `isCsms?`, `isTrainings?`, `isArticles?`, `isAbout?` | Adapter model page ke MainMenuHero; CTA dan variant ditentukan oleh flag route. |
+| `HomeLinkGrid` / `LinkGrid` | `block: LinkGridBlock`; block berisi id, eyebrow?, title?, items[] (href, title, description?, eyebrow?, actionLabel?) | Versi home dan page memiliki tampilan berbeda; keduanya memakai Section. |
+| `HomeListingSection` / `ListingSection` | `block: ListingBlock`, `hasItems: boolean`; slot untuk kartu hasil | Menangani heading, deskripsi, empty state dan CTA; data listing disiapkan oleh route. |
+| `UpcomingSchedules` | `block: UpcomingSchedulesBlock`, `items: {key,dateLabel,title,href,detailLabel,statusLabel}[]` | Menampilkan daftar terjadwal dengan surface palette; route menyiapkan item/status. |
+| `TrainingScheduleMonths` | `schedules: CollectionEntry<"trainingSchedules">[]`, `labels: ScheduleMonthLabels`, `locale`, `todayKey` | Komponen domain khusus: pengelompokan bulan, pemilihan bulan awal, status lampau/berjalan/registrasi, lokasi online/hybrid/offline, dan label terjemahan. Bukan block editorial generik. |
+| `CtaSection` | Props internal renderer: `id`, `headingId`, `semanticClasses[]`, `surfaceClass`, `headingClass`, `bodyClass`, `buttonClass`, `title?`, `description?`, `link?: {label,url?}`, `ariaLabel?` | Fallback link WhatsApp dari konfigurasi organization; kelas visual dikirim renderer. |
+| `LanguageFlag` | `lang: string` | Implementasi visual bendera Indonesia untuk `id`, selain itu bendera UK; jangan menganggap mendukung semua bahasa. |
+| `LanguageSwitcher` | `lang: string` | Memanggil `getLanguageOptions(pathname,lang)`; tautan bahasa hanya aktif jika padanan halaman tersedia; label berasal dari siteSettings. |
+| `SiteHeader` / `SiteFooter` | `lang: string`; footer juga menerima `description?` | Menggunakan organization, siteSettings, navigation dan helper bilingual. Header active state mendukung prefix route layanan. |
+| `FeaturedImage` | `src`, `alt`, `width?`, `height?`, `aspect?: video\|fourThree`, `fit?: cover\|contain`, `priority?`, `class?` | Default 1200×675, video, cover, lazy; priority mengubah loading dan fetchpriority. |
+| `ArticleCard` | `article: Article`, `headingLevel?: 2\|3` | Model domain Article dengan featuredImage, intro, effectiveDate, lang dan slug; alt gambar wajib berasal dari data. |
+| `ServiceCard` / `TrainingCard` | `title`, `description`, `href`, `label?` | Presentasional; label default masing-masing “Layanan” dan “Program pelatihan”. |
+
+### D. Kontrak renderer dan skema konten — perbedaan yang wajib diketahui
+
+| Proyek | Bentuk discriminator | Strategi render | Validasi dan batasan |
+|---|---|---|---|
+| SLF | `component` | Registry statis `blocks[block.component]`; renderer mengirim `block.props ?? block`. | Unknown block melempar error. Collection schema mengatur block dengan kontrak yang ditentukan proyek. |
+| SNI/TKDN | `component` | Registry 26 nama sama; renderer juga mengirim `block.props ?? block`. | Collection schema memvalidasi bahwa `component` adalah string dan `props` record bebas; tidak memvalidasi prop tiap komponen secara spesifik. |
+| TNV editorial | `type` | `BlockRenderer` menangani `content-section`, `faq`, `howto`, `cta` dan palette surface/layout. | Discriminated union Zod; `id` kebab-case; surface white/blue/navy/mint/coral/cream; layout konten dan HowTo memiliki enum. |
+| TNV page | `type` | `PageBlockRenderer` mengelompokkan editorial berurutan; hero/link-grid/contact dirender komponen khusus. | `listing` dan `upcoming-schedules` sengaja tidak dirender oleh PageBlockRenderer generik; route memasok markup dan data item sendiri. |
+
+**Konsekuensi:** tidak boleh mengubah `component` menjadi `type` atau sebaliknya hanya dengan mengganti nama field. Registry, Zod schema, tipe TypeScript, loader, dan renderer harus dimigrasikan dalam satu perubahan konsisten.
+
+### E. Audit rinci MultiStepForm (SLF)
+
+Props tingkat atas: `id?` (default `msf`), `heading`, `intro?`, `submitLabel?` (default `Kirim`), `successMessage?`, `steps?` (default array kosong). Setiap step mempunyai `title` dan `fields[]`. Berdasarkan penggunaan dalam template, field mendukung tipe `text`, `email`, `tel`, `textarea`, `select`, `checkbox`, dan `radio`; field memakai `name`, `label`, `required?`, `hint?`, dan `options?` untuk select/radio.
+
+Implementasi menyediakan validasi per langkah, pesan error, fokus ke field pertama yang tidak valid, progress, ringkasan lokal, edit, dan reset. Submit dicegat dengan `preventDefault`; hasilnya hanya ringkasan browser dan secara eksplisit tidak dikirim ke server atau disimpan. Karena itu komponen ini **bukan form produksi siap kirim**. Sebelum dipakai di proyek lain, pecah kontrak field menjadi schema TypeScript/Zod, injeksikan submit handler/action, tetapkan consent dan kebijakan data, pastikan validasi radio/checkbox dan unique field names, serta uji multi-instance dan aksesibilitas.
+
+### F. Temuan kualitas lintas implementasi yang harus masuk acceptance criteria
+
+- **ID unik:** hindari ID statis seperti `howto-title` dan selector global yang tidak dibatasi instance. Gunakan ID unik per instance dan hubungkan `aria-labelledby` ke heading yang sesuai.
+- **Renderer fallback:** jangan gunakan `any` dan fallback field alias sebagai pengganti schema. Validasi setiap jenis block berdasarkan discriminator.
+- **Model koleksi:** komponen yang memanggil `getCollection` langsung adalah adapter domain, bukan komponen presentasional murni; tandai dependensi collection dan aturan filter/urutan.
+- **Navigasi dan tautan:** Button action, ButtonLink anchor, CTA eksternal, serta URL WhatsApp harus mempunyai kontrak berbeda dan diuji.
+- **Media:** alt gambar informatif wajib disediakan pemilik konten; alt kosong hanya untuk gambar dekoratif. Ukuran, aspect ratio, loading dan priority perlu eksplisit.
+- **Data testimoni/statistik:** data klaim, testimoni, angka, dan status harus mempunyai sumber dan izin; jangan menganggap komponen yang tersedia membenarkan isi contoh.
+- **Multibahasa:** label UI, tanggal, URL alternatif, dan bahasa schema adalah satu kontrak; bendera bukan pengganti metadata bahasa.
+- **Jadwal:** komponen kalender/jadwal memakai tanggal lokal, zona waktu, status dan kebijakan pendaftaran; jangan dipaksakan ke model artikel atau block editorial.
+
 ## 4. Renderer, layout, dan komponen pendukung
 
 Bagian ini dicatat agar inventaris lengkap, tetapi item-item ini bukan block konten yang seharusnya ditulis langsung oleh editor.
