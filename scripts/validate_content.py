@@ -444,7 +444,7 @@ def validate_route_manifest(manifest_path, site_root, routes):
                 if route.rstrip("/")+"/" not in xml and route not in xml:
                     issues.append(Issue(Path(manifest_path),"[QG-13 SITEMAP_ROUTE_MISSING] indexable route '%s' is absent from sitemap"%route))
     redirects=manifest.get("redirects",[])
-    if not isinstance(redirects,list): issues.append(Issue(Path(manifest_path),"[QG-13 INVALID_REDIRECTS] redirects must be an array")
+    if not isinstance(redirects,list): issues.append(Issue(Path(manifest_path),"[QG-13 INVALID_REDIRECTS] redirects must be an array"))
     else:
         for i,item in enumerate(redirects):
             if not isinstance(item,dict) or not nonempty(item.get("from")) or not nonempty(item.get("to")):
