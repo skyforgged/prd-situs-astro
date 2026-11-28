@@ -563,7 +563,7 @@ def test_block_registry_rejects_boolean_as_numeric_prop(tmp_path: Path):
 
 
 def test_route_validation_detects_invalid_slug_and_collision(tmp_path: Path):
-    from scripts.validate_content import validate_routes
+    from validate_content import validate_routes
     first = write_md(tmp_path / "pages/one.md", PAGE.replace("slug: tentang", "slug: same"))
     second = write_md(tmp_path / "pages/two.md", PAGE.replace("slug: tentang", "slug: same").replace("id: 1", "id: 2"))
     docs = [(first, {"slug":"same"}, "page"), (second, {"slug":"same"}, "article")]
@@ -572,14 +572,14 @@ def test_route_validation_detects_invalid_slug_and_collision(tmp_path: Path):
 
 
 def test_route_validation_rejects_noncanonical_slug(tmp_path: Path):
-    from scripts.validate_content import validate_routes
+    from validate_content import validate_routes
     path = tmp_path / "pages/a.md"
     issues, _ = validate_routes([(path, {"slug":"Upper Case"}, "page")])
     assert any("INVALID_SLUG" in issue.message for issue in issues)
 
 
 def test_asset_validation_detects_missing_local_image(tmp_path: Path):
-    from scripts.validate_content import validate_assets_and_links
+    from validate_content import validate_assets_and_links
     root = tmp_path / "site"
     root.mkdir()
     path = write_md(tmp_path / "pages/page.md", PAGE)
@@ -589,7 +589,7 @@ def test_asset_validation_detects_missing_local_image(tmp_path: Path):
 
 
 def test_asset_validation_ignores_external_media(tmp_path: Path):
-    from scripts.validate_content import validate_assets_and_links
+    from validate_content import validate_assets_and_links
     root = tmp_path / "site"
     root.mkdir()
     path = write_md(tmp_path / "pages/page.md", PAGE)
@@ -598,7 +598,7 @@ def test_asset_validation_ignores_external_media(tmp_path: Path):
 
 
 def test_internal_link_validation_detects_unknown_route(tmp_path: Path):
-    from scripts.validate_content import validate_assets_and_links
+    from validate_content import validate_assets_and_links
     root = tmp_path / "site"
     root.mkdir()
     path = write_md(tmp_path / "pages/page.md", PAGE)
@@ -608,7 +608,7 @@ def test_internal_link_validation_detects_unknown_route(tmp_path: Path):
 
 
 def test_route_manifest_requires_routes_array(tmp_path: Path):
-    from scripts.validate_content import validate_route_manifest
+    from validate_content import validate_route_manifest
     manifest = tmp_path / "routes.yml"
     manifest.write_text("notRoutes: []", encoding="utf-8")
     issues = validate_route_manifest(manifest,tmp_path,{})
@@ -616,7 +616,7 @@ def test_route_manifest_requires_routes_array(tmp_path: Path):
 
 
 def test_route_manifest_checks_generated_routes_and_sitemap(tmp_path: Path):
-    from scripts.validate_content import validate_route_manifest
+    from validate_content import validate_route_manifest
     manifest = tmp_path / "routes.yml"
     manifest.write_text("routes:\n  - path: /tentang/\n    indexable: true\nsitemap: public/sitemap.xml\n",encoding="utf-8")
     (tmp_path/"public").mkdir()
