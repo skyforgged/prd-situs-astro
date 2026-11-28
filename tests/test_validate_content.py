@@ -237,3 +237,232 @@ def test_explicit_collection_mapping_supports_project_specific_directory_names(t
     file = write_md(tmp_path / "content/static/a.md", PAGE)
     issues = validate_paths([file], {str((tmp_path / "content/static").resolve()): "page"})
     assert issues == []
+
+
+def test_foreign_keys_resolve_to_existing_documents_of_expected_kind(tmp_path: Path):
+    page = write_md(tmp_path / "pages/page.md", PAGE)
+    article = write_md(tmp_path / "articles/article.md", """id: 2
+slug: article
+title: Artikel
+description: Ringkasan
+intro: Intro substantif.
+schema:
+  type: Article
+seo: {}
+categoryIds: [3]
+relatedArticleIds: [4]
+relatedServiceId: 5
+featuredImage:
+  src: /a.webp
+  alt: Foto dokumen.
+publishedDate: 2026-11-20T01:00:00Z
+updatedDate: 2026-11-26T03:00:00Z
+blocks: []""")
+    category = write_md(tmp_path / "categories/category.md", """id: 3
+slug: kategori
+title: Kategori
+description: Ringkasan kategori.
+schema:
+  type: CollectionPage
+seo: {}
+blocks: []
+updatedDate: 2026-11-26T03:00:00Z""")
+    related = write_md(tmp_path / "articles/related.md", """id: 4
+slug: related
+title: Artikel terkait
+description: Ringkasan
+intro: Intro substantif.
+schema:
+  type: Article
+seo: {}
+featuredImage:
+  src: /b.webp
+  alt: Foto dokumen.
+publishedDate: 2026-11-20T01:00:00Z
+updatedDate: 2026-11-26T03:00:00Z
+blocks: []""")
+    service = write_md(tmp_path / "services/service.md", """id: 5
+slug: service
+title: Layanan
+description: Ringkasan
+intro: Intro layanan substantif.
+schema:
+  type: Service
+seo: {}
+updatedDate: 2026-11-26T03:00:00Z
+blocks: []""")
+    assert validate_paths([page, article, category, related, service]) == []
+
+
+def test_foreign_key_missing_target_fails(tmp_path: Path):
+    article = write_md(tmp_path / "articles/article.md", """id: 2
+slug: article
+title: Artikel
+description: Ringkasan
+intro: Intro substantif.
+schema:
+  type: Article
+seo: {}
+relatedServiceId: 999
+featuredImage:
+  src: /a.webp
+  alt: Foto dokumen.
+publishedDate: 2026-11-20T01:00:00Z
+updatedDate: 2026-11-26T03:00:00Z
+blocks: []""")
+    issues = validate_paths([article])
+    assert any("missing relatedServiceId target ID 999" in issue.message for issue in issues)
+
+
+def test_foreign_key_wrong_target_kind_fails(tmp_path: Path):
+    page = write_md(tmp_path / "pages/page.md", PAGE)
+    article = write_md(tmp_path / "articles/article.md", """id: 2
+slug: article
+title: Artikel
+description: Ringkasan
+intro: Intro substantif.
+schema:
+  type: Article
+seo: {}
+relatedServiceId: 1
+featuredImage:
+  src: /a.webp
+  alt: Foto dokumen.
+publishedDate: 2026-11-20T01:00:00Z
+updatedDate: 2026-11-26T03:00:00Z
+blocks: []""")
+    issues = validate_paths([page, article])
+    assert any("expected service" in issue.message for issue in issues)
+
+
+def test_nested_menu_page_ids_are_resolved(tmp_path: Path):
+    page = write_md(tmp_path / "pages/page.md", PAGE)
+    menu = write_md(tmp_path / "menus/menu.md", """id: 2
+slug: nav
+title: Navigasi
+schema:
+  type: SiteNavigationElement
+location: header
+items:
+  - label: Parent
+    url: https://example.com
+    children:
+      - label: Child
+        pageId: 999
+updatedDate: 2026-11-26T03:00:00Z""")
+    issues = validate_paths([page, menu])
+    assert any("items[0].children[0].pageId references missing pageId target ID 999" in issue.message for issue in issues)
+
+
+def test_menu_target_accepts_homepage_and_page_only(tmp_path: Path):
+    homepage = write_md(tmp_path / "homepages/home.md", """id: 1
+slug: home
+title: Beranda
+description: Ringkasan.
+schema:
+  type: WebPage
+seo: {}
+blocks: []
+updatedDate: 2026-11-26T03:00:00Z""")
+    menu = write_md(tmp_path / "menus/menu.md", """id: 2
+slug: nav
+title: Navigasi
+schema:
+  type: SiteNavigationElement
+location: header
+items:
+  - label: Beranda
+    pageId: 1
+updatedDate: 2026-11-26T03:00:00Z""")
+    assert validate_paths([homepage, menu]) == []
+
+
+def test_block_level_foreign_keys_are_resolved(tmp_path: Path):
+    homepage = write_md(tmp_path / "homepages/home.md", """id: 1
+slug: home
+title: Beranda
+description: Ringkasan.
+schema:
+  type: WebPage
+seo: {}
+blocks:
+  - id: 1
+    component: service-grid
+    serviceIds: [999]
+updatedDate: 2026-11-26T03:00:00Z""")
+    issues = validate_paths([homepage])
+    assert any("blocks[0].serviceIds references missing serviceIds target ID 999" in issue.message for issue in issues)
+
+
+def test_content_list_category_id_is_resolved(tmp_path: Path):
+    page = write_md(tmp_path / "pages/page.md", PAGE.replace(
+        "component: rich-text", "component: content-list\\n    categoryId: 999"
+    ))
+    issues = validate_paths([page])
+    assert any("blocks[0].categoryId references missing categoryId target ID 999" in issue.message for issue in issues)
+
+
+@pytest.mark.parametrize(("kind", "field", "message"), [
+    ("article", "authorId", "Author/Person target contract"),
+    ("service", "providerId", "Organization/Provider target contract"),
+])
+def test_unsupported_entity_relations_are_rejected_when_populated(tmp_path: Path, kind: str, field: str, message: str):
+    if kind == "article":
+        source = """id: 2
+slug: article
+title: Artikel
+description: Ringkasan
+intro: Intro substantif.
+schema:
+  type: Article
+seo: {}
+authorId: 1
+featuredImage:
+  src: /a.webp
+  alt: Foto dokumen.
+publishedDate: 2026-11-20T01:00:00Z
+updatedDate: 2026-11-26T03:00:00Z
+blocks: []"""
+        path = write_md(tmp_path / "articles/article.md", source)
+    else:
+        source = """id: 2
+slug: service
+title: Layanan
+description: Ringkasan
+intro: Intro layanan.
+schema:
+  type: Service
+seo: {}
+providerId: 1
+updatedDate: 2026-11-26T03:00:00Z
+blocks: []"""
+        path = write_md(tmp_path / "services/service.md", source)
+    issues = validate_paths([path])
+    assert any(message in issue.message for issue in issues)
+
+
+def test_parent_page_cycle_is_rejected(tmp_path: Path):
+    first = write_md(tmp_path / "pages/one.md", PAGE.replace("id: 1", "id: 1") + "\\nparentPageId: 2")
+    second = write_md(tmp_path / "pages/two.md", PAGE.replace("id: 1", "id: 2") + "\\nparentPageId: 1")
+    issues = validate_paths([first, second])
+    assert any("parentPageId hierarchy contains a cycle" in issue.message for issue in issues)
+
+
+def test_self_referential_related_content_is_rejected(tmp_path: Path):
+    article = write_md(tmp_path / "articles/article.md", """id: 2
+slug: article
+title: Artikel
+description: Ringkasan
+intro: Intro substantif.
+schema:
+  type: Article
+seo: {}
+relatedArticleIds: [2]
+featuredImage:
+  src: /a.webp
+  alt: Foto dokumen.
+publishedDate: 2026-11-20T01:00:00Z
+updatedDate: 2026-11-26T03:00:00Z
+blocks: []""")
+    issues = validate_paths([article])
+    assert any("cannot reference the source Article itself" in issue.message for issue in issues)
