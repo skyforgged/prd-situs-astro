@@ -6,8 +6,9 @@
 - Menambahkan mode `--require-project-gates` yang mewajibkan `--site-root` dan `--route-manifest`, sehingga pemeriksaan aset/tautan dan manifest IA tidak dapat terlewat dalam validasi penerimaan proyek.
 - Mempertahankan mode parsial untuk diagnosis, tetapi outputnya memberi peringatan eksplisit bila QG-09 atau QG-13 tidak dijalankan.
 - Output CLI merinci gate otomatis yang benar-benar dijalankan dan menegaskan bahwa accessibility hasil render (QG-10), production build Astro (QG-11), dan persetujuan editorial (QG-12) tidak dinyatakan lulus oleh validator.
-- Memperketat registry ekstensi: setiap field pada `requiredFields` harus memiliki deklarasi `fieldTypes` (kecuali `id` global yang divalidasi secara universal).
+- Memperketat registry ekstensi: `fieldTypes` menjadi allowlist field dokumen; field yang tidak dideklarasikan ditolak. Setiap field pada `requiredFields` harus memiliki deklarasi tipe (kecuali `id` global yang divalidasi secara universal).
 - Menambahkan test integrasi CLI untuk konfigurasi lengkap, penolakan konfigurasi parsial pada mode lengkap, dan kegagalan ketika aset wajib tidak ditemukan.
+- Menambahkan allowlist field untuk enam kontrak inti dan kontrak ekstensi; field baru harus masuk melalui perubahan kontrak/keputusan proyek eksplisit.
 
 ### Verification boundary
 - Test baru ditambahkan ke suite pytest dan workflow CI yang menjalankan `pytest -q`; hasil workflow untuk commit ini harus diperiksa sebelum menyatakan CI lulus.
