@@ -2,7 +2,7 @@ version: 1
 collections:
   training:
     directory: trainings
-    requiredFields: [id, ulid, trainingSlug, slug, title, description, pubDate, updatedDate]
+    requiredFields: [id, ulid, type, trainingSlug, slug, title, description, pubDate, updatedDate]
     fieldTypes:
       id: positive_int
       ulid: ulid
@@ -33,7 +33,7 @@ collections:
 
   schedule:
     directory: schedules
-    requiredFields: [id, ulid, scheduleId, publisherId, trainingSlug, batchNo, slug, title, description, startDate, endDate, dateLabel, timezone, pubDate, updatedDate, status]
+    requiredFields: [id, ulid, type, scheduleId, publisherId, trainingSlug, batchNo, slug, title, description, startDate, endDate, dateLabel, timezone, pubDate, updatedDate, status]
     fieldTypes:
       id: positive_int
       ulid: ulid
