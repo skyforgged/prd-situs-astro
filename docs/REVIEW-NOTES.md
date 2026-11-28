@@ -1,13 +1,13 @@
 ## Penyelarasan status bukti MANUAL — 2026-11-28
 
-- [x] `docs/CAPABILITY-BOUNDARIES.md` versi 1.1 membedakan empat status bukti: VALIDATOR, CONTRACT, PROJECT, dan MANUAL.
+- [x] `quality/CAPABILITY-BOUNDARIES.md` versi 1.1 membedakan empat status bukti: VALIDATOR, CONTRACT, PROJECT, dan MANUAL.
 - [x] Definisi MANUAL ditambahkan pada daftar kategori dan tabel status; versi serta riwayat dokumen diperbarui.
 - [x] Perubahan dicatat di `CHANGELOG.md`; tidak ada perubahan pada validator, registry, kontrak, atau test suite.
 - Batas verifikasi: koreksi ini hanya menyelaraskan dokumentasi dengan AGENTS.md dan matriks traceability. Tidak ada approval manusia yang dijalankan atau diwakili oleh pemeriksaan ini.
 
 ## Dokumentasi batas kemampuan — tahap 5/5, 2026-11-28
 
-- [x] Ditambahkan `docs/CAPABILITY-BOUNDARIES.md` yang memisahkan dukungan validator aktual, kontrak normatif tanpa runtime lengkap, dan pekerjaan wajib proyek Astro turunan.
+- [x] Ditambahkan `quality/CAPABILITY-BOUNDARIES.md` yang memisahkan dukungan validator aktual, kontrak normatif tanpa runtime lengkap, dan pekerjaan wajib proyek Astro turunan.
 - [x] Inventaris validator dicocokkan dengan fungsi aktual di `scripts/validate_content.py`, registry, CLI options, dan test suite.
 - [x] Batas QG-01–QG-13 dipetakan; QG-10 accessibility render, QG-11 production build, QG-12 editorial approval, serta bagian runtime QG lainnya tidak diklaim tersedia dari validator referensi.
 - [x] README, AGENTS.md, Quality Gates, dan Validator Milestone 5 menautkan dokumen batas kemampuan.
@@ -315,13 +315,13 @@ Workflow menutup kesenjangan antara starter templates dan proses pemakaiannya. G
 - [x] Smoke-test CLI `--help` ditambahkan ke workflow CI; test integrasi CLI ditambahkan untuk canonical, internal link, route manifest, dan exit code.
 - [x] Schema Registry memberi status eksplisit `mapped` atau `declaration-only` untuk seluruh type pada scope page/block/entity; tipe declaration-only ditolak pada penggunaan dokumen/block sampai project mapping disediakan; test memastikan cakupan status lengkap.
 - [x] Mekanisme ekstensi kontrak v1 tersedia melalui `--contract-registry`, termasuk field wajib/tipe dasar, schema type, route prefix, dan relasi one/many.
-- [x] Fixture training/schedule dan contoh registry ditambahkan; batas validasi nested/domain-specific dijelaskan pada `docs/CONTRACT-EXTENSIONS.md`.
+- [x] Fixture training/schedule dan contoh registry ditambahkan; batas validasi nested/domain-specific dijelaskan pada `content-contract/CONTRACT-EXTENSIONS.md`.
 - [x] Test ekstensi mencakup nilai date/datetime native hasil parsing YAML; registry menolak enum, schema mapping, route prefix, dan direktori yang tidak konsisten.
 - [x] Pemeriksaan internal link mencakup seluruh props URL yang didokumentasikan (`url`, `href`, `actionHref`, `primaryHref`, `secondaryHref`, `registrationUrl`) dengan test parametrik.
 - [ ] Verifikasi workflow CI hijau untuk commit terbaru belum tersedia; jangan menganggap konfigurasi workflow sebagai bukti test lulus.
 - [ ] Validasi penuh 249 berkas corpus pusattraining belum dijalankan. Extension v1 belum mereproduksi seluruh nested Zod schema, refinement tanggal/timezone, block discriminator, atau graph JSON-LD hasil render.
 - [ ] Workflow dan test mapping/structured-data pada repo `arisciwek/pusattraining` belum diperbarui karena akses GitHub yang tersedia tidak memiliki izin push.
-- Bukti perubahan: `scripts/validate_content.py`, `scripts/registries.py`, `tests/test_validate_content.py`, `.github/workflows/validator-tests.yml`, `docs/CONTRACT-EXTENSIONS.md`, `examples/content-contracts/training-schedule.yml`, `VALIDATOR-MILESTONE-4.md`, `VALIDATOR-MILESTONE-5.md`, `quality/QUALITY-GATES.md`, dan `docs/ANALISIS-VALIDATOR-MILESTONE.md`.
+- Bukti perubahan: `scripts/validate_content.py`, `scripts/registries.py`, `tests/test_validate_content.py`, `.github/workflows/validator-tests.yml`, `content-contract/CONTRACT-EXTENSIONS.md`, `examples/content-contracts/training-schedule.yml`, `VALIDATOR-MILESTONE-4.md`, `VALIDATOR-MILESTONE-5.md`, `quality/QUALITY-GATES.md`, dan `docs/ANALISIS-VALIDATOR-MILESTONE.md`.
 - Batas verifikasi: test lokal tidak dapat dijalankan karena container tidak dapat mengakses GitHub untuk clone repo. Hasil GitHub Actions pada commit terbaru harus diperiksa sebelum menyatakan suite lulus. Repository standar ini bukan aplikasi Astro; build produksi dan validasi graph hasil render tetap dilakukan pada setiap proyek turunan.
 
 
@@ -329,7 +329,7 @@ Workflow menutup kesenjangan antara starter templates dan proses pemakaiannya. G
 
 - [x] Ditambahkan `content-contract/TRAINING-SCHEDULE-CONTRACT.md` sebagai kontrak referensi untuk definisi program pelatihan (`training`) dan pelaksanaan/batch (`schedule`).
 - [x] Ditambahkan `content-contract/TRAINING-SCHEDULE-TEMPLATES.md` berisi kerangka field kosong dan checklist dokumen.
-- [x] README dan `docs/CONTRACT-EXTENSIONS.md` menautkan dokumen domain; AGENTS mewajibkan agen membaca kontrak ekstensi saat collection tersebut diaktifkan.
+- [x] README dan `content-contract/CONTRACT-EXTENSIONS.md` menautkan dokumen domain; AGENTS mewajibkan agen membaca kontrak ekstensi saat collection tersebut diaktifkan.
 - [x] Changelog mencatat ruang lingkup serta batas dukungan validator ekstensi v1.
 - Keputusan model referensi: satu schedule wajib berelasi ke tepat satu training; satu training dapat memiliki banyak schedule. `schedule.trainingSlug -> training.trainingSlug` adalah satu-satunya sumber kebenaran relasi. Penggantian ke FK numerik hanya boleh melalui keputusan proyek eksplisit dan harus menghapus natural key dari relasi; jangan memakai keduanya secara paralel.
 - Batas: dokumen ini menetapkan kontrak referensi, bukan bukti bahwa nested Zod validation, date/timezone refinement, rendering Course/Event, atau registrasi telah diimplementasikan.
@@ -339,7 +339,7 @@ Workflow menutup kesenjangan antara starter templates dan proses pemakaiannya. G
 
 - [x] Constitution 1.4 membedakan relasi enam collection inti (FK numerik) dari pengecualian natural key pada collection ekstensi.
 - [x] Content Contract 1.6 menyelaraskan aturan umum dan menjelaskan batas penerapan pengecualian ekstensi.
-- [x] `docs/CONTRACT-EXTENSIONS.md` menetapkan syarat target natural key unik/stabil, tipe kompatibel, kardinalitas eksplisit, dan satu sumber kebenaran.
+- [x] `content-contract/CONTRACT-EXTENSIONS.md` menetapkan syarat target natural key unik/stabil, tipe kompatibel, kardinalitas eksplisit, dan satu sumber kebenaran.
 - [x] `AGENTS.md` menginstruksikan AI agent mengikuti aturan inti/ekstensi yang sama.
 - [x] Kontrak dan template Training/Schedule 1.1 menetapkan `trainingSlug` sebagai relasi normatif tunggal; contoh registry menghapus field relasi paralel `trainingId`.
 - Bukti commit: Constitution `bcd185f`, Content Contract `418ddcb`, Extension Contract `b598c3f`, Training Contract `e5e8577`, Template `64507ba`, AGENTS `fa52601`, README `87ffd6a`, contoh registry `9e6fabb`.
@@ -348,11 +348,11 @@ Workflow menutup kesenjangan antara starter templates dan proses pemakaiannya. G
 
 ## Konsistensi contoh konfigurasi — tahap 2/5, 2026-11-28
 
-- [x] Contoh generik pada `docs/CONTRACT-EXTENSIONS.md` diberi label sebagai sintaks minimal mekanisme ekstensi, bukan model domain training/schedule.
+- [x] Contoh generik pada `content-contract/CONTRACT-EXTENSIONS.md` diberi label sebagai sintaks minimal mekanisme ekstensi, bukan model domain training/schedule.
 - [x] Contoh konfigurasi `examples/content-contracts/training-schedule.yml` diposisikan sebagai ilustrasi adopsi parsial extension registry v1; kontrak domain menjadi sumber normatif field dan semantik.
 - [x] Ketidaksesuaian status opsional `ulid` dan `publisherId` diperbaiki: keduanya tetap dapat dideklarasikan di `fieldTypes`, tetapi tidak lagi dipaksakan dalam `requiredFields`.
 - [x] Versi Training/Schedule Contract dan Templates dinaikkan ke 1.2; template menegaskan bahwa field kosong yang ditampilkan tidak otomatis wajib.
-- Bukti: `docs/CONTRACT-EXTENSIONS.md`, `content-contract/TRAINING-SCHEDULE-CONTRACT.md`, `content-contract/TRAINING-SCHEDULE-TEMPLATES.md`, `examples/content-contracts/training-schedule.yml`, dan entri 2026-11-28 pada `CHANGELOG.md`.
+- Bukti: `content-contract/CONTRACT-EXTENSIONS.md`, `content-contract/TRAINING-SCHEDULE-CONTRACT.md`, `content-contract/TRAINING-SCHEDULE-TEMPLATES.md`, `examples/content-contracts/training-schedule.yml`, dan entri 2026-11-28 pada `CHANGELOG.md`.
 - Batas verifikasi: dilakukan pembacaan ulang perubahan teks dan konsistensi daftar `requiredFields`; belum menjalankan parser/validator atau test terhadap registry contoh maupun corpus proyek nyata.
 
 
