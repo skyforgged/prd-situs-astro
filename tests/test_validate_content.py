@@ -773,8 +773,6 @@ collections:
       updatedDate: utc_datetime
       startDate: iso_date_or_datetime
       endDate: iso_date_or_datetime
-      startDate: string
-      endDate: string
     schemaTypes: [Event]
     schemaMappings:
       Event:
