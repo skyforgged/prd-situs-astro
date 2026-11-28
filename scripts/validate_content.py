@@ -263,10 +263,17 @@ def validate_relations(documents):
                 component=block.get("component")
                 if "serviceIds" in block:
                     values=block["serviceIds"]
-                    if isinstance(values,list):
+                    if not isinstance(values,list) or any(not posint(value) for value in values):
+                        _relation_issue(issues,path,f"blocks[{i}].serviceIds must be an array of positive integers")
+                    elif len(values)!=len(set(values)):
+                        _relation_issue(issues,path,f"blocks[{i}].serviceIds must not contain duplicate IDs")
+                    else:
                         for target in values: resolve(path,docid,"serviceIds",target,{"service"},f"blocks[{i}].serviceIds")
                 if component=="content-list" and block.get("categoryId") is not None:
-                    resolve(path,docid,"categoryId",block["categoryId"],{"category"},f"blocks[{i}].categoryId")
+                    if not posint(block["categoryId"]):
+                        _relation_issue(issues,path,f"blocks[{i}].categoryId must be a positive integer")
+                    else:
+                        resolve(path,docid,"categoryId",block["categoryId"],{"category"},f"blocks[{i}].categoryId")
 
     # A page hierarchy must be acyclic. Other related-content links may be reciprocal.
     visiting=set(); visited=set()
