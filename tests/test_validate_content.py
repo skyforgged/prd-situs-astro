@@ -865,6 +865,8 @@ updatedDate: 2026-11-26T03:00:00Z""")
     write_md(content / "schedules" / "batch.md", """id: 201
 slug: batch-november
 title: Batch November
+startDate: 2026-11-29
+endDate: 2026-11-30
 schema:
   type: Event
 updatedDate: 2026-11-26T03:00:00Z""")
