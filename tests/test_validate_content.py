@@ -466,3 +466,33 @@ updatedDate: 2026-11-26T03:00:00Z
 blocks: []""")
     issues = validate_paths([article])
     assert any("cannot reference the source Article itself" in issue.message for issue in issues)
+
+
+def test_block_relation_cardinality_and_duplicates_are_validated(tmp_path: Path):
+    malformed = write_md(tmp_path / "homepages/malformed.md", """id: 1
+slug: home
+title: Beranda
+description: Ringkasan.
+schema:
+  type: WebPage
+seo: {}
+blocks:
+  - id: 1
+    component: service-grid
+    serviceIds: 5
+updatedDate: 2026-11-26T03:00:00Z""")
+    duplicated = write_md(tmp_path / "homepages/duplicated.md", """id: 2
+slug: home-2
+title: Beranda Dua
+description: Ringkasan.
+schema:
+  type: WebPage
+seo: {}
+blocks:
+  - id: 1
+    component: service-grid
+    serviceIds: [5, 5]
+updatedDate: 2026-11-26T03:00:00Z""")
+    issues = validate_paths([malformed, duplicated])
+    assert any("serviceIds must be an array of positive integers" in issue.message for issue in issues)
+    assert any("serviceIds must not contain duplicate IDs" in issue.message for issue in issues)
