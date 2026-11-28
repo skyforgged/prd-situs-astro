@@ -648,8 +648,15 @@ def validate_route_manifest(manifest_path, site_root, routes):
         if source is not None and not nonempty(source):
             issues.append(Issue(Path(manifest_path),"[QG-13 INVALID_SOURCE] route '%s' source must be a non-empty relative path"%normalized))
         elif source:
-            source_path=(Path(site_root)/source).resolve()
-            if not source_path.is_file(): issues.append(Issue(Path(manifest_path),"[QG-13 SOURCE_NOT_FOUND] route '%s' source '%s' does not exist"%(normalized,source)))
+            source_rel=Path(source)
+            if source_rel.is_absolute() or ".." in source_rel.parts:
+                issues.append(Issue(Path(manifest_path),"[QG-13 INVALID_SOURCE] route '%s' source must stay inside site_root"%normalized))
+            else:
+                source_path=(Path(site_root)/source_rel).resolve()
+                try: source_path.relative_to(Path(site_root).resolve())
+                except ValueError: issues.append(Issue(Path(manifest_path),"[QG-13 INVALID_SOURCE] route '%s' source escapes site_root"%normalized))
+                else:
+                    if not source_path.is_file(): issues.append(Issue(Path(manifest_path),"[QG-13 SOURCE_NOT_FOUND] route '%s' source '%s' does not exist"%(normalized,source)))
         if "indexable" in item and not isinstance(item["indexable"],bool):
             issues.append(Issue(Path(manifest_path),"[QG-13 INVALID_INDEXABILITY] route '%s' indexable must be boolean"%normalized))
         if item.get("indexable") is True and not source:
@@ -661,10 +668,17 @@ def validate_route_manifest(manifest_path, site_root, routes):
     if sitemap is not None and not nonempty(sitemap):
         issues.append(Issue(Path(manifest_path),"[QG-13 INVALID_SITEMAP] sitemap must be a non-empty relative path"))
     if nonempty(sitemap):
-        sitemap_path=Path(site_root)/sitemap
-        if not sitemap_path.is_file(): issues.append(Issue(Path(manifest_path),"[QG-13 SITEMAP_NOT_FOUND] sitemap '%s' does not exist"%sitemap))
+        sitemap_rel=Path(sitemap)
+        if sitemap_rel.is_absolute() or ".." in sitemap_rel.parts:
+            issues.append(Issue(Path(manifest_path),"[QG-13 INVALID_SITEMAP] sitemap path must stay inside site_root"))
         else:
-            xml=sitemap_path.read_text(encoding="utf-8",errors="replace")
+            sitemap_path=(Path(site_root)/sitemap_rel).resolve()
+            try: sitemap_path.relative_to(Path(site_root).resolve())
+            except ValueError: issues.append(Issue(Path(manifest_path),"[QG-13 INVALID_SITEMAP] sitemap path escapes site_root"))
+            else:
+                if not sitemap_path.is_file(): issues.append(Issue(Path(manifest_path),"[QG-13 SITEMAP_NOT_FOUND] sitemap '%s' does not exist"%sitemap))
+                else:
+                    xml=sitemap_path.read_text(encoding="utf-8",errors="replace")
             for route,item in ((x["path"],x) for x in manifest["routes"] if isinstance(x,dict) and x.get("indexable") is True):
                 if route.rstrip("/")+"/" not in xml and route not in xml:
                     issues.append(Issue(Path(manifest_path),"[QG-13 SITEMAP_ROUTE_MISSING] indexable route '%s' is absent from sitemap"%route))
@@ -754,7 +768,7 @@ def main(argv=None):
             print(f"ERROR: {issue}")
         print(f"\nValidation failed: {len(issues)} issue(s) across {len(files)} Markdown file(s).")
         return 1
-    checks=["core and extension contracts","relations","schema/block registry","canonical uniqueness","slug/routes"]
+    checks=["configured content contracts","relations","schema/block registry","canonical uniqueness","slug/routes"]
     if args.site_root: checks.append("assets/internal links")
     if args.route_manifest: checks.append("route manifest/sitemap/redirects")
     print("Validation passed: %d Markdown file(s); checks: %s."%(len(files),", ".join(checks)))
