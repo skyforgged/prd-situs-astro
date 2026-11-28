@@ -1,0 +1,30 @@
+version: 1
+collections:
+  training:
+    directory: trainings
+    requiredFields: [id, slug, title, schema, updatedDate]
+    fieldTypes:
+      id: positive_int
+      slug: string
+      title: string
+      schema: object
+      updatedDate: utc_datetime
+      scheduleIds: positive_int_array
+    schemaTypes: [Course]
+    routePrefix: /training/
+    relations:
+      scheduleIds:
+        target: schedule
+        cardinality: many
+  schedule:
+    directory: schedules
+    requiredFields: [id, slug, title, schema, updatedDate, startDate]
+    fieldTypes:
+      id: positive_int
+      slug: string
+      title: string
+      schema: object
+      updatedDate: utc_datetime
+      startDate: string
+    schemaTypes: [Event]
+    routePrefix: /schedule/
