@@ -7,6 +7,7 @@
 
 ### Changed
 - `docs/CAPABILITY-BOUNDARIES.md` versi 1.1 menambahkan MANUAL sebagai kategori dan status bukti keempat, sejajar dengan empat jenis bukti pada AGENTS.md dan matriks traceability. Cakupan validator, test, dan kontrak tidak berubah.
+- Dokumen normatif dipindahkan keluar dari `docs/`: `quality/CAPABILITY-BOUNDARIES.md` dan `content-contract/CONTRACT-EXTENSIONS.md`. Referensi aktif di README, AGENTS.md, Quality Gates, Validator Milestone 5, matriks traceability, dan Review Notes mengikuti jalur baru. Penyebutan jalur lama pada entri sebelumnya dipertahankan sebagai catatan historis, bukan tautan aktif.
 
 ## [Unreleased] — 2026-11-28
 
