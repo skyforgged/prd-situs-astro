@@ -679,9 +679,9 @@ def validate_route_manifest(manifest_path, site_root, routes):
                 if not sitemap_path.is_file(): issues.append(Issue(Path(manifest_path),"[QG-13 SITEMAP_NOT_FOUND] sitemap '%s' does not exist"%sitemap))
                 else:
                     xml=sitemap_path.read_text(encoding="utf-8",errors="replace")
-            for route,item in ((x["path"],x) for x in manifest["routes"] if isinstance(x,dict) and x.get("indexable") is True):
-                if route.rstrip("/")+"/" not in xml and route not in xml:
-                    issues.append(Issue(Path(manifest_path),"[QG-13 SITEMAP_ROUTE_MISSING] indexable route '%s' is absent from sitemap"%route))
+                    for route,item in ((x["path"],x) for x in manifest["routes"] if isinstance(x,dict) and x.get("indexable") is True):
+                        if route.rstrip("/")+"/" not in xml and route not in xml:
+                            issues.append(Issue(Path(manifest_path),"[QG-13 SITEMAP_ROUTE_MISSING] indexable route '%s' is absent from sitemap"%route))
     redirects=manifest.get("redirects",[])
     if not isinstance(redirects,list): issues.append(Issue(Path(manifest_path),"[QG-13 INVALID_REDIRECTS] redirects must be an array"))
     else:
