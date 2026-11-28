@@ -1,7 +1,7 @@
 # Quality Gates & Acceptance Criteria
 
 > Status: Standar verifikasi
-> Versi: 0.6
+> Versi: 0.7
 
 ## 1. Prinsip
 
@@ -116,5 +116,15 @@ Rilis dapat diterima jika seluruh gate wajib berstatus lulus, build produksi suk
 | Halaman sengaja tidak ditautkan dari menu utama tetapi dapat ditemukan melalui jalur lain yang ditetapkan | Dapat lulus QG-13 |
 
 ## 8. CI dan verifikasi lokal
+
+Validator referensi di `scripts/validate_content.py` menggabungkan pemeriksaan frontmatter, relasi, Schema/Block Registry, slug/route, canonical duplikat, aset lokal, internal link, dan route manifest. Contoh pemakaian:
+
+```bash
+python scripts/validate_content.py src/content --site-root . --route-manifest projects/nama-proyek/route-manifest.yml
+```
+
+Route default dan format manifest, override prefix, serta batas otomatisasi tiap gate dijelaskan dalam [Validator Milestone 5](../VALIDATOR-MILESTONE-5.md). Repository standar menjalankan unit test dan smoke-test CLI di CI. Setiap proyek Astro wajib menambahkan pemindaian corpus miliknya, production build, serta audit hasil render untuk JSON-LD, SEO, dan accessibility. QG-12 tetap membutuhkan persetujuan reviewer manusia.
+
+
 
 Gate otomatis QG-01 sampai QG-11 dan QG-13 harus dijalankan secara lokal dan pada CI untuk pull/push yang mengubah konten, schema, komponen block, routing, atau konfigurasi SEO. Perintah final ditetapkan oleh implementasi proyek dan didokumentasikan di README proyek. QG-12 tetap menjadi review manusia: hasilnya dibuktikan dengan catatan persetujuan reviewer pada PR, issue, atau catatan publikasi sebelum rilis, dan tidak diwakili oleh pemeriksaan CI.
