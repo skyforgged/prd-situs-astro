@@ -1,7 +1,7 @@
 """Reference Schema and Block registries for the PRD Astro validator."""
 SCHEMA_TYPES = {
  "block": {"FAQPage","HowTo","ItemList","VideoObject","ImageObject","Table","Course","Quiz","Question","Claim","Quotation","SpeakableSpecification"},
- "page": {"WebPage","Article","BlogPosting","TechArticle","NewsArticle","CollectionPage","AboutPage","ContactPage","ProfilePage","SearchResultsPage","QAPage","ItemPage"},
+ "page": {"WebPage","SiteNavigationElement","Service","Article","BlogPosting","TechArticle","NewsArticle","CollectionPage","AboutPage","ContactPage","ProfilePage","SearchResultsPage","QAPage","ItemPage"},
  "entity": {"Service","ProfessionalService","LocalBusiness","Organization","Person","DefinedTerm","Offer","AggregateOffer","Review","AggregateRating","ContactPoint","PostalAddress","GeoCoordinates","Event","JobPosting","Dataset","SoftwareApplication"},
 }
 PAGE_TYPES = SCHEMA_TYPES["page"]
@@ -54,7 +54,7 @@ def validate_schema_object(schema, scope, kind=None, component=None):
  st=schema.get("type")
  if not isinstance(st,str) or not st: return issues+["schema.type must be a non-empty string"]
  if scope=="document":
-  if st not in PAGE_TYPES: issues.append("schema.type '%s' is not an allowed page-level Schema.org type" % st)
+  if st not in (PAGE_TYPES | ({"SiteNavigationElement"} if kind=="menu" else set()) | ({"Service"} if kind=="service" else set())): issues.append("schema.type '%s' is not an allowed page-level Schema.org type" % st)
   main=schema.get("mainEntity")
   if main is not None:
    if not isinstance(main,dict) or set(main)!={"type"} or main.get("type") not in ENTITY_TYPES:
