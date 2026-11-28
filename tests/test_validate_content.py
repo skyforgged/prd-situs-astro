@@ -1279,3 +1279,78 @@ def test_route_validation_rejects_unsafe_prefix_segments(tmp_path: Path):
     )
     assert routes == {}
     assert any("INVALID_ROUTE_PREFIX" in issue.message for issue in issues)
+
+
+def test_cli_require_project_gates_rejects_partial_configuration(tmp_path: Path):
+    import subprocess
+    script = Path(__file__).resolve().parents[1] / "scripts" / "validate_content.py"
+    content = tmp_path / "content"
+    content.mkdir()
+    result = subprocess.run(
+        [sys.executable, str(script), str(content), "--require-project-gates"],
+        text=True, capture_output=True,
+    )
+    assert result.returncode == 2
+    assert "--require-project-gates requires both --site-root and --route-manifest" in result.stderr
+
+
+def test_cli_full_static_gate_flow_connects_contract_routes_assets_links_and_manifest(tmp_path: Path):
+    import subprocess
+    import yaml
+    site_root = tmp_path / "site"
+    content = site_root / "content"
+    page = write_md(content / "pages" / "about.md", PAGE)
+    (site_root / "public" / "images").mkdir(parents=True)
+    (site_root / "public" / "images" / "about.webp").write_bytes(b"image-fixture")
+    (site_root / "public" / "sitemap.xml").write_text(
+        "<urlset><loc>https://example.test/tentang/</loc></urlset>", encoding="utf-8"
+    )
+    data, error = parse_frontmatter(page)
+    assert error is None
+    data["featuredImage"] = {"src": "/images/about.webp", "alt": "Ilustrasi profil halaman"}
+    data["blocks"] = [{"id": 1, "component": "cta", "title": "Lihat halaman", "url": "/tentang/"}]
+    page.write_text("---\n" + yaml.safe_dump(data, allow_unicode=True, sort_keys=False) + "---\n", encoding="utf-8")
+    manifest = site_root / "routes.yml"
+    manifest.write_text(
+        "routes:\n  - path: /tentang/\n    source: content/pages/about.md\n    indexable: true\nsitemap: public/sitemap.xml\n",
+        encoding="utf-8",
+    )
+    script = Path(__file__).resolve().parents[1] / "scripts" / "validate_content.py"
+    result = subprocess.run(
+        [sys.executable, str(script), str(content), "--site-root", str(site_root),
+         "--route-manifest", str(manifest), "--require-project-gates"],
+        text=True, capture_output=True,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "QG-09 local assets/internal links" in result.stdout
+    assert "QG-13 route manifest/sitemap/redirects" in result.stdout
+    assert "QG-11 Astro production build" in result.stdout
+
+
+def test_cli_full_static_gate_flow_fails_on_missing_asset(tmp_path: Path):
+    import subprocess
+    import yaml
+    site_root = tmp_path / "site"
+    content = site_root / "content"
+    page = write_md(content / "pages" / "about.md", PAGE)
+    (site_root / "public").mkdir(parents=True)
+    (site_root / "public" / "sitemap.xml").write_text(
+        "<urlset><loc>https://example.test/tentang/</loc></urlset>", encoding="utf-8"
+    )
+    data, error = parse_frontmatter(page)
+    assert error is None
+    data["featuredImage"] = {"src": "/images/missing.webp", "alt": "Gambar halaman"}
+    page.write_text("---\n" + yaml.safe_dump(data, allow_unicode=True, sort_keys=False) + "---\n", encoding="utf-8")
+    manifest = site_root / "routes.yml"
+    manifest.write_text(
+        "routes:\n  - path: /tentang/\n    source: content/pages/about.md\n    indexable: true\nsitemap: public/sitemap.xml\n",
+        encoding="utf-8",
+    )
+    script = Path(__file__).resolve().parents[1] / "scripts" / "validate_content.py"
+    result = subprocess.run(
+        [sys.executable, str(script), str(content), "--site-root", str(site_root),
+         "--route-manifest", str(manifest), "--require-project-gates"],
+        text=True, capture_output=True,
+    )
+    assert result.returncode == 1
+    assert "QG-09 ASSET_NOT_FOUND" in result.stdout
