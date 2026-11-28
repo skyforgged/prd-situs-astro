@@ -77,7 +77,9 @@ Tipe field v1:
 
 Setiap `schemaType` wajib memiliki `schemaMappings` yang mendefinisikan `fieldMapping` (property Schema.org ke field sumber) dan `requiredFields`. Proyek dapat menetapkan `schemaType` statis pada registry jika tipe schema tidak disimpan pada frontmatter; jika tidak, validator membaca `schema.type` pada dokumen. Validator memeriksa bahwa field sumber dan field wajib mapping tersedia pada dokumen; mapping ini menjadi kontrak sumber bagi implementasi JSON-LD proyek, bukan generator JSON-LD itu sendiri. Tipe Schema.org yang diterima tanpa mapping ditolak. `fieldEnums` dapat menetapkan enum string pada field.
 
-Relasi v1 mendukung kardinalitas `one` atau `many` dengan target kind dan `targetField`. Default `targetField` adalah `id`; untuk extension collection, relasi juga dapat memakai natural key seperti `trainingSlug`. Tipe field sumber dan target diperiksa kesesuaiannya. Target yang hilang atau ambigu menggagalkan validasi. Semua extension document tetap wajib memakai `id` integer positif yang unik secara global.
+Relasi v1 mendukung kardinalitas `one` atau `many` dengan target kind dan `targetField`. Default `targetField` adalah `id`; natural key seperti `trainingSlug` hanya merupakan pengecualian untuk collection ekstensi dan harus dideklarasikan secara eksplisit. Field target natural key wajib unik, stabil, tidak kosong, dan bertipe kompatibel dengan field sumber. Validator memeriksa kompatibilitas tipe serta memastikan setiap referensi menemukan tepat jumlah target sesuai kardinalitas; target yang hilang atau ambigu menggagalkan validasi. Natural key tidak menggantikan identitas dokumen: semua dokumen ekstensi tetap wajib memiliki `id` integer positif yang unik secara global.
+
+**Aturan satu sumber kebenaran:** jangan mendeklarasikan dua relasi berbeda (misalnya `trainingId` dan `trainingSlug`) untuk menghubungkan pasangan entitas yang sama kecuali salah satunya secara eksplisit merupakan cache/data turunan dengan aturan sinkronisasi dan validasi. Collection inti tetap menggunakan FK numerik sebagaimana Website Constitution dan Content Contract.
 
 
 ## Kontrak domain training dan schedule
@@ -86,7 +88,7 @@ Kontrak domain dan template frontmatter yang lebih lengkap dipisahkan agar mekan
 - [Training dan Schedule Contract](../content-contract/TRAINING-SCHEDULE-CONTRACT.md)
 - [Training dan Schedule Frontmatter Templates](../content-contract/TRAINING-SCHEDULE-TEMPLATES.md)
 
-Dokumen tersebut menetapkan makna collection, field, relasi, route, mapping Course/Event, validasi domain yang harus ditambahkan proyek, serta checklist adopsi. Contoh registry di bawah tetap menjadi fixture konfigurasi minimal.
+Dokumen tersebut menetapkan makna collection, field, relasi, route, mapping Course/Event, validasi domain yang harus ditambahkan proyek, serta checklist adopsi. Contoh registry di bawah tetap menjadi fixture konfigurasi minimal dan bukan model domain normatif training/schedule.
 
 ## Contoh berbasis collection training/schedule
 
@@ -107,7 +109,7 @@ Collection inti tetap dapat dipetakan dengan `--collection KIND=DIR`. Opsi terse
 
 - Tipe Schema.org diperiksa terhadap `schemaTypes` dan harus memiliki `schemaMappings`; validator referensi belum menghasilkan JSON-LD.
 - Field bertipe `object` dan `array` hanya diperiksa bentuk luarnya. Deklarasi enum wajib menunjuk field yang sudah memiliki tipe; setiap sumber `fieldMapping` dan `requiredFields` pada schema mapping wajib menunjuk field yang dideklarasikan pada `fieldTypes`. Direktori ekstensi tidak boleh bertumpang tindih dengan direktori ekstensi lain atau memakai nama direktori collection inti. `routePrefix` harus berupa path absolut ternormalisasi dan diakhiri `/`. Validasi nested object, discriminator block, refinement lintas-field (misalnya `endDate >= startDate`), validasi timezone IANA, dan semantik domain harus ditambahkan melalui kontrak proyek atau validator khusus.
-- Relasi hanya memeriksa ID positif, target kind, keberadaan, dan keunikan target. Tidak ada inferensi relasi otomatis.
+- Relasi memeriksa target kind, tipe field, keberadaan, keunikan target, dan kardinalitas yang dideklarasikan; natural key hanya diizinkan sebagai pengecualian ekstensi eksplisit. Tidak ada inferensi relasi otomatis.
 - Route dibangun dari `routePrefix` dan `slug`; redirect dan sitemap tetap diverifikasi melalui route manifest.
 - Ekstensi tidak mengubah kontrak inti, registry Block lintas proyek, maupun kebijakan Quality Gates.
 
