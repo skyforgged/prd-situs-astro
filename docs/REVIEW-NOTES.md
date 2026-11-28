@@ -285,9 +285,10 @@ Workflow menutup kesenjangan antara starter templates dan proses pemakaiannya. G
 
 ## Validator otomatis — Milestone 4 dan 5, 2026-11-28
 
-- [x] Milestone 4: Schema Registry, Block Registry, tipe props, pasangan block-schema, dan pemetaan sumber JSON-LD dasar.
-- [x] Milestone 5: slug/route collision, canonical duplikat, aset lokal, internal links, route manifest, sitemap, dan redirect dasar.
-- [x] CLI validator menggabungkan pemeriksaan konten, relasi, registry, route, aset, tautan, dan manifest melalui satu pemanggilan.
-- [x] CI menjalankan unit test validator dan smoke-test CLI.
+- [x] Milestone 4: Schema Registry dan Block Registry awal, validasi tipe props, pasangan block-schema, dan pemeriksaan sumber wajib block tersedia; konsistensi penuh antara scope tipe dan entri registry masih perlu ditutup.
+- [x] Fungsi Milestone 5: fungsi slug/route collision, canonical duplikat, aset lokal, internal links, route manifest, sitemap, dan redirect dasar tersedia serta memiliki unit test.
+- [ ] Integrasi Milestone 5 ke CLI: belum selesai. `main()` pada kode yang diaudit hanya memanggil `validate_paths()`; fungsi validasi Milestone 5 lainnya belum dipanggil dari entry point.
+- [ ] Pemakaian argumen Milestone 5: `--site-root`, `--route-manifest`, dan `--route-prefixes` sudah dideklarasikan tetapi belum digunakan oleh `main()` untuk menjalankan pemeriksaan terkait.
+- [ ] Smoke-test CLI di CI: belum ada. Workflow `.github/workflows/validator-tests.yml` hanya menjalankan `pytest -q`.
 - Bukti: `scripts/registries.py`, `scripts/validate_content.py`, `tests/test_validate_content.py`, `.github/workflows/validator-tests.yml`, `VALIDATOR-MILESTONE-4.md`, dan `VALIDATOR-MILESTONE-5.md`.
-- Batas verifikasi: validator generik belum memeriksa graph JSON-LD hasil render, accessibility browser, production build Astro, atau kualitas editorial. QG-12 tetap manual; QG-08/QG-10/QG-11 harus dihubungkan pada workflow setiap proyek Astro.
+- Batas verifikasi: unit test fungsi tidak membuktikan integrasi CLI. Validator generik belum memeriksa graph JSON-LD hasil render, accessibility browser, production build Astro, atau kualitas editorial. QG-12 tetap manual; QG-08/QG-10/QG-11 harus dihubungkan pada workflow setiap proyek Astro.
