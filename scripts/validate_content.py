@@ -80,6 +80,16 @@ def validate_document(path,data,kind=None):
       "category":("slug","title","description","schema","seo","blocks","updatedDate"),
     }
     if kind not in required_fields: err(f"unknown document contract kind '{kind}'"); return out
+    allowed_fields={
+      "homepage":{"id","slug","title","description","schema","seo","blocks","updatedDate"},
+      "menu":{"id","slug","title","schema","location","items","updatedDate"},
+      "page":{"id","slug","title","description","intro","schema","seo","featuredImage","publishedDate","updatedDate","blocks","parentPageId"},
+      "article":{"id","slug","title","description","intro","schema","seo","authorId","categoryIds","relatedArticleIds","relatedServiceId","featuredImage","publishedDate","updatedDate","blocks"},
+      "service":{"id","slug","title","description","intro","schema","seo","providerId","categoryIds","relatedServiceIds","featuredImage","blocks","updatedDate"},
+      "category":{"id","slug","title","description","schema","seo","blocks","updatedDate"},
+    }
+    for field in sorted(set(data)-allowed_fields[kind]):
+        err(f"unknown field '{field}' for {kind} contract; add it through an explicit project decision/contract or remove it")
     required(required_fields[kind]); string_fields(("slug","title","description"))
     schema=data.get("schema")
     if not isinstance(schema,dict) or not nonempty(schema.get("type")):
