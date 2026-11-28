@@ -511,12 +511,12 @@ def test_schema_registry_allows_defined_term_only_as_page_main_entity(tmp_path: 
     good = PAGE.replace("AboutPage", "WebPage").replace(
         "PT Contoh menyediakan layanan profesional untuk kebutuhan pelanggan.",
         "Tentang Kami adalah penjelasan mengenai identitas organisasi."
-    ).replace("type: WebPage", "type: WebPage\\n  mainEntity:\\n    type: DefinedTerm")
+    ).replace("type: WebPage", "type: WebPage\n  mainEntity:\n    type: DefinedTerm")
     assert validate_document(tmp_path / "pages/glossary.md", __import__("yaml").safe_load(good), "page") == []
 
 
 def test_schema_registry_rejects_unknown_schema_properties(tmp_path: Path):
-    source = PAGE.replace("type: AboutPage", "type: AboutPage\\n  name: Tidak boleh")
+    source = PAGE.replace("type: AboutPage", "type: AboutPage\n  name: Tidak boleh")
     issues = validate_document(tmp_path / "pages/a.md", __import__("yaml").safe_load(source), "page")
     assert any("schema has unsupported property 'name'" in issue.message for issue in issues)
 
@@ -528,35 +528,35 @@ def test_block_registry_rejects_unknown_component(tmp_path: Path):
 
 
 def test_block_registry_rejects_unknown_props(tmp_path: Path):
-    source = PAGE.replace("component: rich-text", "component: rich-text\\n    inventedProp: true")
+    source = PAGE.replace("component: rich-text", "component: rich-text\n    inventedProp: true")
     issues = validate_document(tmp_path / "pages/a.md", __import__("yaml").safe_load(source), "page")
     assert any("unsupported prop 'inventedProp'" in issue.message for issue in issues)
 
 
 def test_block_registry_validates_component_specific_props(tmp_path: Path):
-    source = PAGE.replace("component: rich-text", "component: faq\\n    content: Tidak diizinkan")
+    source = PAGE.replace("component: rich-text", "component: faq\n    content: Tidak diizinkan")
     issues = validate_document(tmp_path / "pages/a.md", __import__("yaml").safe_load(source), "page")
     assert any("does not allow prop 'content'" in issue.message for issue in issues)
 
 
 def test_block_registry_validates_prop_types(tmp_path: Path):
-    source = PAGE.replace("component: rich-text", "component: service-grid\\n    serviceIds: 12")
+    source = PAGE.replace("component: rich-text", "component: service-grid\n    serviceIds: 12")
     issues = validate_document(tmp_path / "pages/a.md", __import__("yaml").safe_load(source), "page")
     assert any("prop 'serviceIds' must be intlist" in issue.message for issue in issues)
 
 
 def test_block_schema_must_be_allowed_for_component(tmp_path: Path):
-    source = PAGE.replace("component: rich-text", "component: faq\\n    schema:\\n      type: HowTo")
+    source = PAGE.replace("component: rich-text", "component: faq\n    schema:\n      type: HowTo")
     issues = validate_document(tmp_path / "pages/a.md", __import__("yaml").safe_load(source), "page")
     assert any("not permitted for component 'faq'" in issue.message for issue in issues)
 
 
 def test_block_schema_registry_accepts_faq_page(tmp_path: Path):
-    source = PAGE.replace("component: rich-text", "component: faq\\n    schema:\\n      type: FAQPage\\n    items: []")
+    source = PAGE.replace("component: rich-text", "component: faq\n    schema:\n      type: FAQPage\n    items: []")
     assert validate_document(tmp_path / "pages/a.md", __import__("yaml").safe_load(source), "page") == []
 
 
 def test_block_registry_rejects_boolean_as_numeric_prop(tmp_path: Path):
-    source = PAGE.replace("component: rich-text", "component: service-grid\\n    serviceIds: [true]")
+    source = PAGE.replace("component: rich-text", "component: service-grid\n    serviceIds: [true]")
     issues = validate_document(tmp_path / "pages/a.md", __import__("yaml").safe_load(source), "page")
     assert any("prop 'serviceIds' must be intlist" in issue.message for issue in issues)
