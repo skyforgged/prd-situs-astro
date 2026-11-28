@@ -1,10 +1,10 @@
 # Validator Milestone 5 — Route, Asset, Link, dan Quality Gates
 
-> Status: implementasi validator referensi selesai; pemeriksaan yang membutuhkan hasil render/build dijalankan oleh proyek Astro pemakai.
+> Status: fungsi pemeriksaan Milestone 5 tersedia dan memiliki unit test, tetapi integrasi end-to-end ke CLI/CI belum selesai. Dokumen ini mencatat rancangan pemeriksaan dan target penggunaan; jangan menganggap contoh CLI di bawah sudah menjalankan seluruh pemeriksaan.
 
 ## Tujuan
 
-Milestone 5 menyelesaikan pemeriksaan statis lintas dokumen dan menghubungkan hasilnya ke satu CLI serta CI. Validator dijalankan terhadap seluruh root content agar indeks ID, FK, slug, route, canonical, dan referensi dapat dibandingkan secara global.
+Milestone 5 menambahkan fungsi pemeriksaan statis lintas dokumen untuk slug, route, canonical, aset, tautan, dan route manifest. Pada kode yang diaudit (2026-11-28), fungsi-fungsi tersebut belum seluruhnya dipanggil oleh entry point CLI. Karena itu, pemeriksaan yang tersedia sebagai fungsi dan unit test belum dapat dianggap aktif melalui satu pemanggilan CLI.
 
 ## Pemeriksaan yang ditambahkan
 
@@ -31,9 +31,11 @@ Milestone 5 menyelesaikan pemeriksaan statis lintas dokumen dan menghubungkan ha
 - Redirect harus memiliki `from` dan `to`, dan tidak boleh berupa self-loop.
 - Pemeriksaan ini memvalidasi konsistensi eksplisit; ia tidak menilai relevansi semantik navigasi atau listing.
 
-## CLI terpadu
+## Rancangan penggunaan CLI — integrasi masih tertunda
 
-Instal dependensi dan jalankan:
+Contoh berikut menunjukkan bentuk pemanggilan yang dituju, bukan bukti bahwa seluruh pemeriksaan Milestone 5 telah terhubung. Pada versi kode yang diaudit, `main()` baru menjalankan `validate_paths()`; fungsi `validate_seo_uniqueness()`, `validate_routes()`, `validate_assets_and_links()`, dan `validate_route_manifest()` belum dipanggil dari entry point. Argumen `--site-root`, `--route-manifest`, dan `--route-prefixes` juga belum diteruskan ke fungsi pemeriksaan tersebut.
+
+Instal dependensi dan jalankan unit test yang tersedia:
 
 ```bash
 python -m pip install -r requirements-dev.txt
@@ -41,7 +43,7 @@ pytest -q
 python scripts/validate_content.py src/content --site-root . --route-manifest projects/your-site/route-manifest.yml
 ```
 
-Pemetaan collection dapat ditambahkan berulang:
+Perintah di atas menjalankan validator yang terintegrasi saat ini, bukan seluruh rangkaian Milestone 5. Pemetaan collection dapat ditambahkan berulang:
 
 ```bash
 python scripts/validate_content.py src/content \
@@ -117,7 +119,7 @@ Semua route yang dihasilkan dari dokumen konten harus muncul di manifest. Route 
 | QG-12 Editorial | Manual | Reviewer manusia/ahli harus mencatat persetujuan |
 | QG-13 Information Architecture | Otomatis sebagian | Route manifest, source, sitemap, redirect; relevansi IA tetap direview manusia |
 
-CI repository ini menjalankan unit tests validator dan smoke-test CLI. Setiap proyek Astro wajib menambahkan perintah validator dengan path content, site root, manifest, lalu build produksi dan audit accessibility/SEO/schema hasil render ke workflow miliknya. Lulusnya CI repository standar tidak menyatakan sebuah situs turunan otomatis lulus seluruh QG-01–QG-13.
+Pada workflow yang diaudit, CI repository ini hanya memasang dependensi dan menjalankan `pytest -q`. Belum ada smoke-test `--help` maupun test integrasi yang membuktikan bahwa seluruh fungsi Milestone 5 dijalankan melalui CLI. Setiap proyek Astro tetap wajib menambahkan pemindaian corpus, build produksi, dan audit accessibility/SEO/schema hasil render ke workflow miliknya. Lulusnya unit test repository standar tidak menyatakan sebuah situs turunan otomatis lulus seluruh QG-01–QG-13.
 
 ## Format error
 
@@ -132,8 +134,8 @@ Error baru memuat kode gate dan tindakan yang dapat diturunkan, misalnya:
 
 ## Verifikasi
 
-GitHub Actions menjalankan seluruh unit tests pada Python 3.12 dan smoke-test `--help` CLI. Hasil CI terbaru dicatat di CHANGELOG. Pemeriksaan build produksi, rendered JSON-LD, accessibility browser, dan review editorial menjadi kewajiban workflow/release proyek Astro.
+GitHub Actions pada workflow yang diaudit menjalankan `pytest -q` pada Python 3.12. Workflow belum menjalankan smoke-test `--help` atau test integrasi CLI. Status sukses workflow hanya membuktikan langkah yang benar-benar tercantum di workflow berhasil; bukan bukti bahwa pemeriksaan route/aset/manifest sudah berjalan melalui CLI. Pemeriksaan build produksi, rendered JSON-LD, accessibility browser, dan review editorial menjadi kewajiban workflow/release proyek Astro.
 
 ## Penutupan milestone
 
-Milestone 1–5 menyediakan fondasi validator referensi yang dapat digunakan lintas proyek. Registry props yang belum memiliki kontrak universal, pemetaan route spesifik, rendered JSON-LD, build, accessibility browser, dan review editorial harus diselesaikan oleh setiap proyek melalui konfigurasi dan Quality Gates proyeknya.
+Milestone 1–4 menyediakan fondasi validator referensi; Milestone 5 memiliki fungsi pemeriksaan dan unit test, tetapi belum selesai secara end-to-end sampai integrasi CLI dan CI dibuktikan. Registry props yang belum memiliki kontrak universal, pemetaan route spesifik, rendered JSON-LD, build, accessibility browser, dan review editorial harus diselesaikan oleh setiap proyek melalui konfigurasi dan Quality Gates proyeknya.
