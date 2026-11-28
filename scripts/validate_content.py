@@ -204,6 +204,9 @@ def load_extension_contracts(path, content_dir):
         allowed_types={"string","positive_int","boolean","object","array","utc_datetime","offset_datetime","iso_date_or_datetime","ulid","string_array","positive_int_array"}
         if not isinstance(field_types,dict) or any(not isinstance(k,str) or not k or not isinstance(v,str) or v not in allowed_types for k,v in field_types.items()):
             raise ValueError("extension '%s'.fieldTypes contains an unsupported field name or type" % kind)
+        undeclared_required=set(required)-set(field_types)-{"id"}
+        if undeclared_required:
+            raise ValueError("extension '%s'.requiredFields must reference declared fieldTypes; undeclared: %s" % (kind,", ".join(sorted(undeclared_required))))
         if not isinstance(field_enums,dict) or any(not isinstance(k,str) or k not in field_types or not isinstance(v,list) or not v or any(not isinstance(x,str) or not x for x in v) or len(v)!=len(set(v)) for k,v in field_enums.items()):
             raise ValueError("extension '%s'.fieldEnums must map declared fields to unique non-empty arrays of strings" % kind)
         if not isinstance(schema_types,list) or any(not isinstance(x,str) or not x for x in schema_types):
@@ -733,7 +736,11 @@ def main(argv=None):
     parser.add_argument("--route-manifest",type=Path,default=None,help="YAML route manifest for QG-13")
     parser.add_argument("--route-prefixes",type=Path,default=None,help="JSON mapping of collection kinds to route prefixes")
     parser.add_argument("--contract-registry",type=Path,default=None,help="YAML registry for project-specific collection contracts (version 1)")
+    parser.add_argument("--require-project-gates",action="store_true",
+        help="Require --site-root and --route-manifest so QG-09 and QG-13 cannot be silently skipped")
     args=parser.parse_args(argv)
+    if args.require_project_gates and (not args.site_root or not args.route_manifest):
+        parser.error("--require-project-gates requires both --site-root and --route-manifest")
     if not args.content_dir.is_dir():
         print(f"ERROR: content directory does not exist: {args.content_dir}",file=sys.stderr)
         return 2
@@ -771,10 +778,15 @@ def main(argv=None):
             print(f"ERROR: {issue}")
         print(f"\nValidation failed: {len(issues)} issue(s) across {len(files)} Markdown file(s).")
         return 1
-    checks=["configured content contracts","relations","schema/block registry","canonical uniqueness","slug/routes"]
-    if args.site_root: checks.append("assets/internal links")
-    if args.route_manifest: checks.append("route manifest/sitemap/redirects")
-    print("Validation passed: %d Markdown file(s); checks: %s."%(len(files),", ".join(checks)))
+    checks=["QG-01 frontmatter/contracts","QG-02 document IDs","QG-03 block IDs",
+            "QG-05 relations","QG-06 block registry","QG-08 schema registry",
+            "QG-07 SEO/canonical","QG-04 slug/routes"]
+    if args.site_root: checks.append("QG-09 local assets/internal links")
+    if args.route_manifest: checks.append("QG-13 route manifest/sitemap/redirects")
+    print("Validation passed: %d Markdown file(s); automatic checks: %s."%(len(files),", ".join(checks)))
+    if not args.site_root or not args.route_manifest:
+        print("NOTE: partial project mode; use --require-project-gates with --site-root and --route-manifest to require QG-09 and QG-13.")
+    print("NOTE: QG-10 rendered accessibility, QG-11 Astro production build, and QG-12 editorial approval require project/browser/human checks; this CLI does not mark them passed.")
     return 0
 
 if __name__=="__main__": raise SystemExit(main())
