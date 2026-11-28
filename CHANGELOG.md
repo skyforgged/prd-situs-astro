@@ -1,3 +1,5 @@
+# Changelog
+
 ## [Unreleased] — 2026-11-28
 
 ### Added
@@ -13,8 +15,6 @@
 
 ### Removed
 - `docs/ANALISIS-POLA-SITUS.md` dan `docs/ANALISIS-VALIDATOR-MILESTONE.md`: dua catatan analisis non-normatif dihapus setelah temuan penting dipindahkan. Kesimpulan pola tetap pada `architecture/CONTENT-AND-INFORMATION-ARCHITECTURE.md` §§7.4–7.5, 8, 10, 12–14; status AUD, penyebab kegagalan CI `df76715`, dan pelajaran commit kosong tercatat pada `docs/REVIEW-NOTES.md` bagian "Pembersihan catatan analisis — 2026-11-28". Tidak ada aturan, kontrak, validator, atau test yang diubah.
-
-# Changelog
 
 ## 2026-11-28 — Integrasi validator (3/5)
 
