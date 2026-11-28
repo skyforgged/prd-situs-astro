@@ -241,6 +241,78 @@ Komponen berikut dapat digunakan oleh block, halaman, atau layout. Nama file ada
 | `TrainingScheduleMonths` | Pengelompokan/penyajian jadwal pelatihan per bulan. | TNV |
 | `UpcomingSchedules` | Komponen jadwal mendatang. | TNV |
 
+## 3.1 Kontrak props komponen terverifikasi (sampel lintas proyek)
+
+Bagian ini mulai mendokumentasikan API komponen yang dibaca dari implementasi aktual. Sebagian komponen SLF/SNI-TKDN mengambil props langsung dari `Astro.props` tanpa deklarasi interface TypeScript; karena itu tipe di bawah hanya dinyatakan sejauh dapat dibuktikan dari penggunaan di dalam file. Jangan memperlakukan props yang belum disebut sebagai tidak didukung.
+
+### A. Komponen konten bersama — SLF dan SNI/TKDN
+
+| Komponen | Props yang terverifikasi | Struktur data / perilaku | Sumber |
+|---|---|---|---|
+| `ContentCard` | `id?`, `heading`, `icon?`, `class?`, `body?` | `body` adalah array bagian bertipe `p`, `list`, atau `image`. Paragraf memakai `text`; list memakai `items`, `ordered?`; image memakai `src`, `alt`, `caption?`. Bagian dapat memiliki class tambahan. | SLF `shared/ContentCard.astro` |
+| `FaqBlock` | `id?`, `heading?`, `items`, `class?` | Setiap item memakai `question` dan `answer`. Render menggunakan `details/summary` native, sehingga disclosure tetap berbasis HTML. | SLF `shared/FaqBlock.astro` |
+| `CtaBlock` | `id?`, `heading?`, `message`, `button?`, `serviceHref?`, `serviceLabel?`, `class?` | CTA memakai konfigurasi situs untuk WhatsApp. `button` memiliki default dari UI config; `serviceLabel` default ke `button`. Link layanan dan WhatsApp dapat ditampilkan terpisah. | SLF `shared/CtaBlock.astro` |
+| `NoteBlock` | `id?`, `variant?`, `title?`, `text?`, `class?` | `variant` default `info`; varian yang ditemukan: `info`, `success`, `warning`, `danger`. Judul dapat memakai label default dari UI config. | SLF `shared/NoteBlock.astro` |
+| `StepsBlock` | `id?`, `heading?`, `items`, `class?` | Setiap item menggunakan `title` dan `text`; nomor urut dihasilkan otomatis. | SLF `shared/StepsBlock.astro` |
+| `TableBlock` | `id?`, `heading?`, `head`, `rows`, `class?` | `head` adalah array string; `rows` adalah array dari array string. Tabel dibungkus area horizontal-scroll untuk layar sempit. | SLF `shared/TableBlock.astro` |
+| `ContactPanel` | `id`, `title`, `intro`, `hoursTitle`, `hours: string[]`, `formTitle`, `serviceOptions: string[]` | Identitas organisasi, nomor telepon/WhatsApp, alamat, dan label bersama dibaca dari konfigurasi situs; bukan dikirim ulang sebagai props halaman. | SLF `shared/ContactPanel.astro` |
+| `MultiStepForm` | `id?`, `heading`, `intro?`, `submitLabel?`, `successMessage?`, `steps?` | Default `id = msf`, `submitLabel = Kirim`, `steps = []`. Struktur internal setiap step/field perlu mengikuti implementasi lengkap; jangan menebak skema field dari nama komponen. | SLF `shared/MultiStepForm.astro` |
+
+Catatan styling: beberapa komponen menerima prop `class` sebagai objek slot kelas, misalnya `class.section`, `class.heading`, `class.list`, dan slot khusus lainnya. Ini bukan selalu string CSS class biasa. Periksa komponen tujuan sebelum menyalin pola props tersebut.
+
+### B. Komponen page, kartu, dan media — TNV Certification
+
+| Komponen | Props terverifikasi | Perilaku / batasan | Sumber |
+|---|---|---|---|
+| `PageHero` | `block: HeroBlock`, `fallbackImage: { src, alt }`, flag opsional: `isHomepage`, `isServices`, `isCsms`, `isTrainings`, `isArticles`, `isAbout` | Mengonsumsi objek block hero, fallback image, serta konteks jenis halaman. Tidak setara otomatis dengan `HomeHeroBlock` SLF. | TNV `page/PageHero.astro` |
+| `LinkGrid` | `block: LinkGridBlock` | Menerima objek block, bukan daftar props terpisah. Bentuk item mengikuti schema `link-grid` di `content.config.ts`. | TNV `page/LinkGrid.astro` |
+| `ContactPanel` | `block: ContactBlock` | Informasi organisasi berasal dari konfigurasi `organization.contact`; block dapat mengubah judul dan label melalui schema. | TNV `page/ContactPanel.astro` |
+| `ArticleCard` | `article: Article`, `headingLevel?: 2 \| 3` | Heading default `h3`; menerima objek artikel domain, bukan title/href sederhana. Format tanggal mengikuti bahasa artikel. | TNV `ArticleCard.astro` |
+| `ServiceCard` | `title`, `description`, `href`, `label?` | `label` default `Layanan`. Kartu tautan layanan sederhana. | TNV `ServiceCard.astro` |
+| `TrainingCard` | `title`, `description`, `href`, `label?` | `label` default `Program pelatihan`. Serupa secara visual dengan ServiceCard, tetapi konteks kontennya berbeda. | TNV `TrainingCard.astro` |
+| `LanguageSwitcher` | `lang: string` | Mengambil opsi bahasa berdasarkan pathname aktif melalui `getLanguageOptions`; bukan sekadar daftar bahasa statis. | TNV `LanguageSwitcher.astro` |
+| `FeaturedImage` | `src`, `alt`, `width?`, `height?`, `aspect?`, `fit?`, `priority?`, `class?` | Default dimensi 1200×675, aspect `video`, fit `cover`, priority `false`; aspect: `video` atau `fourThree`; fit: `cover` atau `contain`. | TNV `FeaturedImage.astro` |
+
+### C. Contoh bentuk pemakaian (ilustratif, bukan kontrak lintas-proyek)
+
+Contoh berikut menunjukkan bentuk data yang sesuai dengan implementasi SLF yang diperiksa. Nama field harus tetap dicocokkan dengan registry/schema proyek tempat komponen akan dipakai.
+
+```yaml
+blocks:
+  - component: faq
+    heading: Pertanyaan umum
+    items:
+      - question: Apa persyaratannya?
+        answer: Persyaratan mengikuti kondisi dan jenis bangunan.
+
+  - component: note
+    variant: warning
+    title: Perlu diperhatikan
+    text: Pastikan dokumen pendukung telah diperiksa.
+
+  - component: steps
+    heading: Tahapan proses
+    items:
+      - title: Pemeriksaan awal
+        text: Meninjau data dan dokumen yang tersedia.
+      - title: Pelaksanaan
+        text: Melaksanakan pekerjaan sesuai ruang lingkup.
+```
+
+Contoh ini hanya untuk bentuk struktur. Ia tidak menyatakan bahwa semua proyek menggunakan discriminator `component`; TNV menggunakan `type` dan kontrak tersendiri.
+
+### D. Aturan adopsi API komponen
+
+1. Ambil props dari source component dan schema/registry pada commit yang sama.
+2. Jika komponen memakai objek domain (misalnya `article: Article` atau `block: HeroBlock`), gunakan tipe domain tersebut; jangan meratakan menjadi props baru tanpa adapter yang disengaja.
+3. Jika komponen membaca konfigurasi global seperti identitas organisasi, tandai dependensi tersebut sebelum mengadopsinya ke situs lain.
+4. Dokumentasikan default props dan enum yang benar-benar ada di source.
+5. Bedakan prop wajib dari prop yang hanya tampak dipakai; jika tidak ada deklarasi tipe, tandai tipe sebagai perlu verifikasi.
+6. Untuk komponen interaktif, catat sumber state, validasi, submit destination, status penyimpanan data, keyboard behavior, dan pesan sukses/error sebelum dianggap siap dipakai ulang.
+7. Contoh YAML di katalog adalah ilustrasi struktur, bukan jaminan lolos validasi tanpa pemeriksaan schema proyek target.
+
+---
+
 ## 4. Renderer, layout, dan komponen pendukung
 
 Bagian ini dicatat agar inventaris lengkap, tetapi item-item ini bukan block konten yang seharusnya ditulis langsung oleh editor.
