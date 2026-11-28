@@ -3,6 +3,10 @@
 > Status: Standar verifikasi
 > Versi: 0.8
 
+## Batas kemampuan validator
+
+Status gate harus ditafsirkan bersama [Batas Kemampuan Standar dan Validator](../docs/CAPABILITY-BOUNDARIES.md). Validator referensi hanya membuktikan pemeriksaan statis yang benar-benar diimplementasikan; ia tidak membuktikan rendering Astro, hasil HTML/JSON-LD, accessibility browser, production build, atau approval editorial. Bukti proyek dan manusia tetap wajib sesuai jenis gate.
+
 ## 1. Prinsip
 
 Website dinyatakan memenuhi standar hanya jika validasi konten, relasi, routing, aset, metadata, schema, dan build produksi berhasil. Build Astro yang sukses saja tidak cukup.
