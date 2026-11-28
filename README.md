@@ -3,7 +3,7 @@
 Repository ini menyimpan standar reusable untuk analisis kebutuhan, perancangan, dan pengembangan situs berbasis Astro.
 
 ## Standar inti
-- [Batas Kemampuan Standar dan Validator](docs/CAPABILITY-BOUNDARIES.md) — membedakan pemeriksaan yang benar-benar tersedia pada validator, aturan yang masih berupa kontrak, dan pekerjaan wajib proyek Astro turunan.
+- [Batas Kemampuan Standar dan Validator](quality/CAPABILITY-BOUNDARIES.md) — membedakan pemeriksaan yang benar-benar tersedia pada validator, aturan yang masih berupa kontrak, dan pekerjaan wajib proyek Astro turunan.
 - Matriks traceability persyaratan PRD: [`docs/REQUIREMENTS-TRACEABILITY-MATRIX.md`](docs/REQUIREMENTS-TRACEABILITY-MATRIX.md) — pemetaan requirement ke dokumen normatif, aturan implementasi, test/verifikasi, dan acceptance criteria.
 
 
@@ -21,7 +21,7 @@ Repository ini menyimpan standar reusable untuk analisis kebutuhan, perancangan,
 - [Validator Milestone 3](VALIDATOR-MILESTONE-3.md) — validasi FK lintas dokumen, target collection, kardinalitas, dan siklus relasi.
 - [Validator Milestone 4](VALIDATOR-MILESTONE-4.md) — validasi Schema Registry, Block Registry, dan props komponen.
 - [Validator Milestone 5](VALIDATOR-MILESTONE-5.md) — validasi route, aset, tautan, manifest IA, dan integrasi Quality Gates.
-- [Project Collection Contract Extensions](docs/CONTRACT-EXTENSIONS.md) — mekanisme eksplisit untuk collection domain di luar enam kind inti.
+- [Project Collection Contract Extensions](content-contract/CONTRACT-EXTENSIONS.md) — mekanisme eksplisit untuk collection domain di luar enam kind inti.
 
 ## Instruksi dan analisis
 
