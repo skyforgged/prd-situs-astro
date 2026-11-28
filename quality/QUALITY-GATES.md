@@ -117,13 +117,13 @@ Rilis dapat diterima jika seluruh gate wajib berstatus lulus, build produksi suk
 
 ## 8. CI dan verifikasi lokal
 
-Validator referensi di `scripts/validate_content.py` menggabungkan pemeriksaan frontmatter, relasi, Schema/Block Registry, slug/route, canonical duplikat, aset lokal, internal link, dan route manifest. Contoh pemakaian:
+Validator referensi di `scripts/validate_content.py` saat ini menggabungkan pemeriksaan frontmatter, relasi, dan registry pada entry point CLI. Fungsi untuk slug/route, canonical duplikat, aset lokal, internal link, dan route manifest tersedia serta memiliki unit test, tetapi pada kode yang diaudit (2026-11-28) belum seluruhnya dipanggil dari `main()`. Argumen `--site-root`, `--route-manifest`, dan `--route-prefixes` juga belum diintegrasikan ke alur tersebut. Karena itu, contoh pemakaian berikut belum boleh dianggap sebagai bukti bahwa seluruh gate tersebut sudah dijalankan:
 
 ```bash
 python scripts/validate_content.py src/content --site-root . --route-manifest projects/nama-proyek/route-manifest.yml
 ```
 
-Route default dan format manifest, override prefix, serta batas otomatisasi tiap gate dijelaskan dalam [Validator Milestone 5](../VALIDATOR-MILESTONE-5.md). Repository standar menjalankan unit test dan smoke-test CLI di CI. Setiap proyek Astro wajib menambahkan pemindaian corpus miliknya, production build, serta audit hasil render untuk JSON-LD, SEO, dan accessibility. QG-12 tetap membutuhkan persetujuan reviewer manusia.
+Route default dan format manifest, override prefix, serta batas otomatisasi tiap gate dijelaskan dalam [Validator Milestone 5](../VALIDATOR-MILESTONE-5.md). Workflow repository standar yang diaudit hanya menjalankan unit test `pytest -q`; smoke-test CLI belum tersedia. Status ini tidak mengurangi kriteria normatif QG-04/QG-07/QG-09/QG-13: setiap proyek tetap wajib membuktikan gate yang relevan melalui integrasi validator atau pemeriksaan proyek yang setara. Setiap proyek Astro wajib menambahkan pemindaian corpus miliknya, production build, serta audit hasil render untuk JSON-LD, SEO, dan accessibility. QG-12 tetap membutuhkan persetujuan reviewer manusia.
 
 
 
