@@ -121,13 +121,13 @@ Perubahan diverifikasi dengan membaca ulang isi file dan pencarian teks terhadap
 
 ## Analisis pola situs referensi 2026-11-26
 
-- [x] Pola artikel 1–3, artikel 4–6, footer dinamis, CTA layanan/WhatsApp, dan pagination dicatat dalam berkas analisis tersendiri.
-  - Bukti: `docs/ANALISIS-POLA-SITUS.md`; tautan di `README.md:20`.
-  - Verifikasi: lima repo dibaca via GitHub API dan `raw.githubusercontent.com`; `skyforgged/konsultan-slf` dipakai sebagai rujukan utama, empat repo `arisciwek/*` sebagai pembanding.
+- [x] Pola artikel 1–3, artikel 4–6, footer dinamis, CTA layanan/WhatsApp, dan pagination dicatat dalam catatan analisis tersendiri.
+  - Bukti: catatan analisis non-normatif dipindahkan keluar repository standar pada 2026-11-28; `README.md` tidak lagi menautkannya.
+  - Verifikasi: analisis dilakukan dengan membaca implementasi rujukan; identitas sumber tidak disimpan di repository standar agar agen AI tidak menelusuri repo eksternal.
 - [x] Temuan dibedakan menjadi fakta implementasi, bagian yang sudah tercakup standar, bagian yang belum diatur, dan saran non-normatif.
-  - Bukti: `docs/ANALISIS-POLA-SITUS.md` bagian 2, 4, dan 5.
+  - Bukti: bagian fakta, cakupan standar, bagian belum diatur, dan saran pada catatan yang dipindahkan.
   - Verifikasi: tidak ada versi dokumen standar yang diubah; sesuai `AGENTS.md`, pola referensi tidak dijadikan kewajiban global tanpa dasar Constitution.
-- Batas verifikasi: analisis hanya membaca kode, tanpa build, validator, atau test runner. Klaim "pola ada di setiap repo" tidak diterima apa adanya; tiga dari lima pola ternyata tidak konsisten lintas repo.
+- Batas verifikasi: analisis hanya membaca kode, tanpa build, validator, atau test runner. Klaim "pola ada di setiap implementasi" tidak diterima apa adanya; tiga dari lima pola ternyata tidak konsisten lintas implementasi.
 
 ## Tindak lanjut standar sebelum penyusunan IA
 
@@ -229,7 +229,7 @@ Workflow menutup kesenjangan antara starter templates dan proses pemakaiannya. G
 - [x] Versi paket template diselaraskan: `projects/_template/README.md:4` menjadi 0.2, mengikuti `projects/_template/README.md:66` dan entri Template Pack 0.2 di `CHANGELOG.md` (kini 0.3; lihat bagian 2026-11-27).
 - [x] `projects/_template/TECHNICAL-ARCHITECTURE.md:66-67,95` memisahkan QG-12 dari gate otomatis sesuai `quality/QUALITY-GATES.md:120`; review editorial tidak lagi diwajibkan memiliki perintah dan fixture CI.
 - [x] Checklist yang sudah dibuktikan pada `docs/REVIEW-NOTES.md:149-151,184` ditandai selesai dengan rujukan ke bagian yang memuat buktinya.
-- [x] Rujukan baris diperbarui: `docs/ANALISIS-POLA-SITUS.md:19,117` mengarah ke `README.md:35`, dan `docs/REVIEW-NOTES.md:125` mengarah ke `README.md:20`.
+- [x] Rujukan baris internal diperbarui; rujukan ke catatan analisis dihapus saat berkas dipindahkan keluar repository standar pada 2026-11-28.
 - Bukti: perubahan pada empat berkas di atas, entri `Fixed — tindak lanjut pull 2026-11-26` di `CHANGELOG.md`, serta pemeriksaan tautan lokal Markdown tanpa tautan rusak.
 - Batas verifikasi: koreksi hanya menyelaraskan metadata, pemetaan gate, dan rujukan; tidak ada aturan normatif baru. Repository tetap tidak memiliki aplikasi, `package.json`, validator, atau test runner sehingga tidak ada build/test yang dijalankan.
 
@@ -244,11 +244,11 @@ Workflow menutup kesenjangan antara starter templates dan proses pemakaiannya. G
 - [x] Kewajiban Schema Registry diturunkan ke artefak proyek dan gate yang dapat diuji.
   - Bukti: `architecture/TECHNICAL-ARCHITECTURE.md:4` (versi 0.3) bagian 14; `projects/_template/TECHNICAL-ARCHITECTURE.md:4` (versi 0.2) bagian 1 dan 5; `projects/_template/README.md:4` (versi 0.3); `quality/QUALITY-GATES.md:4` (versi 0.6) QG-08 dan test matrix.
   - Verifikasi: pencarian "Schema Registry" menemukan kewajiban di kontrak konten, daftar keputusan pra-implementasi, template arsitektur proyek, dan kriteria QG-08.
-- [x] Laporan TNV Certification ditandai sebagai snapshot sebelum revisi dan ditautkan dari README root.
-  - Bukti: `projects/tnvcertification/CONTENT-CONTRACT-EVALUATION.md` bagian "Catatan status 2026-11-27"; `projects/tnvcertification/README.md`; `README.md`.
-  - Verifikasi: laporan masih menyebut standar 1.3/1.2 sebagai objek yang diperiksa, dengan catatan tindak lanjut ke 1.5/1.4.
+- [x] Catatan evaluasi implementasi dipisahkan dari standar agar repository tetap mandiri.
+  - Bukti: `CHANGELOG.md` bagian 2026-11-27 dan 2026-11-28; `README.md` tidak memuat tautan ke repository proyek.
+  - Verifikasi: tidak ada berkas atau tautan evaluasi proyek di repository standar.
 - [x] Rujukan baris yang bergeser diperbarui setelah penambahan field dan baris tabel.
-  - Bukti: `docs/ANALISIS-POLA-SITUS.md:19,117` dan `docs/REVIEW-NOTES.md:232` kini mengarah ke `README.md:35`; `docs/REVIEW-NOTES.md:230` mengarah ke `projects/_template/TECHNICAL-ARCHITECTURE.md:66-67,95` dan `quality/QUALITY-GATES.md:120`; rujukan QG pada `docs/REVIEW-NOTES.md:28,90,114` diselaraskan dengan test matrix saat ini.
+  - Bukti: rujukan ke catatan analisis dihapus saat berkas dipindahkan; `docs/REVIEW-NOTES.md:230` mengarah ke `projects/_template/TECHNICAL-ARCHITECTURE.md:66-67,95` dan `quality/QUALITY-GATES.md:120`; rujukan QG pada `docs/REVIEW-NOTES.md:28,90,114` diselaraskan dengan test matrix saat ini.
   - Verifikasi: pencarian rujukan baris lama tidak menemukan kecocokan di luar catatan ini.
 - [x] `CHANGELOG.md` memperbarui versi, alasan, dampak, dan kompatibilitas untuk perubahan di atas.
   - Bukti: `CHANGELOG.md` bagian 2026-11-27.
@@ -263,9 +263,23 @@ Workflow menutup kesenjangan antara starter templates dan proses pemakaiannya. G
   - Bukti: `docs/REVIEW-NOTES.md:114,230,251` kini mengarah ke `quality/QUALITY-GATES.md:120`, bukan `:106` yang sekarang berisi kasus `DefinedTerm.description`.
 - [x] Entri adopsi Content Contract 1.4 dipulihkan di `CHANGELOG.md`.
   - Bukti: `CHANGELOG.md` bagian 2026-11-27 `Added` memuat entri 1.4 dan 1.5; bagian 2026-11-28 mencatat pemulihannya.
-- [x] Laporan TNV Certification mengikuti versi terbaru sebagai tindak lanjut, bukan sebagai objek snapshot.
-  - Bukti: `projects/tnvcertification/CONTENT-CONTRACT-EVALUATION.md:5,11`; `:5` tetap 1.3/1.2 karena itulah objek yang diperiksa.
+- [x] Bukti revisi standar cukup dengan artefak yang ada di repository ini.
+  - Bukti: `CHANGELOG.md` bagian 2026-11-27 `Added`, `Changed`, dan `Compatibility`; `content-contract/CONTENT-CONTRACT.md:4`; `content-contract/FRONTMATTER-TEMPLATES.md:4`; `quality/QUALITY-GATES.md:4`.
 - [x] Contoh kelulusan QG-08 selaras dengan page-level type pada kontrak.
   - Bukti: `quality/QUALITY-GATES.md:99` dan `content-contract/CONTENT-CONTRACT.md:123`; yang diubah hanya contoh, bukan aturan.
 - Bukti verifikasi: `git diff --check` bersih; pemeriksaan 27 berkas Markdown menemukan 0 tautan lokal rusak dan 0 code fence tidak seimbang; rujukan baris di atas dicek terhadap isi berkas tujuan.
 - Batas verifikasi: tidak ada perubahan normatif, sehingga versi dokumen tidak dinaikkan. Repository ini tetap tidak memiliki aplikasi Astro, `package.json`, validator, atau test runner; tidak ada build, automated test, atau QG-08 yang dijalankan.
+
+## Pemisahan evaluasi proyek dari standar 2026-11-28
+
+- [x] Empat berkas evaluasi dipindahkan keluar dari repository standar.
+  - Bukti: direktori lama sudah tidak ada di repository; indeks dan tautan laporan dibuat di repository implementasi.
+- [x] Semua rujukan ke proyek di repository standar dihapus.
+  - Bukti: `README.md`; `CHANGELOG.md` bagian 2026-11-28; bagian "Tindak lanjut Content Contract 1.4 2026-11-27" dan "Penyelarasan bukti setelah Content Contract 1.5 2026-11-28".
+- [x] Katalog komponen dan catatan analisis pola dipindahkan keluar dari repository standar.
+  - Bukti: `CHANGELOG.md` bagian 2026-11-28; `README.md` tidak memuat rujukan keduanya.
+  - Verifikasi: pencarian nama repo proyek, hash commit eksternal, dan pola tautan ke hosting kode pada berkas Markdown tidak menghasilkan temuan; tautan ke dokumentasi Google pada `quality/CONTENT-QUALITY-STANDARD.md:182-183` dipertahankan sebagai sumber normatif, bukan tautan ke proyek.
+- [x] Versi standar tidak berubah.
+  - Bukti: `content-contract/CONTENT-CONTRACT.md:4` (1.5); `content-contract/FRONTMATTER-TEMPLATES.md:4` (1.4); `quality/QUALITY-GATES.md:4` (0.6).
+- Bukti verifikasi: `git diff --check` bersih; 22 berkas Markdown diperiksa menghasilkan 0 tautan lokal rusak dan 0 code fence tidak seimbang; pencarian nama repo proyek, hash commit eksternal, dan pola tautan ke hosting kode menghasilkan 0 temuan.
+- Batas verifikasi: repository standar tidak memiliki aplikasi Astro, `package.json`, validator, atau test runner; tidak ada build, automated test, atau QG yang dijalankan. Tautan indeks di repository implementasi tidak diverifikasi sebagai tautan lokal repository ini.
