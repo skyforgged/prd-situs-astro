@@ -1,10 +1,10 @@
 # Frontmatter Templates — Training dan Schedule
 
 > Status: template ekstensi referensi
-> Versi: 1.1
-> Mengikuti: Project Collection Contract Extensions v1 dan Kontrak Collection Training dan Schedule 1.0
+> Versi: 1.2
+> Mengikuti: Project Collection Contract Extensions v1 dan Kontrak Collection Training dan Schedule 1.2
 
-Template ini sengaja menggunakan nama field tanpa nilai. Template bukan dokumen siap-publikasi. Pertahankan field wajib walaupun nilainya belum tersedia; jangan mengarang ID, tanggal, relasi, URL pendaftaran, lokasi, instruktur, atau data schema.
+Template ini sengaja menggunakan nama field tanpa nilai. Template bukan dokumen siap-publikasi. Field wajib/opsional mengikuti tabel normatif pada `TRAINING-SCHEDULE-CONTRACT.md`; keberadaan field pada template tidak menjadikannya wajib. Pertahankan field wajib walaupun nilainya belum tersedia; jangan mengarang ID, tanggal, relasi, URL pendaftaran, lokasi, instruktur, atau data schema.
 
 ## 1. Training
 
@@ -81,7 +81,7 @@ Ketentuan:
 
 ## 3. Kerangka relasi
 
-Model referensi menggunakan natural key yang didaftarkan eksplisit pada extension registry. Relasi referensi schedule ke training:
+Model referensi menggunakan natural key yang didaftarkan eksplisit pada extension registry. `trainingSlug` pada schedule adalah satu-satunya sumber kebenaran relasi; `scheduleIds` pada training dan `trainingId` pada schedule tidak boleh ditambahkan sebagai relasi paralel. Relasi referensi schedule ke training:
 
 ```yaml
 # Di dokumen schedule
