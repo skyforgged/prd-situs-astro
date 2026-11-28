@@ -623,3 +623,22 @@ def test_route_manifest_checks_generated_routes_and_sitemap(tmp_path: Path):
     (tmp_path/"public/sitemap.xml").write_text("<urlset></urlset>",encoding="utf-8")
     issues = validate_route_manifest(manifest,tmp_path,{"/tentang/":tmp_path/"pages/page.md"})
     assert any("SITEMAP_ROUTE_MISSING" in issue.message for issue in issues)
+
+
+def test_duplicate_canonical_urls_are_rejected(tmp_path: Path):
+    from validate_content import validate_seo_uniqueness
+    docs = [
+        (tmp_path/"pages/one.md", {"seo":{"canonical":"https://example.test/about/"}}, "page"),
+        (tmp_path/"articles/two.md", {"seo":{"canonical":"https://example.test/about"}}, "article"),
+    ]
+    issues = validate_seo_uniqueness(docs)
+    assert any("DUPLICATE_CANONICAL" in issue.message for issue in issues)
+
+
+def test_unique_canonical_urls_are_accepted(tmp_path: Path):
+    from validate_content import validate_seo_uniqueness
+    docs = [
+        (tmp_path/"pages/one.md", {"seo":{"canonical":"https://example.test/about/"}}, "page"),
+        (tmp_path/"articles/two.md", {"seo":{"canonical":"https://example.test/news/"}}, "article"),
+    ]
+    assert validate_seo_uniqueness(docs) == []
