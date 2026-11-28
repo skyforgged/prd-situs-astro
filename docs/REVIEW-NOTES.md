@@ -336,7 +336,8 @@ Workflow menutup kesenjangan antara starter templates dan proses pemakaiannya. G
 - [x] Menambahkan mode `--require-project-gates` untuk mewajibkan `--site-root` dan `--route-manifest`; mode parsial tidak lagi dapat disalahartikan sebagai validasi proyek lengkap karena output memberi peringatan eksplisit.
 - [x] Menghubungkan bukti gate otomatis dalam ringkasan CLI: kontrak/frontmatter, ID, relasi, Block Registry, Schema Registry, SEO/canonical, slug/route, aset/tautan, dan route manifest/sitemap/redirect.
 - [x] Memisahkan gate yang tidak dapat dinyatakan lulus oleh CLI: accessibility hasil render (QG-10), production build Astro (QG-11), dan review editorial (QG-12).
-- [x] Memperketat validasi registry agar field wajib ekstensi tidak dapat dideklarasikan tanpa tipe field.
+- [x] Memperketat validasi registry agar field wajib ekstensi tidak dapat dideklarasikan tanpa tipe field dan field dokumen ekstensi yang tidak terdaftar ditolak.
+- [x] Menambahkan allowlist top-level frontmatter untuk enam kontrak inti; `parentPageId` tetap diizinkan sesuai kontrak relasi.
 - [x] Menambahkan test integrasi CLI untuk mode lengkap, konfigurasi tidak lengkap, dan aset yang hilang.
 - File: `scripts/validate_content.py`, `tests/test_validate_content.py`, `quality/QUALITY-GATES.md`, `VALIDATOR-MILESTONE-5.md`, `CHANGELOG.md`.
 - Batas verifikasi: perubahan dan test ditulis; belum menjalankan pytest lokal dari sesi ini. Status CI harus diperiksa pada commit terakhir sebelum menyatakan suite lulus. Fixture hanya membuktikan alur validator pada situs sintetis, bukan corpus nyata atau build Astro.
