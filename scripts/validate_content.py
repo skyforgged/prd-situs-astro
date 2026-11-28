@@ -228,6 +228,13 @@ def load_extension_contracts(path, content_dir):
         for field,rel in relations.items():
             if not isinstance(rel,dict) or not nonempty(rel.get("target")) or rel.get("cardinality") not in {"one","many"}:
                 raise ValueError("extension relation '%s.%s' requires target and cardinality one|many" % (kind,field))
+            if field not in field_types:
+                raise ValueError("extension relation '%s.%s' must declare its source field type" % (kind,field))
+            source_type=field_types[field]
+            if rel["cardinality"]=="many" and source_type not in {"string_array","positive_int_array"}:
+                raise ValueError("extension relation '%s.%s' with cardinality many requires an array field type" % (kind,field))
+            if rel["cardinality"]=="one" and source_type in {"string_array","positive_int_array"}:
+                raise ValueError("extension relation '%s.%s' with cardinality one requires a scalar field type" % (kind,field))
             if "targetField" in rel and not nonempty(rel["targetField"]):
                 raise ValueError("extension relation '%s.%s'.targetField must be a non-empty string" % (kind,field))
         directory=Path(spec["directory"])
