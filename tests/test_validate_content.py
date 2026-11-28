@@ -1366,3 +1366,34 @@ def test_page_contract_allows_declared_parent_page_relation_field(tmp_path: Path
     source = PAGE + "\nparentPageId: 99"
     issues = validate_document(tmp_path / "pages/page.md", __import__("yaml").safe_load(source), "page")
     assert not any("unknown field 'parentPageId'" in issue.message for issue in issues)
+
+
+def test_extension_rejects_frontmatter_field_not_declared_in_field_types(tmp_path: Path):
+    from validate_content import load_extension_contracts
+    content = tmp_path / "content"
+    item = write_md(content / "trainings" / "course.md", """id: 901
+title: Kursus
+schema:
+  type: Course
+unexpectedField: value""")
+    registry = tmp_path / "contracts.yml"
+    registry.write_text("""version: 1
+collections:
+  training:
+    directory: trainings
+    requiredFields: [id, title, schema]
+    fieldTypes:
+      id: positive_int
+      title: string
+      schema: object
+    schemaTypes: [Course]
+    schemaMappings:
+      Course:
+        fieldMapping:
+          name: title
+        requiredFields: [title]
+    routePrefix: /training/
+""", encoding="utf-8")
+    contracts, mapping = load_extension_contracts(registry, content)
+    issues = validate_paths([item], mapping, contracts)
+    assert any("unknown field 'unexpectedField'" in issue.message for issue in issues)
