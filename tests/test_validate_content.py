@@ -1256,3 +1256,12 @@ def test_route_manifest_rejects_source_path_escape(tmp_path: Path):
     )
     issues = validate_route_manifest(manifest, tmp_path, {})
     assert any("INVALID_SOURCE" in issue.message for issue in issues)
+
+
+@pytest.mark.parametrize("field", ["url", "href", "actionHref", "primaryHref", "secondaryHref", "registrationUrl"])
+def test_internal_link_validator_covers_all_supported_link_props(tmp_path: Path, field: str):
+    from validate_content import validate_assets_and_links
+    path = write_md(tmp_path / "pages" / "page.md", PAGE)
+    data = {"blocks": [{"component": "cta", field: "/not-a-route/"}]}
+    issues = validate_assets_and_links([(path, data, "page")], tmp_path, {"/tentang/": path})
+    assert any("INTERNAL_LINK_NOT_FOUND" in issue.message for issue in issues)
