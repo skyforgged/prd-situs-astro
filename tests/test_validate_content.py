@@ -720,6 +720,7 @@ def test_extension_contract_validates_training_schedule_and_foreign_keys(tmp_pat
     training = write_md(content / "trainings" / "course.md", """id: 101
 slug: kursus-astro
 title: Kursus Astro
+description: Pelatihan contoh.
 schema:
   type: Course
 updatedDate: 2026-11-26T03:00:00Z
@@ -730,7 +731,8 @@ title: Batch November
 schema:
   type: Event
 updatedDate: 2026-11-26T03:00:00Z
-startDate: 2026-11-29""")
+startDate: 2026-11-29
+endDate: 2026-11-30""")
     registry = tmp_path / "contracts.yml"
     registry.write_text("""version: 1
 collections:
@@ -745,6 +747,12 @@ collections:
       updatedDate: utc_datetime
       scheduleIds: positive_int_array
     schemaTypes: [Course]
+    schemaMappings:
+      Course:
+        fieldMapping:
+          name: title
+          description: description
+        requiredFields: [title, description]
     routePrefix: /training/
     relations:
       scheduleIds:
@@ -760,7 +768,15 @@ collections:
       schema: object
       updatedDate: utc_datetime
       startDate: string
+      endDate: string
     schemaTypes: [Event]
+    schemaMappings:
+      Event:
+        fieldMapping:
+          name: title
+          startDate: startDate
+          endDate: endDate
+        requiredFields: [title, startDate, endDate]
     routePrefix: /schedule/
 """, encoding="utf-8")
     contracts, mapping = load_extension_contracts(registry, content)
@@ -774,6 +790,7 @@ def test_extension_contract_rejects_missing_relation_target(tmp_path: Path):
     training = write_md(content / "trainings" / "course.md", """id: 101
 slug: kursus-astro
 title: Kursus Astro
+description: Pelatihan contoh.
 schema:
   type: Course
 updatedDate: 2026-11-26T03:00:00Z
@@ -792,6 +809,12 @@ collections:
       updatedDate: utc_datetime
       scheduleIds: positive_int_array
     schemaTypes: [Course]
+    schemaMappings:
+      Course:
+        fieldMapping:
+          name: title
+          description: description
+        requiredFields: [title, description]
     routePrefix: /training/
     relations:
       scheduleIds:
@@ -807,6 +830,13 @@ collections:
       schema: object
       updatedDate: utc_datetime
     schemaTypes: [Event]
+    schemaMappings:
+      Event:
+        fieldMapping:
+          name: title
+          startDate: startDate
+          endDate: endDate
+        requiredFields: [title, startDate, endDate]
     routePrefix: /schedule/
 """, encoding="utf-8")
     contracts, mapping = load_extension_contracts(registry, content)
@@ -828,6 +858,7 @@ def test_cli_loads_project_extension_registry(tmp_path: Path):
     write_md(content / "trainings" / "course.md", """id: 101
 slug: kursus-astro
 title: Kursus Astro
+description: Pelatihan contoh.
 schema:
   type: Course
 updatedDate: 2026-11-26T03:00:00Z""")
@@ -850,6 +881,12 @@ collections:
       schema: object
       updatedDate: utc_datetime
     schemaTypes: [Course]
+    schemaMappings:
+      Course:
+        fieldMapping:
+          name: title
+          description: description
+        requiredFields: [title, description]
     routePrefix: /training/
   schedule:
     directory: schedules
@@ -861,6 +898,13 @@ collections:
       schema: object
       updatedDate: utc_datetime
     schemaTypes: [Event]
+    schemaMappings:
+      Event:
+        fieldMapping:
+          name: title
+          startDate: startDate
+          endDate: endDate
+        requiredFields: [title, startDate, endDate]
     routePrefix: /schedule/
 """, encoding="utf-8")
     result = subprocess.run(
