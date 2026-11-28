@@ -37,11 +37,12 @@ Pemetaan ini adalah kontrak sumber data bagi implementasi JSON-LD. Validator saa
 
 ## Catatan audit konsistensi registry (2026-11-28)
 
-Audit kode menemukan bahwa `SCHEMA_TYPES["page"]` memuat tipe yang lebih banyak daripada tujuh entri pada `SCHEMA_REGISTRY`. Dengan demikian, lolosnya pemeriksaan scope belum selalu berarti tipe tersebut memiliki `fieldMapping`, `requiredFields`, dan `optionalFields` yang terdaftar. Ini adalah celah konsistensi implementasi yang perlu ditutup sebelum registry dianggap lengkap.
+Audit kode menemukan bahwa `SCHEMA_TYPES["page"]` memuat tipe yang lebih banyak daripada mapping pada `SCHEMA_REGISTRY`. Perbaikan menambahkan status eksplisit `SCHEMA_TYPE_STATUS`: tipe dengan mapping page-level dinyatakan `mapped`, sedangkan tipe lain dinyatakan `declaration-only` melalui `SCHEMA_DECLARATION_ONLY`. Dengan demikian, scope yang diterima tidak lagi secara implisit mengklaim bahwa semua tipe memiliki mapping generator.
 
 Kriteria penutupan:
 - Setiap tipe yang diizinkan pada scope dan diwajibkan menghasilkan JSON-LD harus memiliki entri registry beserta pemetaan sumber yang eksplisit.
-- Jika suatu tipe hanya diizinkan untuk deklarasi tetapi belum didukung mapping, status tersebut harus dinyatakan eksplisit dan tidak boleh dianggap sebagai dukungan generator.
+- Jika suatu tipe hanya diizinkan untuk deklarasi tetapi belum didukung mapping, status tersebut harus dinyatakan eksplisit (`declaration-only`) dan tidak boleh dianggap sebagai dukungan generator.
+- Test registry memastikan setiap page type berada tepat pada salah satu status: `mapped` atau `declaration-only`.
 - Test harus mencakup seluruh tipe yang diizinkan pada setiap scope, termasuk tipe yang sengaja belum didukung.
 - `googleRichResultSupport` adalah metadata informasional yang perlu ditinjau berkala; nilainya bukan jaminan rich result akan ditampilkan.
 
@@ -54,7 +55,7 @@ Catatan ini mendokumentasikan temuan audit, bukan memperluas atau mengubah dafta
 - documentationUrl, verifiedAt, entitySource, dan pemetaan properti lengkap wajib ditetapkan dalam Schema Registry proyek sebelum implementasi JSON-LD; reference validator memeriksa penggunaan tipe dan scope, bukan menjalankan renderer JSON-LD.
 
 ## Pengujian
-Suite mencakup tipe page tidak dikenal, tipe entity salah scope, DefinedTerm, properti schema tidak dikenal, component tidak terdaftar, props tidak dikenal/tidak sesuai component, tipe props, serta pasangan block–schema yang tidak diizinkan.
+Suite mencakup tipe page tidak dikenal, tipe entity salah scope, DefinedTerm, properti schema tidak dikenal, component tidak terdaftar, props tidak dikenal/tidak sesuai component, tipe props, pasangan block–schema yang tidak diizinkan, dan konsistensi cakupan status semua page type.
 
 Jalankan:
 
