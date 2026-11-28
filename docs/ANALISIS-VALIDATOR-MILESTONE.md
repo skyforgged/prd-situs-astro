@@ -215,12 +215,16 @@ Bagian ini memperbarui status pekerjaan tanpa mengubah tabel historis "Status sa
 | AUD-01 | Implementasi diterapkan | `main()` kini menjalankan canonical uniqueness dan route validation; meneruskan route prefix; mengaktifkan asset/link checks melalui `--site-root`; dan menjalankan route manifest melalui `--route-manifest`. Test CLI memeriksa exit code gagal dan sukses. |
 | AUD-02 | Implementasi diterapkan; hasil CI menunggu run | Workflow menambahkan smoke-test `--help` dan menjalankan pytest yang mencakup test integrasi CLI. Status workflow untuk commit perubahan belum dapat diverifikasi melalui konektor pada sesi ini; jangan tandai lulus sebelum run hijau. |
 | AUD-03 | Implementasi diterapkan | Page type dipartisi eksplisit menjadi `mapped` dan `declaration-only`; SiteNavigationElement mendapat mapping. Test memastikan seluruh page type memiliki status tepat. Declaration-only bukan dukungan generator JSON-LD. |
-| AUD-04 | Mekanisme ekstensi v1 diterapkan | `--contract-registry` mendukung collection tambahan, required fields, tipe field dasar, schema type beserta `schemaMappings`/field sumber wajib, route prefix, dan relasi one/many. Batas nested object, block discriminator, dan refinement domain dicatat pada `docs/CONTRACT-EXTENSIONS.md`. |
+| AUD-04 | Mekanisme ekstensi v1 diterapkan dan diperketat | `--contract-registry` mendukung collection tambahan, required fields, tipe field dasar, schema type beserta `schemaMappings`, enum, route prefix, dan relasi one/many/natural key. Registry kini menolak enum/mapping yang menunjuk field tanpa deklarasi tipe, prefix route tidak ternormalisasi, dan direktori ekstensi yang bertumpang tindih. Parser menerima nilai date/datetime native YAML sesuai tipe deklarasi. Batas nested object, block discriminator, dan refinement domain dicatat pada `docs/CONTRACT-EXTENSIONS.md`. |
 | AUD-05 | Fixture representatif tersedia; korpus penuh belum diverifikasi | Test fixture training/schedule memeriksa kontrak ekstensi, route dan relasi. Korpus penuh 249 file pusattraining belum dijalankan melalui validator ini; schema Zod proyek memiliki aturan nested/refinement yang belum seluruhnya direpresentasikan oleh extension v1. |
 | AUD-06 | Belum dapat diterapkan pada repo target | Repo `arisciwek/pusattraining` dapat dibaca, tetapi izin GitHub yang tersedia hanya pull/read dan tidak mengizinkan push. Workflow dan test di repo tersebut belum diubah. Perlu akses tulis atau perubahan dilakukan oleh maintainer repo. |
 | AUD-07 | Diterapkan pada pekerjaan ini | Perubahan disimpan sebagai commit dengan diff yang bermakna; tidak menggunakan commit kosong sebagai bukti penyelesaian. |
 
 ### Catatan batas verifikasi
+
+- Perbaikan lanjutan setelah implementasi ekstensi menutup kasus YAML yang mem-parse tanggal/timestamp menjadi objek `date`/`datetime`, bukan string. Test regresi ditambahkan untuk offset datetime dan tanggal native YAML.
+- Registry ekstensi diperketat agar enum, schema mapping, dan route prefix tidak dapat merujuk deklarasi yang tidak konsisten; test negatif ditambahkan.
+- Status CI tetap belum dapat dinyatakan hijau hanya berdasarkan keberadaan workflow atau commit. Pemeriksaan status untuk commit terbaru tidak mengembalikan check run yang dapat diverifikasi melalui konektor.
 
 - Clone dan test lokal tidak dapat dilakukan pada lingkungan ini karena akses jaringan container ke GitHub tidak tersedia.
 - Workflow validator di repo PRD telah diperbarui, tetapi hasil run hijau untuk commit terbaru belum diperoleh pada saat pembaruan ini.
