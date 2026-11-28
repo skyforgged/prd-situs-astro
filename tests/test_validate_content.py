@@ -1091,3 +1091,71 @@ def test_block_schema_registry_maps_table_and_image_object(tmp_path: Path):
     image = PAGE.replace("component: rich-text", "component: image\n    schema:\n      type: ImageObject\n    src: /a.webp\n    alt: Gambar.")
     assert validate_document(tmp_path / "pages/table.md", __import__("yaml").safe_load(table), "page") == []
     assert validate_document(tmp_path / "pages/image.md", __import__("yaml").safe_load(image), "page") == []
+
+
+def test_extension_accepts_yaml_native_offset_datetime_and_date_values(tmp_path: Path):
+    from validate_content import load_extension_contracts
+    content = tmp_path / "content"
+    training = write_md(content / "trainings" / "astro.md", """id: 501
+slug: astro-course
+title: Astro Course
+description: Training Astro.
+pubDate: 2026-11-26T10:00:00+07:00
+updatedDate: 2026-11-27T10:00:00+07:00
+schema:
+  type: Course""")
+    schedule = write_md(content / "schedules" / "batch.md", """id: 601
+slug: astro-batch
+title: Astro Batch
+startDate: 2026-12-01
+endDate: 2026-12-03
+pubDate: 2026-11-26T10:00:00+07:00
+updatedDate: 2026-11-27T10:00:00+07:00
+schema:
+  type: Event""")
+    registry = tmp_path / "contracts.yml"
+    registry.write_text("""version: 1
+collections:
+  training:
+    directory: trainings
+    requiredFields: [id, slug, title, description, pubDate, updatedDate, schema]
+    fieldTypes:
+      id: positive_int
+      slug: string
+      title: string
+      description: string
+      pubDate: offset_datetime
+      updatedDate: offset_datetime
+      schema: object
+    schemaTypes: [Course]
+    schemaMappings:
+      Course:
+        fieldMapping:
+          name: title
+          description: description
+        requiredFields: [title, description]
+    routePrefix: /training/
+  schedule:
+    directory: schedules
+    requiredFields: [id, slug, title, startDate, endDate, pubDate, updatedDate, schema]
+    fieldTypes:
+      id: positive_int
+      slug: string
+      title: string
+      startDate: iso_date_or_datetime
+      endDate: iso_date_or_datetime
+      pubDate: offset_datetime
+      updatedDate: offset_datetime
+      schema: object
+    schemaTypes: [Event]
+    schemaMappings:
+      Event:
+        fieldMapping:
+          name: title
+          startDate: startDate
+          endDate: endDate
+        requiredFields: [title, startDate, endDate]
+    routePrefix: /schedule/
+""", encoding="utf-8")
+    contracts, mapping = load_extension_contracts(registry, content)
+    assert validate_paths([training, schedule], mapping, contracts) == []
