@@ -679,7 +679,7 @@ def test_cli_fails_when_internal_link_is_missing(tmp_path: Path):
     import subprocess
     content = tmp_path / "content"
     page = write_md(content / "pages" / "page.md", PAGE.replace(
-        "component: rich-text", "component: cta\\n    url: /missing/"
+        "component: rich-text", "component: cta\n    url: /missing/"
     ))
     site_root = tmp_path / "site"
     site_root.mkdir()
@@ -702,7 +702,7 @@ def test_cli_passes_with_route_manifest_and_sitemap(tmp_path: Path):
         "<urlset><loc>https://example.test/tentang/</loc></urlset>", encoding="utf-8"
     )
     (site_root / "routes.yml").write_text(
-        "routes:\\n  - path: /tentang/\\n    source: public/sitemap.xml\\n    indexable: true\\nsitemap: public/sitemap.xml\\n",
+        "routes:\n  - path: /tentang/\n    source: public/sitemap.xml\n    indexable: true\nsitemap: public/sitemap.xml\n",
         encoding="utf-8",
     )
     result = subprocess.run(
@@ -820,3 +820,53 @@ def test_schema_registry_explicitly_accounts_for_every_page_type():
     assert PAGE_TYPES == mapped | SCHEMA_DECLARATION_ONLY
     assert set(SCHEMA_TYPE_STATUS) == PAGE_TYPES
     assert all(SCHEMA_TYPE_STATUS[name] == "declaration-only" for name in SCHEMA_DECLARATION_ONLY)
+
+
+def test_cli_loads_project_extension_registry(tmp_path: Path):
+    import subprocess
+    content = tmp_path / "content"
+    write_md(content / "trainings" / "course.md", """id: 101
+slug: kursus-astro
+title: Kursus Astro
+schema:
+  type: Course
+updatedDate: 2026-11-26T03:00:00Z""")
+    write_md(content / "schedules" / "batch.md", """id: 201
+slug: batch-november
+title: Batch November
+schema:
+  type: Event
+updatedDate: 2026-11-26T03:00:00Z""")
+    registry = tmp_path / "contracts.yml"
+    registry.write_text("""version: 1
+collections:
+  training:
+    directory: trainings
+    requiredFields: [id, slug, title, schema, updatedDate]
+    fieldTypes:
+      id: positive_int
+      slug: string
+      title: string
+      schema: object
+      updatedDate: utc_datetime
+    schemaTypes: [Course]
+    routePrefix: /training/
+  schedule:
+    directory: schedules
+    requiredFields: [id, slug, title, schema, updatedDate]
+    fieldTypes:
+      id: positive_int
+      slug: string
+      title: string
+      schema: object
+      updatedDate: utc_datetime
+    schemaTypes: [Event]
+    routePrefix: /schedule/
+""", encoding="utf-8")
+    result = subprocess.run(
+        [sys.executable, str(Path(__file__).resolve().parents[1] / "scripts" / "validate_content.py"),
+         str(content), "--contract-registry", str(registry)],
+        text=True, capture_output=True,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "slug/routes" in result.stdout
