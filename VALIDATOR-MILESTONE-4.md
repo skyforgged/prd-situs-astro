@@ -37,13 +37,13 @@ Pemetaan ini adalah kontrak sumber data bagi implementasi JSON-LD. Validator saa
 
 ## Catatan audit konsistensi registry (2026-11-28)
 
-Audit kode menemukan bahwa `SCHEMA_TYPES["page"]` memuat tipe yang lebih banyak daripada mapping pada `SCHEMA_REGISTRY`. Perbaikan menambahkan status eksplisit `SCHEMA_TYPE_STATUS`: tipe dengan mapping page-level dinyatakan `mapped`, sedangkan tipe lain dinyatakan `declaration-only` melalui `SCHEMA_DECLARATION_ONLY`. Dengan demikian, scope yang diterima tidak lagi secara implisit mengklaim bahwa semua tipe memiliki mapping generator.
+Audit kode menemukan bahwa `SCHEMA_TYPES["page"]` memuat tipe yang lebih banyak daripada mapping pada `SCHEMA_REGISTRY`. Perbaikan menambahkan status eksplisit `SCHEMA_TYPE_STATUS`: tipe dengan mapping page-level dinyatakan `mapped`, sedangkan tipe lain dinyatakan `declaration-only` melalui `SCHEMA_DECLARATION_ONLY`. Dengan demikian, scope yang diterima tidak lagi secara implisit mengklaim bahwa semua tipe memiliki mapping generator. Kontrak dokumen inti menolak penggunaan tipe berstatus `declaration-only` sampai proyek menyediakan mapping yang dapat diuji; status tersebut hanya mencatat bahwa tipe ada dalam scope katalog, bukan bahwa validator mendukung JSON-LD-nya.
 
 Kriteria penutupan:
 - Setiap tipe yang diizinkan pada scope dan diwajibkan menghasilkan JSON-LD harus memiliki entri registry beserta pemetaan sumber yang eksplisit.
 - Jika suatu tipe hanya diizinkan untuk deklarasi tetapi belum didukung mapping, status tersebut harus dinyatakan eksplisit (`declaration-only`) dan tidak boleh dianggap sebagai dukungan generator.
 - Test registry memastikan setiap page type berada tepat pada salah satu status: `mapped` atau `declaration-only`.
-- Test harus mencakup seluruh tipe yang diizinkan pada setiap scope, termasuk tipe yang sengaja belum didukung.
+- Test harus mencakup seluruh tipe yang diizinkan pada setiap scope, termasuk tipe yang sengaja belum didukung, dan memastikan tipe `declaration-only` tidak lolos sebagai mapping yang didukung.
 - `googleRichResultSupport` adalah metadata informasional yang perlu ditinjau berkala; nilainya bukan jaminan rich result akan ditampilkan.
 
 Catatan ini mendokumentasikan temuan audit, bukan memperluas atau mengubah daftar tipe normatif.
