@@ -18,7 +18,7 @@
 - Pertahankan pemisahan konten Markdown, komponen presentasi, layout, dan konfigurasi UI.
 - Jangan menambahkan jenis konten atau fitur wajib ke semua proyek tanpa dasar Constitution.
 - ID dokumen harus unik global lintas collection; ID block hanya unik di dalam dokumen pemilik.
-- Semua relasi dokumen menggunakan ID numerik dan harus memiliki target/kardinalitas yang jelas.
+- Relasi pada enam collection inti wajib memakai FK numerik ke ID dokumen target. Collection ekstensi secara default juga memakai FK numerik; natural key hanya boleh digunakan bila extension registry mendukung dan mendeklarasikan target, targetField, kardinalitas, serta keunikan/stabilitas target. Satu relasi hanya boleh memiliki satu sumber kebenaran; jangan menduplikasi FK dan natural key untuk relasi yang sama.
 - Jangan membuat schema.org yang tidak didukung konten terlihat atau menjanjikan rich result tanpa memeriksa kebijakan terbaru.
 - Setiap perubahan standar harus memperbarui versi dokumen terkait, `CHANGELOG.md`, dan status/bukti pada `docs/REVIEW-NOTES.md`.
 - Perubahan implementasi harus menyertakan atau memperbarui pengujian yang relevan.
