@@ -336,13 +336,13 @@ def validate_extension_relations(documents,contracts):
             targets=value if is_many and isinstance(value,list) else [value]
             if is_many and not isinstance(value,list):
                 issues.append(Issue(path,"extension relation '%s' must be an array"%field)); continue
+            valid_targets=[nonempty(x) if source_type in {"string","string_array"} else posint(x) for x in targets]
+            if not all(valid_targets):
+                expected="non-empty strings" if source_type in {"string","string_array"} else "positive integer IDs"
+                issues.append(Issue(path,"extension relation '%s' must contain %s"%(field,expected))); continue
             if is_many and len(targets)!=len(set(targets)):
                 issues.append(Issue(path,"extension relation '%s' must not contain duplicate values"%field)); continue
             for target_value in targets:
-                valid=nonempty(target_value) if source_type in {"string","string_array"} else posint(target_value)
-                if not valid:
-                    expected="non-empty strings" if source_type=="string" else "positive integer IDs"
-                    issues.append(Issue(path,"extension relation '%s' must contain %s"%(field,expected))); continue
                 matches=indexes.get((rel["target"],target_field,target_value),[])
                 if len(matches)!=1:
                     reason="missing" if not matches else "ambiguous"
