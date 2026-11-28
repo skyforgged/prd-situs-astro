@@ -1,8 +1,8 @@
 # Analisis Pola Situs Referensi — Artikel, Footer, CTA, dan Pagination
 
 > Tanggal analisis: 2026-11-26
-> Repo rujukan utama: [skyforgged/konsultan-slf](https://github.com/skyforgged/konsultan-slf) (`main`)
-> Repo pembanding: `arisciwek/confinedspace`, `arisciwek/pusattraining`, `arisciwek/damkar`, `arisciwek/jasa-perijinan-slf`
+> Referensi utama: implementasi Astro rujukan; identitas sumber tidak disimpan di sini
+> Referensi pembanding: tiga implementasi Astro lain dengan variasi pola yang sama
 > Status: catatan analisis referensi, **bukan** keputusan standar dan bukan kewajiban bagi proyek turunan
 > Nomor baris mengikuti isi `main` saat analisis dilakukan
 

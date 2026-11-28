@@ -122,8 +122,8 @@ Kedua proyek menggunakan registry `src/components/blocks.ts` dengan pola `compon
 **Kesimpulan registry:** ada 26 identifier yang sama pada kedua proyek dan satu identifier tambahan (`multi-step-form`) pada SLF. Registry adalah bukti utama status block; keberadaan komponen di folder tidak boleh dipakai untuk menyimpulkan bahwa ia terdaftar.
 
 Sumber verifikasi:
-- SLF: [`src/components/blocks.ts`](https://github.com/skyforgged/konsultan-slf/blob/main/src/components/blocks.ts)
-- SNI/TKDN: [`src/components/blocks.ts`](https://github.com/skyforgged/konsultan-sni-tkdn/blob/main/src/components/blocks.ts)
+- SLF: `src/components/blocks.ts`
+- SNI/TKDN: `src/components/blocks.ts`
 
 ### B. Kontrak editorial TNV
 
@@ -158,9 +158,9 @@ Nilai `listing.source` yang diizinkan: `services`, `trainings`, `schedules`, `ar
 **Penting:** schema yang menerima sebuah type tidak membuktikan bahwa renderer generik menampilkan type tersebut. Untuk TNV, `listing` dan `upcoming-schedules` adalah contoh eksplisit: schema tersedia, tetapi rendering ditangani di luar alur generik atau belum menjadi cabang renderer tersebut.
 
 Sumber verifikasi:
-- [TNV — content schema](https://github.com/skyforgged/tnvcertification/blob/main/src/content.config.ts)
-- [TNV — editorial renderer](https://github.com/skyforgged/tnvcertification/blob/main/src/components/BlockRenderer.astro)
-- [TNV — page renderer](https://github.com/skyforgged/tnvcertification/blob/main/src/components/page/PageBlockRenderer.astro)
+- TNV — content schema: `src/content.config.ts`
+- TNV — editorial renderer: `src/components/BlockRenderer.astro`
+- TNV — page renderer: `src/components/page/PageBlockRenderer.astro`
 
 ### D. Pemisahan koleksi konten dan block
 
@@ -544,23 +544,23 @@ Bagian ini dicatat agar inventaris lengkap, tetapi item-item ini bukan block kon
 
 ## 6. Sumber repositori
 
-Inventaris ini diturunkan dari branch `main` pada tiga repository berikut. Commit sumber yang diperiksa saat penyusunan:
+Inventaris ini diturunkan dari tiga implementasi yang diperiksa saat penyusunan. Identitas repository dan commit sumber sengaja tidak disimpan di katalog ini.
 
-| Repository | Commit | Area sumber utama |
-|---|---|---|
-| [konsultan-slf](https://github.com/skyforgged/konsultan-slf) | [`288b86c`](https://github.com/skyforgged/konsultan-slf/commit/288b86cce5f1cad82df13abaf71d78535698bf61) | `src/components/blocks.ts`, `src/components/shared/`, `src/components/blocks/BlockRenderer.astro` |
-| [konsultan-sni-tkdn](https://github.com/skyforgged/konsultan-sni-tkdn) | [`6b47eae`](https://github.com/skyforgged/konsultan-sni-tkdn/commit/6b47eae2121b9d1d09331e920d27ac5f4ef9ef7c) | `src/components/blocks.ts`, `src/components/shared/`, `src/content.config.ts` |
-| [tnvcertification](https://github.com/skyforgged/tnvcertification) | [`1b5f08a`](https://github.com/skyforgged/tnvcertification/commit/1b5f08ae92d9f2d1d81f2d3bfe142b344590ef2b) | `src/components/BlockRenderer.astro`, `src/components/page/`, `src/content.config.ts`, `src/data/pages.ts` |
+| Implementasi | Area sumber utama |
+|---|---|
+| SLF | `src/components/blocks.ts`, `src/components/shared/`, `src/components/blocks/BlockRenderer.astro` |
+| SNI/TKDN | `src/components/blocks.ts`, `src/components/shared/`, `src/content.config.ts` |
+| TNV | `src/components/BlockRenderer.astro`, `src/components/page/`, `src/content.config.ts`, `src/data/pages.ts` |
 
 ### File sumber utama
 
-- [SLF — block registry](https://github.com/skyforgged/konsultan-slf/blob/main/src/components/blocks.ts)
-- [SLF — shared components](https://github.com/skyforgged/konsultan-slf/tree/main/src/components/shared)
-- [SNI/TKDN — block registry](https://github.com/skyforgged/konsultan-sni-tkdn/blob/main/src/components/blocks.ts)
-- [SNI/TKDN — shared components](https://github.com/skyforgged/konsultan-sni-tkdn/tree/main/src/components/shared)
-- [TNV — content schema](https://github.com/skyforgged/tnvcertification/blob/main/src/content.config.ts)
-- [TNV — editorial block renderer](https://github.com/skyforgged/tnvcertification/blob/main/src/components/BlockRenderer.astro)
-- [TNV — page block renderer](https://github.com/skyforgged/tnvcertification/blob/main/src/components/page/PageBlockRenderer.astro)
+- SLF — block registry: `src/components/blocks.ts`
+- SLF — shared components: `src/components/shared/`
+- SNI/TKDN — block registry: `src/components/blocks.ts`
+- SNI/TKDN — shared components: `src/components/shared/`
+- TNV — content schema: `src/content.config.ts`
+- TNV — editorial block renderer: `src/components/BlockRenderer.astro`
+- TNV — page block renderer: `src/components/page/PageBlockRenderer.astro`
 
 ## 7. Pemeliharaan katalog
 
@@ -569,7 +569,7 @@ Saat proyek Astro baru menambah block atau component yang layak dipakai ulang:
 - Tambahkan item ke kategori yang tepat.
 - Catat identifier konten dan nama file implementasi secara terpisah.
 - Cantumkan props/schema, varian, dependensi, accessibility, responsive behavior, structured-data behavior, serta contoh pemakaian.
-- Catat repository, path, dan commit sumber.
+- Catat path dan konteks sumber tanpa menyimpan identitas repository atau commit eksternal.
 - Tandai status `candidate`, `approved`, `deprecated`, atau `project-specific`.
 - Jangan menghapus varian atau perbedaan implementasi hanya demi menyatukan nama.
 - Perbarui katalog setelah perubahan registry/renderer, bukan hanya setelah penambahan file komponen.
