@@ -948,3 +948,129 @@ def test_cli_uses_route_prefix_override(tmp_path: Path):
         text=True, capture_output=True,
     )
     assert result.returncode == 0, result.stdout + result.stderr
+
+
+def test_extension_supports_static_schema_type_natural_key_and_offset_dates(tmp_path: Path):
+    from validate_content import load_extension_contracts
+    content = tmp_path / "content"
+    training = write_md(content / "trainings" / "astro.md", """id: 301
+ulid: 01ARZ3NDEKTSV4RRFFQ69G5FAV
+type: training
+trainingSlug: astro-course
+slug: astro-course
+title: Astro Course
+description: Training Astro.
+pubDate: '2026-11-26T10:00:00+07:00'
+updatedDate: '2026-11-27T10:00:00+07:00'""")
+    schedule = write_md(content / "schedules" / "batch.md", """id: 401
+ulid: 01ARZ3NDEKTSV4RRFFQ69G5FAW
+type: schedule
+scheduleId: batch-001
+publisherId: publisher-01
+trainingSlug: astro-course
+batchNo: '001'
+slug: astro-course-batch-001
+title: Batch 001
+description: Schedule Astro.
+startDate: 2026-12-01
+endDate: 2026-12-03
+dateLabel: 1-3 Desember 2026
+timezone: Asia/Jakarta
+pubDate: '2026-11-26T10:00:00+07:00'
+updatedDate: '2026-11-27T10:00:00+07:00'
+status: scheduled""")
+    registry = tmp_path / "contracts.yml"
+    registry.write_text("""version: 1
+collections:
+  training:
+    directory: trainings
+    requiredFields: [id, ulid, type, trainingSlug, slug, title, description, pubDate, updatedDate]
+    fieldTypes:
+      id: positive_int
+      ulid: ulid
+      type: string
+      trainingSlug: string
+      slug: string
+      title: string
+      description: string
+      pubDate: offset_datetime
+      updatedDate: offset_datetime
+    fieldEnums:
+      type: [training]
+    schemaTypes: [Course]
+    schemaType: Course
+    schemaMappings:
+      Course:
+        fieldMapping:
+          name: title
+          description: description
+        requiredFields: [title, description]
+    routePrefix: /training/
+  schedule:
+    directory: schedules
+    requiredFields: [id, ulid, type, scheduleId, publisherId, trainingSlug, batchNo, slug, title, description, startDate, endDate, dateLabel, timezone, pubDate, updatedDate, status]
+    fieldTypes:
+      id: positive_int
+      ulid: ulid
+      type: string
+      scheduleId: string
+      publisherId: string
+      trainingSlug: string
+      batchNo: string
+      slug: string
+      title: string
+      description: string
+      startDate: iso_date_or_datetime
+      endDate: iso_date_or_datetime
+      dateLabel: string
+      timezone: string
+      pubDate: offset_datetime
+      updatedDate: offset_datetime
+      status: string
+    fieldEnums:
+      type: [schedule]
+      status: [scheduled, ongoing, completed, postponed, cancelled]
+    schemaTypes: [Event]
+    schemaType: Event
+    schemaMappings:
+      Event:
+        fieldMapping:
+          name: title
+          startDate: startDate
+          endDate: endDate
+        requiredFields: [title, startDate, endDate]
+    routePrefix: /schedule/
+    relations:
+      trainingSlug:
+        target: training
+        targetField: trainingSlug
+        cardinality: one
+""", encoding="utf-8")
+    contracts, mapping = load_extension_contracts(registry, content)
+    assert validate_paths([training, schedule], mapping, contracts) == []
+
+
+def test_extension_field_enum_rejects_unknown_value(tmp_path: Path):
+    from validate_content import load_extension_contracts
+    content = tmp_path / "content"
+    item = write_md(content / "schedules" / "batch.md", """id: 401
+ulid: 01ARZ3NDEKTSV4RRFFQ69G5FAW
+type: schedule
+scheduleId: batch-001
+publisherId: publisher-01
+trainingSlug: astro-course
+batchNo: '001'
+slug: astro-course-batch-001
+title: Batch 001
+description: Schedule Astro.
+startDate: 2026-12-01
+endDate: 2026-12-03
+dateLabel: 1-3 Desember 2026
+timezone: Asia/Jakarta
+pubDate: '2026-11-26T10:00:00+07:00'
+updatedDate: '2026-11-27T10:00:00+07:00'
+status: invalid""")
+    registry = Path(__file__).resolve().parents[1] / "examples" / "content-contracts" / "training-schedule.yml"
+    contracts, mapping = load_extension_contracts(registry, content.parent)
+    issues = validate_paths([item], mapping, contracts)
+    assert any("field 'status' must be one of" in issue.message for issue in issues)
