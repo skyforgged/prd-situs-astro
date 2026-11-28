@@ -210,7 +210,7 @@ def load_extension_contracts(path, content_dir):
             if not isinstance(rel,dict) or not nonempty(rel.get("target")) or rel.get("cardinality") not in {"one","many"}:
                 raise ValueError("extension relation '%s.%s' requires target and cardinality one|many" % (kind,field))
         directory=Path(spec["directory"])
-        if not directory.is_absolute(): directory=(Path(content_dir).resolve().parent/directory).resolve()
+        if not directory.is_absolute(): directory=(Path(content_dir).resolve()/directory).resolve()
         else: directory=directory.resolve()
         mapping[str(directory)]=kind
         contracts[kind]=dict(spec)
