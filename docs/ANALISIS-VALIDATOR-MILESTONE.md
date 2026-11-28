@@ -204,3 +204,25 @@ Karena itu, berdasarkan bukti yang tersedia, Milestone 1–3 memiliki bukti impl
 ## 7. Batas verifikasi
 
 Catatan ini disusun dengan membaca isi berkas, riwayat git, dan status check GitHub Actions. Tidak ada build Astro, validator corpus nyata, atau pytest lokal yang dijalankan. Pemeriksaan terhadap proyek pusattraining hanya berupa pembacaan berkas dan metadata GitHub API; tidak ada test, `astro sync`, maupun build yang dijalankan di proyek tersebut. Tidak ada aturan normatif yang diubah oleh catatan ini.
+
+
+## 8. Status tindak lanjut setelah audit (2026-11-28)
+
+Bagian ini memperbarui status pekerjaan tanpa mengubah tabel historis "Status saat audit" pada Bagian 5.
+
+| ID | Status tindak lanjut | Bukti / batas |
+|---|---|---|
+| AUD-01 | Implementasi diterapkan | `main()` kini menjalankan canonical uniqueness dan route validation; meneruskan route prefix; mengaktifkan asset/link checks melalui `--site-root`; dan menjalankan route manifest melalui `--route-manifest`. Test CLI memeriksa exit code gagal dan sukses. |
+| AUD-02 | Implementasi diterapkan; hasil CI menunggu run | Workflow menambahkan smoke-test `--help` dan menjalankan pytest yang mencakup test integrasi CLI. Status workflow untuk commit perubahan belum dapat diverifikasi melalui konektor pada sesi ini; jangan tandai lulus sebelum run hijau. |
+| AUD-03 | Implementasi diterapkan | Page type dipartisi eksplisit menjadi `mapped` dan `declaration-only`; SiteNavigationElement mendapat mapping. Test memastikan seluruh page type memiliki status tepat. Declaration-only bukan dukungan generator JSON-LD. |
+| AUD-04 | Mekanisme ekstensi v1 diterapkan | `--contract-registry` mendukung collection tambahan, required fields, tipe field dasar, daftar schema type, route prefix, dan relasi one/many. Batas nested object, block discriminator, dan refinement domain dicatat pada `docs/CONTRACT-EXTENSIONS.md`. |
+| AUD-05 | Fixture representatif tersedia; korpus penuh belum diverifikasi | Test fixture training/schedule memeriksa kontrak ekstensi, route dan relasi. Korpus penuh 249 file pusattraining belum dijalankan melalui validator ini; schema Zod proyek memiliki aturan nested/refinement yang belum seluruhnya direpresentasikan oleh extension v1. |
+| AUD-06 | Belum dapat diterapkan pada repo target | Repo `arisciwek/pusattraining` dapat dibaca, tetapi izin GitHub yang tersedia hanya pull/read dan tidak mengizinkan push. Workflow dan test di repo tersebut belum diubah. Perlu akses tulis atau perubahan dilakukan oleh maintainer repo. |
+| AUD-07 | Diterapkan pada pekerjaan ini | Perubahan disimpan sebagai commit dengan diff yang bermakna; tidak menggunakan commit kosong sebagai bukti penyelesaian. |
+
+### Catatan batas verifikasi
+
+- Clone dan test lokal tidak dapat dilakukan pada lingkungan ini karena akses jaringan container ke GitHub tidak tersedia.
+- Workflow validator di repo PRD telah diperbarui, tetapi hasil run hijau untuk commit terbaru belum diperoleh pada saat pembaruan ini.
+- Extension v1 adalah fondasi generik, bukan reproduksi penuh Zod schema pusattraining. Validasi nested schema, aturan tanggal lintas-field, timezone IANA, dan graph JSON-LD hasil render tetap harus dijalankan di proyek pusattraining.
+- Tidak ada perubahan pada repository `arisciwek/pusattraining` karena hak akses tulis tidak tersedia.
