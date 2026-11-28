@@ -35,6 +35,18 @@ Pemetaan ini adalah kontrak sumber data bagi implementasi JSON-LD. Validator saa
 - Menolak component dan props yang tidak dikenal.
 - Registry props konservatif untuk block yang katalog gabungannya belum menyediakan kontrak API tunggal lintas proyek. Proyek harus memperluas kontrak melalui registry proyek.
 
+## Catatan audit konsistensi registry (2026-11-28)
+
+Audit kode menemukan bahwa `SCHEMA_TYPES["page"]` memuat tipe yang lebih banyak daripada tujuh entri pada `SCHEMA_REGISTRY`. Dengan demikian, lolosnya pemeriksaan scope belum selalu berarti tipe tersebut memiliki `fieldMapping`, `requiredFields`, dan `optionalFields` yang terdaftar. Ini adalah celah konsistensi implementasi yang perlu ditutup sebelum registry dianggap lengkap.
+
+Kriteria penutupan:
+- Setiap tipe yang diizinkan pada scope dan diwajibkan menghasilkan JSON-LD harus memiliki entri registry beserta pemetaan sumber yang eksplisit.
+- Jika suatu tipe hanya diizinkan untuk deklarasi tetapi belum didukung mapping, status tersebut harus dinyatakan eksplisit dan tidak boleh dianggap sebagai dukungan generator.
+- Test harus mencakup seluruh tipe yang diizinkan pada setiap scope, termasuk tipe yang sengaja belum didukung.
+- `googleRichResultSupport` adalah metadata informasional yang perlu ditinjau berkala; nilainya bukan jaminan rich result akan ditampilkan.
+
+Catatan ini mendokumentasikan temuan audit, bukan memperluas atau mengubah daftar tipe normatif.
+
 ## Batasan yang disengaja
 - Katalog lintas proyek adalah inventaris adopsi, bukan perintah mengimplementasikan seluruh komponen.
 - Validator tidak memverifikasi kesesuaian semantik konten, kelayakan rich result, atau kebenaran JSON-LD hasil render.
