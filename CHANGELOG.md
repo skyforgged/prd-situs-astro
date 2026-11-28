@@ -64,7 +64,7 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 - Integrasi CLI Milestone 5: canonical uniqueness, slug/route, asset/internal link, route manifest, sitemap, redirect, serta penggunaan `--site-root`, `--route-manifest`, dan `--route-prefixes`.
 - CI validator: menambahkan smoke-test `--help`; suite pytest mencakup test integrasi CLI untuk canonical, internal link, route manifest, dan exit code.
 - Schema Registry: semua page-level schema type kini memiliki status eksplisit `mapped` atau `declaration-only`; penggunaan tipe `declaration-only` ditolak untuk kontrak dokumen inti sampai project mapping disediakan; SiteNavigationElement mendapat mapping sumber.
-- Project Collection Contract Extensions v1: menambahkan `--contract-registry` untuk kind proyek, field/type dasar, schema type beserta `schemaMappings` eksplisit, route prefix, dan relasi one/many; disertai contoh training/schedule.
+- Project Collection Contract Extensions v1: menambahkan `--contract-registry` untuk kind proyek, field/type dasar, schema type beserta `schemaMappings` eksplisit, route prefix, enum field, tipe tanggal/ULID, relasi one/many berbasis ID atau natural key, dan schema type statis/berbasis field; disertai contoh training/schedule.
 - Menambahkan fixture test untuk ekstensi training/schedule dan konsistensi cakupan Schema Registry.
 - Memperbarui dokumen Milestone 4/5, Quality Gates, dan analisis untuk memisahkan implementasi, bukti CI, dan batas validasi korpus.
 
