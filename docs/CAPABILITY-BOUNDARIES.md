@@ -1,16 +1,19 @@
 # Batas Kemampuan Standar dan Validator — PRD Situs Astro
 
-> Versi 1.0 | 2026-11-28  
-> Status: dokumentasi normatif tentang batas dukungan repository standar  
+> Versi 1.1 | 2026-11-28
+>
+> Status: dokumentasi normatif tentang batas dukungan repository standar
+>
 > Berlaku untuk: repository PRD ini dan proyek Astro turunan yang mengadopsinya
 
 ## 1. Tujuan
 
-Dokumen ini mencegah salah tafsir bahwa keberadaan persyaratan dalam PRD, konfigurasi registry, atau test repository berarti fitur tersebut sudah tersedia sebagai implementasi end-to-end. Setiap kemampuan harus dibaca dalam salah satu dari tiga kategori:
+Dokumen ini mencegah salah tafsir bahwa keberadaan persyaratan dalam PRD, konfigurasi registry, atau test repository berarti fitur tersebut sudah tersedia sebagai implementasi end-to-end. Setiap kemampuan harus dibaca dalam salah satu dari empat kategori:
 
 1. **Didukung validator referensi** — pemeriksaan memang diimplementasikan pada `scripts/validate_content.py` atau registry yang dipanggilnya dan dapat dijalankan melalui CLI.
 2. **Hanya berupa kontrak/standar** — aturan, struktur data, atau perilaku telah ditentukan dalam dokumen, tetapi repository standar belum menyediakan implementasi runtime lengkap untuk mewujudkannya.
 3. **Wajib diimplementasikan proyek turunan** — memerlukan aplikasi Astro, konfigurasi, integrasi, data, browser, layanan eksternal, atau keputusan bisnis milik situs tertentu.
+4. **Keputusan manusia/manual** — persetujuan editorial, review arsitektur, atau keputusan bisnis yang hanya dapat dibuktikan oleh reviewer dan tidak dapat disimpulkan dari validator, kontrak, maupun kode proyek.
 
 Satu persyaratan dapat melibatkan lebih dari satu kategori. Contohnya, validator dapat memeriksa bentuk SEO frontmatter, sementara proyek turunan tetap harus menghasilkan dan menguji tag SEO pada HTML hasil render.
 
@@ -21,6 +24,7 @@ Satu persyaratan dapat melibatkan lebih dari satu kategori. Contohnya, validator
 | **VALIDATOR** | Kode pemeriksaan tersedia pada repository standar. | Implementasi fungsi, test otomatis, dan hasil eksekusi CLI/CI pada commit tertentu. | Hanya adanya aturan di dokumen atau contoh YAML. |
 | **CONTRACT** | Persyaratan normatif telah ditentukan, tetapi tidak otomatis diwujudkan oleh validator/runtime standar. | Dokumen kontrak, arsitektur, template, registry deklaratif. | Menganggap halaman, komponen, atau output sudah berfungsi. |
 | **PROJECT** | Implementasi dan bukti harus disediakan situs Astro yang mengadopsi standar. | Kode proyek, test proyek, build, browser audit, CI, atau approval yang relevan. | Test validator referensi saja. |
+| **MANUAL** | Keputusan atau persetujuan manusia diperlukan dan tidak dapat disimpulkan dari validator, kontrak, atau kode proyek. | Catatan reviewer, tanggal, versi konten, scope, keputusan, dan penutupan blocker. | Test validator, kontrak, atau status CI tanpa catatan persetujuan. |
 
 **Aturan klaim:** status VALIDATOR berarti hanya bagian yang secara eksplisit diperiksa oleh kode. Ia tidak boleh diperluas menjadi klaim bahwa seluruh requirement, halaman, aplikasi, atau situs telah selesai.
 
@@ -163,3 +167,4 @@ Setiap perubahan harus menyertakan file/fungsi yang berubah, test yang membuktik
 | Versi | Tanggal | Perubahan |
 |---|---|---|
 | 1.0 | 2026-11-28 | Klasifikasi kemampuan validator, kontrak normatif, kewajiban proyek turunan, pemetaan QG, dan Definition of Done. |
+| 1.1 | 2026-11-28 | MANUAL ditambahkan sebagai kategori dan status bukti keempat agar sejajar dengan AGENTS.md dan matriks traceability; cakupan validator tidak berubah. |

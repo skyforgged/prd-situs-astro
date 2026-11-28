@@ -1,3 +1,10 @@
+## Penyelarasan status bukti MANUAL — 2026-11-28
+
+- [x] `docs/CAPABILITY-BOUNDARIES.md` versi 1.1 membedakan empat status bukti: VALIDATOR, CONTRACT, PROJECT, dan MANUAL.
+- [x] Definisi MANUAL ditambahkan pada daftar kategori dan tabel status; versi serta riwayat dokumen diperbarui.
+- [x] Perubahan dicatat di `CHANGELOG.md`; tidak ada perubahan pada validator, registry, kontrak, atau test suite.
+- Batas verifikasi: koreksi ini hanya menyelaraskan dokumentasi dengan AGENTS.md dan matriks traceability. Tidak ada approval manusia yang dijalankan atau diwakili oleh pemeriksaan ini.
+
 ## Dokumentasi batas kemampuan — tahap 5/5, 2026-11-28
 
 - [x] Ditambahkan `docs/CAPABILITY-BOUNDARIES.md` yang memisahkan dukungan validator aktual, kontrak normatif tanpa runtime lengkap, dan pekerjaan wajib proyek Astro turunan.

@@ -4,6 +4,10 @@
 - `docs/CAPABILITY-BOUNDARIES.md` mengklasifikasikan dukungan validator aktual, kontrak normatif yang belum menjadi runtime, dan implementasi wajib proyek Astro turunan; memetakan batas QG-01–QG-13 dan Definition of Done adopsi.
 - Matriks traceability diperluas dengan PRD-035 untuk dokumentasi batas kemampuan.
 - README, AGENTS.md, Quality Gates, dan Validator Milestone 5 ditautkan ke batas kemampuan agar klaim dukungan tetap akurat.
+
+### Changed
+- `docs/CAPABILITY-BOUNDARIES.md` versi 1.1 menambahkan MANUAL sebagai kategori dan status bukti keempat, sejajar dengan empat jenis bukti pada AGENTS.md dan matriks traceability. Cakupan validator, test, dan kontrak tidak berubah.
+
 ## [Unreleased] — 2026-11-28
 
 ### Added
