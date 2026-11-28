@@ -16,7 +16,7 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 ### Added — Validator milestone 5
 - Menambahkan validasi pola slug, route generation per collection, route-prefix override, dan route collision lintas collection.
 - Menambahkan pemeriksaan canonical URL duplikat, referensi aset lokal, internal links dari props dan Markdown, serta route manifest, sitemap, source file, dan bentuk dasar redirect.
-- Memperluas CLI validator dengan `--site-root`, `--route-manifest`, dan `--route-prefixes`; CI menjalankan unit tests dan smoke-test CLI.
+- Mendeklarasikan opsi CLI `--site-root`, `--route-manifest`, dan `--route-prefixes`; pada audit 2026-11-28, opsi tersebut belum terhubung ke pemeriksaan Milestone 5. CI menjalankan unit tests (`pytest -q`); smoke-test CLI belum tersedia.
 - Menambahkan dokumentasi `VALIDATOR-MILESTONE-5.md`, memperbarui README dan Quality Gates menjadi versi 0.7, serta mencatat batas otomatisasi tiap gate.
 - QG-12 tetap manual. QG-08 rendered JSON-LD, QG-10 audit accessibility browser, dan QG-11 production build tetap harus dijalankan oleh setiap proyek Astro; repository standar tidak memiliki aplikasi Astro.
 
