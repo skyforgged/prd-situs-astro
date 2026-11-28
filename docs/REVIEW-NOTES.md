@@ -298,3 +298,13 @@ Workflow menutup kesenjangan antara starter templates dan proses pemakaiannya. G
 - [ ] Workflow dan test mapping/structured-data pada repo `arisciwek/pusattraining` belum diperbarui karena akses GitHub yang tersedia tidak memiliki izin push.
 - Bukti perubahan: `scripts/validate_content.py`, `scripts/registries.py`, `tests/test_validate_content.py`, `.github/workflows/validator-tests.yml`, `docs/CONTRACT-EXTENSIONS.md`, `examples/content-contracts/training-schedule.yml`, `VALIDATOR-MILESTONE-4.md`, `VALIDATOR-MILESTONE-5.md`, `quality/QUALITY-GATES.md`, dan `docs/ANALISIS-VALIDATOR-MILESTONE.md`.
 - Batas verifikasi: test lokal tidak dapat dijalankan karena container tidak dapat mengakses GitHub untuk clone repo. Hasil GitHub Actions pada commit terbaru harus diperiksa sebelum menyatakan suite lulus. Repository standar ini bukan aplikasi Astro; build produksi dan validasi graph hasil render tetap dilakukan pada setiap proyek turunan.
+
+
+## Penambahan kontrak collection Training dan Schedule — 2026-11-28
+
+- [x] Ditambahkan `content-contract/TRAINING-SCHEDULE-CONTRACT.md` sebagai kontrak referensi untuk definisi program pelatihan (`training`) dan pelaksanaan/batch (`schedule`).
+- [x] Ditambahkan `content-contract/TRAINING-SCHEDULE-TEMPLATES.md` berisi kerangka field kosong dan checklist dokumen.
+- [x] README dan `docs/CONTRACT-EXTENSIONS.md` menautkan dokumen domain; AGENTS mewajibkan agen membaca kontrak ekstensi saat collection tersebut diaktifkan.
+- [x] Changelog mencatat ruang lingkup serta batas dukungan validator ekstensi v1.
+- Keputusan: satu schedule wajib berelasi ke tepat satu training; satu training dapat memiliki banyak schedule. Referensi menggunakan natural key `trainingSlug` yang harus unik/stabil, atau dapat diganti FK numerik melalui keputusan proyek eksplisit.
+- Batas: dokumen ini menetapkan kontrak referensi, bukan bukti bahwa nested Zod validation, date/timezone refinement, rendering Course/Event, atau registrasi telah diimplementasikan.
