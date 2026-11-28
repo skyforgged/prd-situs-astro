@@ -81,6 +81,99 @@ Variasi berikut merupakan opsi dari block induk, bukan block baru.
 | `cta` | `ghost` | CTA bergaya tautan/teks. |
 | `content-section.surface` | `white`, `blue`, `navy`, `mint`, `coral`, `cream` | Pilihan permukaan/tema section pada implementasi TNV. |
 
+## 2.2 Kontrak data dan status renderer yang telah diverifikasi
+
+Bagian ini merangkum kontrak yang dapat dibaca langsung dari registry dan schema sumber. Ringkasan ini bukan pengganti schema/TypeScript asli.
+
+### A. Registry SLF dan SNI/TKDN
+
+Kedua proyek menggunakan registry `src/components/blocks.ts` dengan pola `component` sebagai discriminator. Hasil pemeriksaan file registry:
+
+| Identifier | Komponen renderer | SLF | SNI/TKDN | Catatan |
+|---|---|---:|---:|---|
+| `card` | `ContentCard` | Ya | Ya | Kartu konten generik. |
+| `faq` | `FaqBlock` | Ya | Ya | Pertanyaan dan jawaban. |
+| `cta` | `CtaBlock` | Ya | Ya | Ajakan bertindak. |
+| `table` | `TableBlock` | Ya | Ya | Tabel informasi. |
+| `note` | `NoteBlock` | Ya | Ya | Catatan/penekanan informasi. |
+| `steps` | `StepsBlock` | Ya | Ya | Langkah berurutan. |
+| `stats` | `StatsBlock` | Ya | Ya | Statistik. |
+| `glossary` | `GlossaryBlock` | Ya | Ya | Istilah dan definisi. |
+| `quote` | `QuoteBlock` | Ya | Ya | Kutipan. |
+| `section` | `ArticleSectionBlock` | Ya | Ya | Section editorial artikel. |
+| `process-timeline` | `ProcessTimeline` | Ya | Ya | Tahapan proses berbentuk timeline. |
+| `checklist-card` | `ChecklistCard` | Ya | Ya | Checklist persyaratan/pemeriksaan. |
+| `comparison-table` | `ComparisonTable` | Ya | Ya | Tabel komparasi. |
+| `document-list` | `DocumentList` | Ya | Ya | Daftar dokumen. |
+| `image-panel` | `ImagePanel` | Ya | Ya | Gambar dan penjelasan. |
+| `feature-card-grid` | `FeatureCardGrid` | Ya | Ya | Grid kartu fitur. |
+| `stats-grid` | `StatsGrid` | Ya | Ya | Grid statistik. |
+| `source-links` | `SourceLinks` | Ya | Ya | Tautan sumber/referensi. |
+| `contact-panel` | `ContactPanel` | Ya | Ya | Panel kontak. |
+| `page-header` | `PageHeaderBlock` | Ya | Ya | Header halaman internal. |
+| `home-hero` | `HomeHeroBlock` | Ya | Ya | Hero homepage. |
+| `service-list` | `ServiceListBlock` | Ya | Ya | Daftar layanan. |
+| `home-process` | `HomeProcessBlock` | Ya | Ya | Proses kerja di homepage. |
+| `article-list` | `ArticleListBlock` | Ya | Ya | Daftar artikel. |
+| `home-cta` | `HomeCtaBlock` | Ya | Ya | CTA homepage. |
+| `not-found` | `NotFoundBlock` | Ya | Ya | Tampilan tidak ditemukan. |
+| `multi-step-form` | `MultiStepForm` | Ya | Tidak | Hanya terdaftar pada registry SLF. |
+
+**Kesimpulan registry:** ada 26 identifier yang sama pada kedua proyek dan satu identifier tambahan (`multi-step-form`) pada SLF. Registry adalah bukti utama status block; keberadaan komponen di folder tidak boleh dipakai untuk menyimpulkan bahwa ia terdaftar.
+
+Sumber verifikasi:
+- SLF: [`src/components/blocks.ts`](https://github.com/skyforgged/konsultan-slf/blob/main/src/components/blocks.ts)
+- SNI/TKDN: [`src/components/blocks.ts`](https://github.com/skyforgged/konsultan-sni-tkdn/blob/main/src/components/blocks.ts)
+
+### B. Kontrak editorial TNV
+
+TNV menggunakan discriminator `type`, bukan `component`. Berdasarkan schema Zod di `src/content.config.ts`, kontrak editorial yang dipakai `BlockRenderer.astro` adalah:
+
+| Type | Field utama | Field opsional / variasi | Perilaku |
+|---|---|---|---|
+| `content-section` | `title` | `id`, `surface`, `layout`, `eyebrow`, `description`, `items[]` | Section editorial dengan pilihan layout. Setiap item berisi `title` dan `description`. |
+| `faq` | `items[]` berisi `question` dan `answer` | `id`, `surface` | FAQ dengan elemen disclosure/details. Minimal satu item. |
+| `howto` | `steps[]` berisi `title` dan `description` | `id`, `surface`, `layout`, `title`; setiap step dapat memiliki `image` | Panduan langkah demi langkah; minimal satu step. |
+| `cta` | Tidak ada satu field teks yang wajib selain struktur objek | `id`, `surface`, `variant`, `title`, `description`, `link` | CTA dengan varian primary/secondary/ghost; link, bila ada, memiliki label. |
+
+Nilai enum yang terverifikasi:
+- `surface`: `white`, `blue`, `navy`, `mint`, `coral`, `cream`.
+- `content-section.layout`: `numbered-grid`, `editorial`, `bento`, `highlight`, `feature-list`, `comparison`.
+- `howto.layout`: `steps`, `timeline`, `compact`.
+- `cta.variant`: `primary`, `secondary`, `ghost`.
+- `id`: format lowercase kebab-case.
+
+### C. Kontrak page-structure TNV
+
+| Type | Field utama | Field opsional / variasi | Status rendering generik |
+|---|---|---|---|
+| `hero` | `title`, `description` | `id`, `surface`, `eyebrow`, `image`, `imageAlt` | Dirender oleh `PageHero` melalui `PageBlockRenderer`. |
+| `link-grid` | `items[]`, setiap item memiliki `title` dan `href` | `id`, `surface`, `eyebrow`, `title`; item dapat memiliki `eyebrow`, `description`, `actionLabel` | Dirender oleh `LinkGrid` melalui `PageBlockRenderer`. |
+| `listing` | `source` | `id`, `surface`, `eyebrow`, `title`, `description`, teks/tautan empty state dan action | Didefinisikan di schema, tetapi sengaja tidak dirender oleh `PageBlockRenderer`; markup item disediakan route terkait. |
+| `upcoming-schedules` | `title` | `id`, `surface`, `eyebrow`, `description`, empty state | Didefinisikan di schema; tidak termasuk cabang renderer generik `PageBlockRenderer`. |
+| `contact` | `title` | `id`, `surface`, `eyebrow`, `description`, `labels` untuk email/phone/address | Dirender oleh `ContactPanel` melalui `PageBlockRenderer`. |
+
+Nilai `listing.source` yang diizinkan: `services`, `trainings`, `schedules`, `articles`.
+
+**Penting:** schema yang menerima sebuah type tidak membuktikan bahwa renderer generik menampilkan type tersebut. Untuk TNV, `listing` dan `upcoming-schedules` adalah contoh eksplisit: schema tersedia, tetapi rendering ditangani di luar alur generik atau belum menjadi cabang renderer tersebut.
+
+Sumber verifikasi:
+- [TNV — content schema](https://github.com/skyforgged/tnvcertification/blob/main/src/content.config.ts)
+- [TNV — editorial renderer](https://github.com/skyforgged/tnvcertification/blob/main/src/components/BlockRenderer.astro)
+- [TNV — page renderer](https://github.com/skyforgged/tnvcertification/blob/main/src/components/page/PageBlockRenderer.astro)
+
+### D. Pemisahan koleksi konten dan block
+
+TNV memakai schema block yang sama untuk field `blocks` pada `articles`, `services`, `training`, dan `pages`. Namun, tidak semua collection adalah halaman editorial:
+- `articles`, `services`, `training`, dan `pages` dapat memiliki `blocks`.
+- `trainingSchedules` adalah data event/jadwal dengan schema tersendiri, bukan halaman editorial berbasis block.
+- `categories` adalah record taksonomi, bukan halaman editorial.
+- `certifications` memakai base entry schema tetapi tidak mendeklarasikan `blocks` pada schema collection saat ini.
+
+Jangan menyimpulkan bahwa semua collection otomatis menerima seluruh block hanya karena beberapa collection memakai `pageBlockSchema`.
+
+---
+
 ## 3. Daftar gabungan UI component
 
 Komponen berikut dapat digunakan oleh block, halaman, atau layout. Nama file adalah nama implementasi yang ditemukan; komponen dengan fungsi serupa tidak otomatis memiliki props atau API yang sama.
