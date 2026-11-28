@@ -1,7 +1,7 @@
 # Quality Gates & Acceptance Criteria
 
 > Status: Standar verifikasi
-> Versi: 0.7
+> Versi: 0.8
 
 ## 1. Prinsip
 
@@ -117,14 +117,14 @@ Rilis dapat diterima jika seluruh gate wajib berstatus lulus, build produksi suk
 
 ## 8. CI dan verifikasi lokal
 
-Validator referensi `scripts/validate_content.py` sekarang menjalankan pemeriksaan frontmatter, relasi, registry, canonical uniqueness, dan slug/route pada entry point CLI. `--site-root` mengaktifkan aset/internal link; `--route-manifest` mengaktifkan route manifest, sitemap, dan redirect; `--route-prefixes` memuat override JSON. `--contract-registry` mendaftarkan collection proyek tambahan sesuai kontrak ekstensi v1. Opsi opsional hanya menjalankan gate terkait bila argumennya diberikan:
+Validator referensi `scripts/validate_content.py` menjalankan pemeriksaan frontmatter/kontrak, ID, relasi, Block Registry, Schema Registry, SEO/canonical, dan slug/route pada entry point CLI. `--site-root` mengaktifkan aset/internal link; `--route-manifest` mengaktifkan route manifest, sitemap, dan redirect; `--route-prefixes` memuat override JSON. `--contract-registry` mendaftarkan collection proyek tambahan sesuai kontrak ekstensi v1. Mode parsial tetap tersedia untuk diagnosis awal, tetapi **validasi proyek yang dijadikan bukti penerimaan wajib memakai `--require-project-gates`**, yang menolak eksekusi jika `--site-root` atau `--route-manifest` tidak diberikan:
 
 ```bash
-python scripts/validate_content.py src/content --site-root . --route-manifest projects/nama-proyek/route-manifest.yml
+python scripts/validate_content.py src/content --site-root . --route-manifest projects/nama-proyek/route-manifest.yml --require-project-gates
 ```
 
 Route default dan format manifest, override prefix, serta batas otomatisasi tiap gate dijelaskan dalam [Validator Milestone 5](../VALIDATOR-MILESTONE-5.md). Workflow repository standar menjalankan smoke-test `python scripts/validate_content.py --help` dan suite `pytest -q`, termasuk test integrasi CLI. Hasil workflow pada commit terbaru tetap harus diperiksa; konfigurasi workflow bukan bukti hasil lulus. Status ini tidak mengurangi kriteria normatif QG-04/QG-07/QG-09/QG-13: setiap proyek tetap wajib membuktikan gate yang relevan melalui integrasi validator atau pemeriksaan proyek yang setara. Setiap proyek Astro wajib menambahkan pemindaian corpus miliknya, production build, serta audit hasil render untuk JSON-LD, SEO, dan accessibility. QG-12 tetap membutuhkan persetujuan reviewer manusia.
 
 
 
-Gate otomatis QG-01 sampai QG-11 dan QG-13 harus dijalankan secara lokal dan pada CI untuk pull/push yang mengubah konten, schema, komponen block, routing, atau konfigurasi SEO. Perintah final ditetapkan oleh implementasi proyek dan didokumentasikan di README proyek. QG-12 tetap menjadi review manusia: hasilnya dibuktikan dengan catatan persetujuan reviewer pada PR, issue, atau catatan publikasi sebelum rilis, dan tidak diwakili oleh pemeriksaan CI.
+Gate otomatis/static yang didukung validator referensi wajib dijalankan dengan mode proyek lengkap. QG-10 memerlukan audit accessibility hasil render/browser; QG-11 memerlukan production build Astro; QG-12 memerlukan review manusia. Ketiganya tidak boleh dianggap lulus dari output validator atau pytest. Gate otomatis dan pemeriksaan proyek QG-10, QG-11, serta QG-13 harus dijalankan secara lokal dan pada CI untuk pull/push yang mengubah konten, schema, komponen block, routing, atau konfigurasi SEO. Perintah final ditetapkan oleh implementasi proyek dan didokumentasikan di README proyek. QG-12 tetap menjadi review manusia: hasilnya dibuktikan dengan catatan persetujuan reviewer pada PR, issue, atau catatan publikasi sebelum rilis, dan tidak diwakili oleh pemeriksaan CI.
