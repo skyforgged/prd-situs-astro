@@ -3,6 +3,7 @@
 > Tanggal analisis: 2026-11-28
 > Status: catatan tinjauan, bukan perubahan aturan normatif dan bukan persetujuan gate
 > Objek: 59 commit antara `fa3d50a` dan `37651fa` pada repository standar ini
+> Pemeriksaan tambahan: penerapan pada korpus nyata di `../pusattraining/pusattraining/`
 
 ## 1. Konteks
 
@@ -116,19 +117,64 @@ Dengan demikian klaim "CLI terpadu" pada `CHANGELOG.md:10`, `VALIDATOR-MILESTONE
 
 GitHub Actions pada `37651fa` berstatus `success`. Berkas `tests/test_validate_content.py` memuat 50 fungsi `test_` dan menguji fungsi-fungsi Milestone 5 secara langsung pada `:565-644`. Pengujian unit tersedia; yang belum adalah penyambungannya ke CLI dan ke langkah CI tambahan.
 
-## 3. Temuan lintas milestone
+## 3. Uji penerapan pada proyek nyata: training dan schedule
+
+Sumber dibaca hanya untuk analisis di `../pusattraining/pusattraining/`. Tidak ada berkas di proyek tersebut yang diubah.
+
+### 3.1 Konteks
+
+Content Contract 1.5 mendefinisikan enam jenis dokumen: Homepage, Menu, Page, Article, Service, dan Category. Bagian 11 menyatakan jenis lain harus mendapat kontrak tersendiri sebelum dipakai. Validator mengikuti batas yang sama: `ALIASES` dan tabel kewajiban pada `scripts/validate_content.py:14-19,74-81` tidak mengenal `training` maupun `schedule`.
+
+Proyek pusattraining justru memakai keduanya sebagai collection utama, dengan 133 berkas di `src/content/trainings/` dan 116 berkas di `src/content/schedules/`. Keduanya memiliki skema Zod tersendiri di `src/content.config.ts:101-194` dan `:195-259`, termasuk aturan yang belum ada di PRD.
+
+### 3.2 Ketidaksesuaian dengan kontrak PRD
+
+| Aspek | Validator PRD | Isi proyek pusattraining | Dampak |
+|---|---|---|---|
+| Jenis dokumen | enam kind; collection asing ditolak | `training` dan `schedule` tidak ada di `ALIASES` | Perlu pemetaan eksplisit `--collection`; tanpa itu ber error |
+| Identitas | `id` integer positif | `id` plus `ulid` 26 karakter (`src/content.config.ts:4-6`) | ULID tidak memiliki padanan di kontrak PRD |
+| Tanggal | `publishedDate` dan `updatedDate` UTC presisi detik (`scripts/validate_content.py:171-176`) | `pubDate` dan `updatedDate` dengan offset; `startDate` dan `endDate` berupa tanggal kalender | Nama field PRD tidak ada, sehingga pemeriksaan tanggal tidak berjalan |
+| SEO dan schema | `schema` dan `seo` wajib berupa object (`:84-98`) | 0 dari 133 training dan 0 dari 116 schedule memuat field tersebut | Korpus ditolak apa adanya |
+| Block | discriminator `component` (`:265`) | discriminator `type`, 1353 kemunculan di kedua collection | Registry block tidak mengenali type yang dipakai |
+
+Ini bukan kesalahan proyek. Ini bukti bahwa kontrak PRD belum mencakup dua jenis konten yang benar-benar dipakai. Sesuai Content Contract bagian 11, keduanya memerlukan kontrak tersendiri, bukan dipaksa mengikuti kontrak Page atau Article.
+
+### 3.3 Pemeriksaan yang berjalan di proyek pusattraining
+
+- `npm run check` menjalankan `astro sync && tsc --noEmit`, sehingga skema Zod mengaudit frontmatter training dan schedule saat sinkronisasi konten.
+- Schedule memiliki refinement tambahan: `endDate` tidak boleh sebelum `startDate`, `updatedDate` tidak boleh sebelum `pubDate`, `timezone` harus nama zona IANA yang valid, dan `countryCode` dua huruf (`src/content.config.ts:9-63,195-259`).
+- Generator schedule menguji tabrakan `id` numerik maupun `scheduleId` string (`scripts/generate-schedule-frontmatter.test.mjs:31-35`).
+- Terdapat enam berkas test dengan total 32 test Node. Workflow CI menjalankan empat di antaranya, yaitu 20 test.
+- Dua berkas belum tersambung ke CI: `scripts/schedule-mapping-config.test.mjs` (5 test) memiliki skrip `test:schedules:mappings` di `package.json`, tetapi tidak dipanggil di `.github/workflows/ci.yml`; `scripts/training-structured-data.test.mjs` (7 test) tidak memiliki skrip npm sama sekali.
+- Tujuh test structured data training memeriksa graph JSON-LD, antara lain Course sebagai `mainEntity` tunggal dan Organization yang lengkap untuk setiap status. Ini melengkapi kelemahan pada bagian 2: validator PRD memeriksa bentuk frontmatter, bukan graph hasil render.
+- Trigger push CI hanya mencakup `main` dan satu cabang fitur schedule (`.github/workflows/ci.yml:4-9`). Cabang yang memuat pekerjaan schema training tidak termasuk daftar itu, dan GitHub API tidak menunjukkan check run untuk commit teratasnya. Dengan demikian bukti CI otomatis untuk perubahan training tidak tersedia.
+
+### 3.4 Makna terhadap penilaian
+
+Temuan ini mengonfirmasi prioritas P1 dari penilaian awal: pengujian penerapan PRD pada proyek nyata belum terjadi. Kelima milestone validator diuji dengan fixture sintetis yang mengikuti enam kontrak PRD. Korpus pusattraining menunjukkan bahwa proyek nyata dapat memiliki jenis konten, nama field, dan format block yang berbeda secara sah selama dinyatakan sebagai keputusan proyek.
+
+Tindakan yang disarankan untuk menutup celah ini, tanpa mengubah standar dalam catatan ini:
+
+1. Tetapkan kontrak `training` dan `schedule` menurut Content Contract bagian 11, mencakup route, field wajib, Schema.org utama, dan relasi ke collection training.
+2. Tentukan kebijakan alias field, misalnya `pubDate` versus `publishedDate`, sebagai keputusan proyek yang eksplisit, bukan konversi diam-diam.
+3. Perluas registry block agar menerima block domain seperti `training-detail-intro` dan `training-schedule-list`, atau nyatakan berada di luar renderer generik seperti yang sudah dicatat katalog.
+4. Sambungkan 12 test yang belum masuk CI dan perluas trigger push agar cabang yang mengubah schema training ikut diverifikasi.
+5. Jalankan validator PRD minimal sekali terhadap salinan korpus nyata sebagai uji penerapan, dengan hasil yang diharapkan ditulis sesuai kontrak proyek.
+
+## 4. Temuan lintas milestone
 
 1. Enam commit kosong dipakai sebagai catatan bukti: `b1138b2`, `cf7f662`, `898f966`, `1d4b962`, `eae9efa`, dan `6228f1e`.
 2. Dokumentasi lebih cepat daripada implementasi pada dua titik: integrasi CLI Milestone 5 dan smoke-test CI.
 3. Status CI `success` diverifikasi melalui GitHub API, tetapi jumlah test tidak dijalankan ulang secara lokal karena pytest tidak tersedia di lingkungan ini.
 4. Validator belum memeriksa graph JSON-LD hasil render, accessibility browser, production build Astro, atau kualitas editorial. QG-12 tetap manual.
+5. Kontrak enam jenis belum diuji terhadap korpus proyek nyata yang memakai `training` dan `schedule`.
 
-## 4. Penilaian
+## 5. Penilaian
 
 Kelima milestone bergerak tepat pada prioritas P0 dan P1: kontrak menjadi dapat diuji, relasi dapat diverifikasi, registry membuat aturan tidak lagi interpretatif, dan Quality Gates memperoleh pemetaan automasi.
 
-Yang masih menghalangi klaim "selesai" bukan cakupan teori, melainkan penyambungan implementasi ke entry point yang didokumentasikan dan kesesuaian bukti CI dengan klaimnya. Fungsi dan test Milestone 5 sudah ada, tetapi CLI belum memanggilnya dan smoke-test yang diklaim tidak terdapat di workflow.
+Yang masih menghalangi klaim "selesai" bukan cakupan teori, melainkan penyambungan implementasi ke entry point yang didokumentasikan dan kesesuaian bukti CI dengan klaimnya. Fungsi dan test Milestone 5 sudah ada, tetapi CLI belum memanggilnya dan smoke-test yang diklaim tidak terdapat di workflow. Uji pada korpus pusattraining menambah satu celah lagi: dua jenis konten yang dipakai proyek nyata belum memiliki kontrak di PRD, jadi validator tidak dapat dijalankan langsung terhadap korpus tersebut.
 
-## 5. Batas verifikasi
+## 6. Batas verifikasi
 
-Catatan ini disusun dengan membaca isi berkas, riwayat git, dan status check GitHub Actions. Tidak ada build Astro, validator corpus nyata, atau pytest lokal yang dijalankan. Tidak ada aturan normatif yang diubah oleh catatan ini.
+Catatan ini disusun dengan membaca isi berkas, riwayat git, dan status check GitHub Actions. Tidak ada build Astro, validator corpus nyata, atau pytest lokal yang dijalankan. Pemeriksaan terhadap proyek pusattraining hanya berupa pembacaan berkas dan metadata GitHub API; tidak ada test, `astro sync`, maupun build yang dijalankan di proyek tersebut. Tidak ada aturan normatif yang diubah oleh catatan ini.
