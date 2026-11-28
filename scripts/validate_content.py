@@ -18,7 +18,7 @@ from typing import Any
 
 import yaml
 
-FRONTMATTER_RE = re.compile(r"\\A---\\s*\\r?\\n(.*?)\\r?\\n---(?:\\r?\\n|\\Z)", re.DOTALL)
+FRONTMATTER_RE = re.compile(r"\A---\s*\r?\n(.*?)\r?\n---(?:\r?\n|\Z)", re.DOTALL)
 TIMESTAMP_FIELDS = {"publishedDate", "updatedDate"}
 
 
@@ -91,7 +91,7 @@ def _parse_utc_timestamp(value: Any) -> datetime | None:
         if parsed.microsecond != 0:
             return None
         return parsed
-    if not isinstance(value, str) or not re.fullmatch(r"\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z", value):
+    if not isinstance(value, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z", value):
         return None
     try:
         return datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
@@ -185,7 +185,7 @@ def main(argv: list[str] | None = None) -> int:
     if issues:
         for issue in issues:
             print(f"ERROR: {issue}")
-        print(f"\\nValidation failed: {len(issues)} issue(s) across {len(files)} Markdown file(s).")
+        print(f"\nValidation failed: {len(issues)} issue(s) across {len(files)} Markdown file(s).")
         return 1
     print(f"Validation passed: {len(files)} Markdown file(s); core invariants are valid.")
     return 0
