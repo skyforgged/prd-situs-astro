@@ -8,7 +8,9 @@ Enam kind inti tetap menjadi kontrak lintas proyek: `homepage`, `menu`, `page`, 
 
 Validator mendukung file registry proyek melalui `--contract-registry`. Registry ekstensi mendefinisikan direktori, field wajib, tipe field, tipe Schema.org yang diterima, route prefix, dan foreign-key sederhana. Registry harus disimpan dan direview bersama konfigurasi proyek.
 
-## Format v1
+## Format v1 — contoh generik mekanisme ekstensi
+
+Contoh YAML pada bagian ini adalah **contoh generik minimal** untuk menjelaskan bentuk registry ekstensi. Nama collection, field, dan relasinya bersifat ilustratif; contoh ini bukan model normatif domain training/schedule dan tidak boleh disalin sebagai kontrak produksi tanpa keputusan serta validasi domain proyek.
 
 ```yaml
 version: 1
@@ -88,11 +90,13 @@ Kontrak domain dan template frontmatter yang lebih lengkap dipisahkan agar mekan
 - [Training dan Schedule Contract](../content-contract/TRAINING-SCHEDULE-CONTRACT.md)
 - [Training dan Schedule Frontmatter Templates](../content-contract/TRAINING-SCHEDULE-TEMPLATES.md)
 
-Dokumen tersebut menetapkan makna collection, field, relasi, route, mapping Course/Event, validasi domain yang harus ditambahkan proyek, serta checklist adopsi. Contoh registry di bawah tetap menjadi fixture konfigurasi minimal dan bukan model domain normatif training/schedule.
+Dokumen tersebut menetapkan makna collection, field, relasi, route, mapping Course/Event, validasi domain yang harus ditambahkan proyek, serta checklist adopsi. Contoh registry generik di atas hanya menjelaskan sintaks extension registry. Model normatif training/schedule ditetapkan secara terpisah dalam `TRAINING-SCHEDULE-CONTRACT.md`; contoh konfigurasi adopsinya berada di `examples/content-contracts/training-schedule.yml` dan hanya menunjukkan subset yang dapat dideklarasikan pada extension registry v1.
 
-## Contoh berbasis collection training/schedule
+## Contoh konfigurasi adopsi Training/Schedule (ilustratif, non-normatif)
 
-File `examples/content-contracts/training-schedule.yml` memperlihatkan bentuk ekstensi yang lebih dekat dengan collection training dan schedule: ULID tambahan, `pubDate` ber-offset, tanggal schedule, enum status, tipe schema statis `Course`/`Event`, pemetaan field JSON-LD, route prefix, dan relasi natural key `schedule.trainingSlug -> training.trainingSlug`. Contoh ini tetap hanya memvalidasi tipe field dan relasi yang dideklarasikan; nested Zod schema dan refinement domain proyek belum seluruhnya direplikasi.
+File `examples/content-contracts/training-schedule.yml` adalah contoh bagaimana sebagian model domain Training/Schedule diterjemahkan ke format registry ekstensi v1: deklarasi tipe field, enum, schema mapping minimum, route prefix, dan relasi natural key. File ini **bukan sumber definisi field wajib**. Field wajib/opsional dan semantik normatif ditentukan oleh `TRAINING-SCHEDULE-CONTRACT.md`; apabila contoh konfigurasi berbeda, kontrak domain yang berlaku dan contoh harus diperbaiki.
+
+Konfigurasi tersebut sengaja hanya mencakup kemampuan yang dapat dinyatakan extension registry v1. Ia tidak merepresentasikan nested Zod schema, refinement tanggal/waktu, validasi timezone IANA, block discriminator, aturan publikasi, atau seluruh graph JSON-LD proyek.
 
 ## Pemanggilan
 
