@@ -851,7 +851,10 @@ collections:
 """, encoding="utf-8")
     contracts, mapping = load_extension_contracts(registry, content)
     issues = validate_paths([training], mapping, contracts)
-    assert any("references missing schedule ID 999" in issue.message for issue in issues)
+    assert any(
+        "extension relation 'scheduleIds' references missing schedule.id value 999" in issue.message
+        for issue in issues
+    )
 
 
 def test_schema_registry_explicitly_accounts_for_every_page_type():
