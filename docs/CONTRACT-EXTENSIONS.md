@@ -6,7 +6,7 @@
 
 Enam kind inti tetap menjadi kontrak lintas proyek: `homepage`, `menu`, `page`, `article`, `service`, dan `category`. Collection domain seperti `training` dan `schedule` tidak boleh dipetakan secara paksa ke Page atau Article.
 
-Validator mendukung file registry proyek melalui `--contract-registry`. Registry ekstensi mendefinisikan direktori, field wajib, tipe field, tipe Schema.org yang diterima, route prefix, dan foreign-key sederhana. Registry harus disimpan dan direview bersama konfigurasi proyek.
+Validator mendukung file registry proyek melalui `--contract-registry`. Registry ekstensi mendefinisikan direktori, field wajib, allowlist field melalui `fieldTypes`, tipe field, tipe Schema.org yang diterima, route prefix, dan foreign-key sederhana. Field dokumen yang tidak tercantum pada `fieldTypes` (selain `id` global) ditolak; setiap field pada `requiredFields` wajib memiliki deklarasi tipe. Registry harus disimpan dan direview bersama konfigurasi proyek.
 
 ## Format v1 — contoh generik mekanisme ekstensi
 
@@ -77,7 +77,7 @@ Tipe field v1:
 - `string_array`
 - `positive_int_array`
 
-Setiap `schemaType` wajib memiliki `schemaMappings` yang mendefinisikan `fieldMapping` (property Schema.org ke field sumber) dan `requiredFields`. Proyek dapat menetapkan `schemaType` statis pada registry jika tipe schema tidak disimpan pada frontmatter; jika tidak, validator membaca `schema.type` pada dokumen. Validator memeriksa bahwa field sumber dan field wajib mapping tersedia pada dokumen; mapping ini menjadi kontrak sumber bagi implementasi JSON-LD proyek, bukan generator JSON-LD itu sendiri. Tipe Schema.org yang diterima tanpa mapping ditolak. `fieldEnums` dapat menetapkan enum string pada field.
+Setiap field yang digunakan dalam dokumen ekstensi wajib dideklarasikan di `fieldTypes`; jangan menambahkan field bebas tanpa kontrak. `id` adalah satu-satunya pengecualian karena selalu divalidasi sebagai ID global positif. Setiap field pada `requiredFields` juga wajib tercantum pada `fieldTypes` (kecuali `id`). Setiap `schemaType` wajib memiliki `schemaMappings` yang mendefinisikan `fieldMapping` (property Schema.org ke field sumber) dan `requiredFields`. Proyek dapat menetapkan `schemaType` statis pada registry jika tipe schema tidak disimpan pada frontmatter; jika tidak, validator membaca `schema.type` pada dokumen. Validator memeriksa bahwa field sumber dan field wajib mapping tersedia pada dokumen; mapping ini menjadi kontrak sumber bagi implementasi JSON-LD proyek, bukan generator JSON-LD itu sendiri. Tipe Schema.org yang diterima tanpa mapping ditolak. `fieldEnums` dapat menetapkan enum string pada field.
 
 Relasi v1 mendukung kardinalitas `one` atau `many` dengan target kind dan `targetField`. Default `targetField` adalah `id`; natural key seperti `trainingSlug` hanya merupakan pengecualian untuk collection ekstensi dan harus dideklarasikan secara eksplisit. Field target natural key wajib unik, stabil, tidak kosong, dan bertipe kompatibel dengan field sumber. Validator memeriksa kompatibilitas tipe serta memastikan setiap referensi menemukan tepat jumlah target sesuai kardinalitas; target yang hilang atau ambigu menggagalkan validasi. Natural key tidak menggantikan identitas dokumen: semua dokumen ekstensi tetap wajib memiliki `id` integer positif yang unik secara global.
 
@@ -104,7 +104,7 @@ Konfigurasi tersebut sengaja hanya mencakup kemampuan yang dapat dinyatakan exte
 python scripts/validate_content.py src/content \
   --site-root . \
   --contract-registry config/content-contracts.yml \
-  --route-manifest config/route-manifest.yml
+  --route-manifest config/route-manifest.yml \\\n  --require-project-gates
 ```
 
 Collection inti tetap dapat dipetakan dengan `--collection KIND=DIR`. Opsi tersebut tetap terbatas pada enam kind inti; ekstensi didaftarkan melalui file registry.
