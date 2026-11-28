@@ -45,6 +45,17 @@ COMPONENT_PROPS = {
 }
 SCHEMA_BLOCKS = {"faq":{"FAQPage"},"how-to":{"HowTo"},"howto":{"HowTo"},"item-list":{"ItemList"},"steps":{"HowTo"},"table":{"Table"},"image":{"ImageObject"}}
 
+
+SCHEMA_REGISTRY = {
+ "WebPage":{"scope":"page","fieldMapping":{"name":"document.title","description":"document.description","url":"route.canonical"},"requiredFields":["document.title","route.canonical"],"optionalFields":["document.description","document.featuredImage"],"googleRichResultSupport":"not-applicable","mergeStrategy":"merge-by-stable-node-id","prohibitedUsage":["creating a new page node for each block"],"documentationUrl":["https://schema.org/WebPage"]},
+ "Article":{"scope":"page","fieldMapping":{"headline":"document.title","description":"document.description","datePublished":"document.publishedDate","dateModified":"document.updatedDate","image":"document.featuredImage"},"requiredFields":["document.title"],"optionalFields":["document.description","document.publishedDate","document.updatedDate","document.featuredImage"],"googleRichResultSupport":"unknown","mergeStrategy":"merge-by-stable-node-id","prohibitedUsage":["invented author or publication dates"],"documentationUrl":["https://schema.org/Article"]},
+ "Service":{"scope":"page","fieldMapping":{"name":"document.title","description":"document.description"},"requiredFields":["document.title"],"optionalFields":["document.description"],"googleRichResultSupport":"not-applicable","mergeStrategy":"merge-by-stable-node-id","prohibitedUsage":["inventing provider or offer data"],"documentationUrl":["https://schema.org/Service"]},
+ "FAQPage":{"scope":"block","supportedComponents":["faq"],"fieldMapping":{"mainEntity":"items[].question+items[].answer"},"requiredFields":["items","items[].question","items[].answer"],"optionalFields":["title"],"googleRichResultSupport":"not-supported","mergeStrategy":"merge-by-stable-node-id","prohibitedUsage":["hidden or non-visible questions and answers"],"documentationUrl":["https://schema.org/FAQPage"]},
+ "HowTo":{"scope":"block","supportedComponents":["how-to","howto","steps"],"fieldMapping":{"name":"title","description":"description","step":"steps[].name+steps[].text"},"requiredFields":["title","steps","steps[].name","steps[].text"],"optionalFields":["description"],"googleRichResultSupport":"not-supported","mergeStrategy":"merge-by-stable-node-id","prohibitedUsage":["benefit lists or unordered service lists"],"documentationUrl":["https://schema.org/HowTo"]},
+ "ItemList":{"scope":"block","supportedComponents":["item-list"],"fieldMapping":{"itemListElement":"items[]"},"requiredFields":["items"],"optionalFields":["title","description"],"googleRichResultSupport":"not-applicable","mergeStrategy":"merge-by-stable-node-id","prohibitedUsage":["schema items that differ from visible items"],"documentationUrl":["https://schema.org/ItemList"]},
+ "DefinedTerm":{"scope":"entity","entitySource":"document.title+document.intro","fieldMapping":{"name":"document.title","description":"document.intro"},"requiredFields":["document.title","document.intro"],"optionalFields":[],"googleRichResultSupport":"not-applicable","mergeStrategy":"reuse-entity-node","prohibitedUsage":["ordinary articles that do not define a single term"],"documentationUrl":["https://schema.org/DefinedTerm"]},
+}
+
 def validate_schema_object(schema, scope, kind=None, component=None):
  issues=[]
  if not isinstance(schema,dict): return ["schema must be an object"]
@@ -83,5 +94,20 @@ def validate_block(block):
    "intlist":lambda v:isinstance(v,list) and all(isinstance(x,int) and not isinstance(x,bool) and x>0 for x in v),
    "list":lambda v:isinstance(v,list),"dict":lambda v:isinstance(v,dict),"bool":lambda v:isinstance(v,bool)}[typ]
   if not valid(value): issues.append("block '%s' prop '%s' must be %s" % (component,key,typ))
- if "schema" in block: issues.extend(validate_schema_object(block["schema"],"block",component=component))
+ if "schema" in block:
+  issues.extend(validate_schema_object(block["schema"],"block",component=component))
+  st=block["schema"].get("type") if isinstance(block["schema"],dict) else None
+  entry=SCHEMA_REGISTRY.get(st,{})
+  for field in entry.get("requiredFields",[]):
+   root=field.split(".")[0]
+   if root.endswith("[]"): root=root[:-2]
+   if root not in block or block.get(root) in (None,"",[]): issues.append("schema '%s' requires block field '%s'" % (st,root))
+  if st=="FAQPage" and isinstance(block.get("items"),list):
+   for i,item in enumerate(block["items"]):
+    if not isinstance(item,dict) or not isinstance(item.get("question"),str) or not item["question"].strip() or not isinstance(item.get("answer"),str) or not item["answer"].strip():
+     issues.append("FAQPage items[%d] must contain non-empty question and answer" % i)
+  if st=="HowTo" and isinstance(block.get("steps"),list):
+   for i,item in enumerate(block["steps"]):
+    if not isinstance(item,dict) or not isinstance(item.get("name"),str) or not item["name"].strip() or not isinstance(item.get("text"),str) or not item["text"].strip():
+     issues.append("HowTo steps[%d] must contain non-empty name and text" % i)
  return issues
