@@ -155,7 +155,7 @@ blocks: []"""
 def test_intro_rejects_multiple_paragraphs_and_markdown(tmp_path: Path):
     source = PAGE.replace(
         "intro: PT Contoh menyediakan layanan profesional untuk kebutuhan pelanggan.",
-        "intro: |\n  PT Contoh menyediakan layanan profesional.\n\n  Paragraf kedua."
+        "intro: |\n  PT **Contoh** menyediakan layanan profesional.\n\n  Paragraf kedua."
     ).replace("description: Profil perusahaan.", "description: '**Profil** perusahaan.'")
     issues = validate_document(tmp_path / "pages/page.md", __import__("yaml").safe_load(source), "page")
     assert any("exactly one paragraph" in issue.message for issue in issues)
