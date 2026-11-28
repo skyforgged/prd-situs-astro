@@ -2,6 +2,20 @@
 
 Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 
+
+## 2026-11-28 — Penyempurnaan remediasi audit validator
+
+### Fixed
+- Extension contract validator menerima nilai tanggal dan timestamp native hasil parsing YAML untuk offset_datetime dan iso_date_or_datetime; validasi tidak lagi mengharuskan semua nilai bertipe string.
+- Registry ekstensi diperketat: nama field wajib unik, enum hanya boleh merujuk field bertipe, sumber schemaMappings wajib dideklarasikan dalam fieldTypes, prefix route harus path absolut ternormalisasi, dan direktori ekstensi tidak boleh saling tumpang tindih atau memakai nama direktori collection inti.
+- Test regresi ditambahkan untuk nilai date/datetime native YAML dan deklarasi registry ekstensi yang tidak konsisten.
+- Pemeriksaan internal link mencakup props url, href, actionHref, primaryHref, secondaryHref, dan registrationUrl.
+
+### Verification boundary
+- Test lokal belum dijalankan dari sesi ini. Workflow CI telah dikonfigurasi untuk smoke-test CLI dan pytest, tetapi hasil hijau commit terbaru belum dapat diverifikasi melalui status check yang tersedia.
+- Korpus penuh pusattraining dan workflow di repo tersebut tetap belum dijalankan/diubah; extension v1 masih memerlukan validasi nested/domain-specific di proyek pemakai.
+
+
 ## 2026-11-28 — Koreksi hasil audit validator
 
 ### Koreksi status Milestone 5
