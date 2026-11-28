@@ -1,6 +1,6 @@
 # Validator Milestone 5 — Route, Asset, Link, dan Quality Gates
 
- > Status: integrasi fungsi Milestone 5 ke CLI dan smoke-test CI telah ditambahkan. Uji korpus penuh dan verifikasi hasil workflow tetap menjadi bukti terpisah yang harus dicatat.
+> Status: integrasi fungsi Milestone 5 ke CLI dan smoke-test CI telah ditambahkan. Uji korpus penuh dan verifikasi hasil workflow tetap menjadi bukti terpisah yang harus dicatat.
 
 ## Tujuan
 
@@ -31,11 +31,11 @@ Milestone 5 menambahkan pemeriksaan statis lintas dokumen untuk slug, route, can
 - Redirect harus memiliki `from` dan `to`, dan tidak boleh berupa self-loop.
 - Pemeriksaan ini memvalidasi konsistensi eksplisit; ia tidak menilai relevansi semantik navigasi atau listing.
 
-## Rancangan penggunaan CLI — integrasi masih tertunda
+## Penggunaan CLI
 
-Contoh berikut menunjukkan bentuk pemanggilan yang dituju, bukan bukti bahwa seluruh pemeriksaan Milestone 5 telah terhubung. Pada versi kode yang diaudit, `main()` baru menjalankan `validate_paths()`; fungsi `validate_seo_uniqueness()`, `validate_routes()`, `validate_assets_and_links()`, dan `validate_route_manifest()` belum dipanggil dari entry point. Argumen `--site-root`, `--route-manifest`, dan `--route-prefixes` juga belum diteruskan ke fungsi pemeriksaan tersebut.
+Entry point `main()` menjalankan validasi kontrak, relasi, canonical uniqueness, dan slug/route. Argumen `--site-root` mengaktifkan pemeriksaan aset/internal link; `--route-manifest` mengaktifkan pemeriksaan manifest/sitemap/redirect dan mensyaratkan `--site-root`; `--route-prefixes` memuat override prefix JSON; `--contract-registry` memuat kontrak collection proyek tambahan.
 
-Instal dependensi dan jalankan unit test yang tersedia:
+Instal dependensi dan jalankan suite unit serta integrasi CLI:
 
 ```bash
 python -m pip install -r requirements-dev.txt
