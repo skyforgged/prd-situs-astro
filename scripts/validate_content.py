@@ -194,6 +194,7 @@ def load_extension_contracts(path, content_dir):
         required=spec.get("requiredFields",[])
         field_types=spec.get("fieldTypes",{})
         schema_types=spec.get("schemaTypes",[])
+        schema_mappings=spec.get("schemaMappings",{})
         route_prefix=spec.get("routePrefix")
         relations=spec.get("relations",{})
         if not isinstance(required,list) or any(not isinstance(x,str) for x in required):
@@ -203,6 +204,17 @@ def load_extension_contracts(path, content_dir):
             raise ValueError("extension '%s'.fieldTypes contains an unsupported field type" % kind)
         if not isinstance(schema_types,list) or any(not isinstance(x,str) or not x for x in schema_types):
             raise ValueError("extension '%s'.schemaTypes must be an array of strings" % kind)
+        if not isinstance(schema_mappings,dict) or set(schema_types) - set(schema_mappings):
+            raise ValueError("extension '%s' must define schemaMappings for every schemaType" % kind)
+        for schema_type,mapping_spec in schema_mappings.items():
+            if schema_type not in schema_types or not isinstance(mapping_spec,dict):
+                raise ValueError("extension '%s' has an invalid schemaMappings entry for '%s'" % (kind,schema_type))
+            field_mapping=mapping_spec.get("fieldMapping")
+            required_mapping_fields=mapping_spec.get("requiredFields",[])
+            if not isinstance(field_mapping,dict) or not field_mapping or any(not isinstance(v,str) or not v for v in field_mapping.values()):
+                raise ValueError("extension '%s' schema mapping '%s' requires a fieldMapping object" % (kind,schema_type))
+            if not isinstance(required_mapping_fields,list) or any(not isinstance(v,str) for v in required_mapping_fields):
+                raise ValueError("extension '%s' schema mapping '%s' requiredFields must be an array" % (kind,schema_type))
         if not isinstance(route_prefix,str) or not route_prefix.startswith("/") or "://" in route_prefix:
             raise ValueError("extension '%s'.routePrefix must be an absolute site path" % kind)
         if not isinstance(relations,dict):
@@ -225,6 +237,7 @@ def load_extension_contracts(path, content_dir):
 def validate_extension_document(path,data,kind,spec):
     issues=[]
     def err(message): issues.append(Issue(path,"extension '%s': %s"%(kind,message)))
+    if not posint(data.get("id")): err("field 'id' must be a positive integer")
     for field in spec.get("requiredFields",[]):
         if field not in data: err("missing required field '%s'"%field)
     validators={
@@ -244,6 +257,12 @@ def validate_extension_document(path,data,kind,spec):
     allowed=spec.get("schemaTypes",[])
     if not isinstance(schema,dict) or schema.get("type") not in allowed:
         err("schema.type must be one of the extension's declared schemaTypes: %s"%", ".join(allowed))
+    else:
+        mapping_spec=spec.get("schemaMappings",{}).get(schema.get("type"),{})
+        for field in mapping_spec.get("requiredFields",[]):
+            if field not in data: err("schema mapping '%s' requires source field '%s'"%(schema.get("type"),field))
+        for output_field,source_field in mapping_spec.get("fieldMapping",{}).items():
+            if source_field not in data: err("schema mapping '%s.%s' references missing source field '%s'"%(schema.get("type"),output_field,source_field))
     slug=data.get("slug")
     if "slug" in data and (not nonempty(slug) or not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*",slug)):
         err("slug must use lowercase ASCII letters/numbers separated by single hyphens")
