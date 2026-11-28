@@ -1,10 +1,10 @@
 # Validator Milestone 5 — Route, Asset, Link, dan Quality Gates
 
-> Status: fungsi pemeriksaan Milestone 5 tersedia dan memiliki unit test, tetapi integrasi end-to-end ke CLI/CI belum selesai. Dokumen ini mencatat rancangan pemeriksaan dan target penggunaan; jangan menganggap contoh CLI di bawah sudah menjalankan seluruh pemeriksaan.
+ > Status: integrasi fungsi Milestone 5 ke CLI dan smoke-test CI telah ditambahkan. Uji korpus penuh dan verifikasi hasil workflow tetap menjadi bukti terpisah yang harus dicatat.
 
 ## Tujuan
 
-Milestone 5 menambahkan fungsi pemeriksaan statis lintas dokumen untuk slug, route, canonical, aset, tautan, dan route manifest. Pada kode yang diaudit (2026-11-28), fungsi-fungsi tersebut belum seluruhnya dipanggil oleh entry point CLI. Karena itu, pemeriksaan yang tersedia sebagai fungsi dan unit test belum dapat dianggap aktif melalui satu pemanggilan CLI.
+Milestone 5 menambahkan pemeriksaan statis lintas dokumen untuk slug, route, canonical, aset, tautan, dan route manifest. Entry point CLI sekarang menjalankan canonical uniqueness dan route checks setiap kali dipanggil; pemeriksaan aset/internal link aktif bila `--site-root` diberikan; pemeriksaan manifest/sitemap/redirect aktif bila `--route-manifest` diberikan (dan mensyaratkan `--site-root`).
 
 ## Pemeriksaan yang ditambahkan
 
@@ -43,7 +43,7 @@ pytest -q
 python scripts/validate_content.py src/content --site-root . --route-manifest projects/your-site/route-manifest.yml
 ```
 
-Perintah di atas menjalankan validator yang terintegrasi saat ini, bukan seluruh rangkaian Milestone 5. Opsi `--collection` hanya menerima enam kind kontrak inti (`homepage`, `menu`, `page`, `article`, `service`, `category`). Opsi ini memetakan kind yang sudah dikenal ke direktori; opsi ini **tidak** mendaftarkan kind/collection baru seperti `training` atau `schedule`. Untuk collection proyek tambahan diperlukan mekanisme ekstensi kontrak yang belum tersedia.
+Perintah di atas menjalankan pemeriksaan inti, route, canonical, aset/link, dan manifest yang dikonfigurasi. Opsi `--collection` tetap hanya menerima enam kind kontrak inti. Collection proyek tambahan didaftarkan melalui `--contract-registry` sesuai [Project Collection Contract Extensions](docs/CONTRACT-EXTENSIONS.md).
 
 Pemetaan enam collection inti dapat ditambahkan berulang:
 
@@ -103,6 +103,19 @@ redirects:
 
 Semua route yang dihasilkan dari dokumen konten harus muncul di manifest. Route non-content dapat dicatat dengan source file Astro. Route `indexable: true` harus memiliki source. Sitemap, bila dicantumkan, harus tersedia dan memuat seluruh route indexable.
 
+### Collection proyek tambahan
+
+Contoh registry untuk `training` dan `schedule` tersedia di `examples/content-contracts/training-schedule.yml`. Jalankan dengan:
+
+```bash
+python scripts/validate_content.py src/content \
+  --site-root . \
+  --contract-registry examples/content-contracts/training-schedule.yml \
+  --route-manifest projects/your-site/route-manifest.yml
+```
+
+Registry v1 mendukung field wajib/tipe dasar, daftar tipe schema, route prefix, dan relasi ID satu-ke-satu atau satu-ke-banyak. Validasi nested object, block discriminator, dan refinement domain (misalnya urutan tanggal schedule) masih harus ditambahkan oleh proyek; lihat batasan di dokumen ekstensi. Fixture pengujian ekstensi ada di `tests/test_validate_content.py`.
+
 ## Quality Gates: batas otomatisasi
 
 | Gate | Status pada validator referensi | Batas |
@@ -121,7 +134,7 @@ Semua route yang dihasilkan dari dokumen konten harus muncul di manifest. Route 
 | QG-12 Editorial | Manual | Reviewer manusia/ahli harus mencatat persetujuan |
 | QG-13 Information Architecture | Otomatis sebagian | Route manifest, source, sitemap, redirect; relevansi IA tetap direview manusia |
 
-Pada workflow yang diaudit, CI repository ini hanya memasang dependensi dan menjalankan `pytest -q`. Belum ada smoke-test `--help` maupun test integrasi yang membuktikan bahwa seluruh fungsi Milestone 5 dijalankan melalui CLI. Setiap proyek Astro tetap wajib menambahkan pemindaian corpus, build produksi, dan audit accessibility/SEO/schema hasil render ke workflow miliknya. Lulusnya unit test repository standar tidak menyatakan sebuah situs turunan otomatis lulus seluruh QG-01–QG-13.
+Workflow repository ini sekarang menjalankan smoke-test `python scripts/validate_content.py --help` dan `pytest -q`, yang mencakup test integrasi CLI. Status hijau pada commit harus diperiksa dari GitHub Actions; perubahan kode saja bukan bukti test telah lulus. Setiap proyek Astro tetap wajib menambahkan pemindaian corpus, build produksi, dan audit accessibility/SEO/schema hasil render ke workflow miliknya. Lulusnya unit test repository standar tidak menyatakan sebuah situs turunan otomatis lulus seluruh QG-01–QG-13.
 
 ## Format error
 
@@ -136,8 +149,8 @@ Error baru memuat kode gate dan tindakan yang dapat diturunkan, misalnya:
 
 ## Verifikasi
 
-GitHub Actions pada workflow yang diaudit menjalankan `pytest -q` pada Python 3.12. Workflow belum menjalankan smoke-test `--help` atau test integrasi CLI. Status sukses workflow hanya membuktikan langkah yang benar-benar tercantum di workflow berhasil; bukan bukti bahwa pemeriksaan route/aset/manifest sudah berjalan melalui CLI. Pemeriksaan build produksi, rendered JSON-LD, accessibility browser, dan review editorial menjadi kewajiban workflow/release proyek Astro.
+Workflow sekarang menjalankan smoke-test `--help` dan suite pytest pada Python 3.12. Suite mencakup pemanggilan CLI untuk canonical, internal link, dan route manifest. Status sukses workflow hanya membuktikan langkah yang benar-benar tercantum di workflow berhasil. Pemeriksaan build produksi, rendered JSON-LD, accessibility browser, dan review editorial menjadi kewajiban workflow/release proyek Astro.
 
 ## Penutupan milestone
 
-Milestone 1–4 menyediakan fondasi validator referensi; Milestone 5 memiliki fungsi pemeriksaan dan unit test, tetapi belum selesai secara end-to-end sampai integrasi CLI dan CI dibuktikan. Registry props yang belum memiliki kontrak universal, pemetaan route spesifik, rendered JSON-LD, build, accessibility browser, dan review editorial harus diselesaikan oleh setiap proyek melalui konfigurasi dan Quality Gates proyeknya.
+Integrasi Milestone 5 ke CLI dan smoke-test/integration test CI telah diterapkan. Penutupan operasional tetap mensyaratkan workflow hijau pada commit terbaru serta uji corpus proyek nyata. Registry ekstensi v1 adalah mekanisme generik awal, bukan pengganti validasi nested/domain-specific. Registry props yang belum memiliki kontrak universal, pemetaan route spesifik, rendered JSON-LD, build, accessibility browser, dan review editorial harus diselesaikan oleh setiap proyek melalui konfigurasi dan Quality Gates proyeknya.
