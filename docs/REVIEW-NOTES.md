@@ -283,12 +283,16 @@ Workflow menutup kesenjangan antara starter templates dan proses pemakaiannya. G
 - Verifikasi: GitHub Actions workflow `Validator Tests`, Python 3.12, **34 passed**; run [46097423874](https://github.com/skyforgged/prd-situs-astro/actions/runs/46097423874).
 - Batas verifikasi: validasi properti block yang bersifat dinamis tetap menunggu Block Registry; relasi yang belum memiliki kontrak target tidak diaktifkan. CI ini menguji unit validator, bukan corpus konten situs Astro turunan secara penuh.
 
-## Validator otomatis — Milestone 4 dan 5, 2026-11-28
+## Validator otomatis — tindak lanjut audit Milestone 1 sampai 5, 2026-11-28
 
-- [x] Milestone 4: Schema Registry dan Block Registry awal, validasi tipe props, pasangan block-schema, dan pemeriksaan sumber wajib block tersedia; konsistensi penuh antara scope tipe dan entri registry masih perlu ditutup.
-- [x] Fungsi Milestone 5: fungsi slug/route collision, canonical duplikat, aset lokal, internal links, route manifest, sitemap, dan redirect dasar tersedia serta memiliki unit test.
-- [ ] Integrasi Milestone 5 ke CLI: belum selesai. `main()` pada kode yang diaudit hanya memanggil `validate_paths()`; fungsi validasi Milestone 5 lainnya belum dipanggil dari entry point.
-- [ ] Pemakaian argumen Milestone 5: `--site-root`, `--route-manifest`, dan `--route-prefixes` sudah dideklarasikan tetapi belum digunakan oleh `main()` untuk menjalankan pemeriksaan terkait.
-- [ ] Smoke-test CLI di CI: belum ada. Workflow `.github/workflows/validator-tests.yml` hanya menjalankan `pytest -q`.
-- Bukti: `scripts/registries.py`, `scripts/validate_content.py`, `tests/test_validate_content.py`, `.github/workflows/validator-tests.yml`, `VALIDATOR-MILESTONE-4.md`, dan `VALIDATOR-MILESTONE-5.md`.
-- Batas verifikasi: unit test fungsi tidak membuktikan integrasi CLI. Validator generik belum memeriksa graph JSON-LD hasil render, accessibility browser, production build Astro, atau kualitas editorial. QG-12 tetap manual; QG-08/QG-10/QG-11 harus dihubungkan pada workflow setiap proyek Astro.
+- [x] Integrasi Milestone 5 ke CLI: canonical uniqueness, slug/route, asset/internal link bersyarat `--site-root`, route manifest/sitemap/redirect bersyarat `--route-manifest`.
+- [x] Argumen `--site-root`, `--route-manifest`, dan `--route-prefixes` diteruskan ke pemeriksaan terkait; error validasi menghasilkan exit code non-zero.
+- [x] Smoke-test CLI `--help` ditambahkan ke workflow CI; test integrasi CLI ditambahkan untuk canonical, internal link, route manifest, dan exit code.
+- [x] Schema Registry memberi status eksplisit `mapped` atau `declaration-only` untuk seluruh page-level type; test memastikan cakupan status lengkap.
+- [x] Mekanisme ekstensi kontrak v1 tersedia melalui `--contract-registry`, termasuk field wajib/tipe dasar, schema type, route prefix, dan relasi one/many.
+- [x] Fixture training/schedule dan contoh registry ditambahkan; batas validasi nested/domain-specific dijelaskan pada `docs/CONTRACT-EXTENSIONS.md`.
+- [ ] Verifikasi workflow CI hijau untuk commit terbaru belum tersedia; jangan menganggap konfigurasi workflow sebagai bukti test lulus.
+- [ ] Validasi penuh 249 berkas corpus pusattraining belum dijalankan. Extension v1 belum mereproduksi seluruh nested Zod schema, refinement tanggal/timezone, block discriminator, atau graph JSON-LD hasil render.
+- [ ] Workflow dan test mapping/structured-data pada repo `arisciwek/pusattraining` belum diperbarui karena akses GitHub yang tersedia tidak memiliki izin push.
+- Bukti perubahan: `scripts/validate_content.py`, `scripts/registries.py`, `tests/test_validate_content.py`, `.github/workflows/validator-tests.yml`, `docs/CONTRACT-EXTENSIONS.md`, `examples/content-contracts/training-schedule.yml`, `VALIDATOR-MILESTONE-4.md`, `VALIDATOR-MILESTONE-5.md`, `quality/QUALITY-GATES.md`, dan `docs/ANALISIS-VALIDATOR-MILESTONE.md`.
+- Batas verifikasi: test lokal tidak dapat dijalankan karena container tidak dapat mengakses GitHub untuk clone repo. Hasil GitHub Actions pada commit terbaru harus diperiksa sebelum menyatakan suite lulus. Repository standar ini bukan aplikasi Astro; build produksi dan validasi graph hasil render tetap dilakukan pada setiap proyek turunan.
