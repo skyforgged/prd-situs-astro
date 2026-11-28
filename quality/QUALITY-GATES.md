@@ -117,13 +117,13 @@ Rilis dapat diterima jika seluruh gate wajib berstatus lulus, build produksi suk
 
 ## 8. CI dan verifikasi lokal
 
-Validator referensi di `scripts/validate_content.py` saat ini menggabungkan pemeriksaan frontmatter, relasi, dan registry pada entry point CLI. Fungsi untuk slug/route, canonical duplikat, aset lokal, internal link, dan route manifest tersedia serta memiliki unit test, tetapi pada kode yang diaudit (2026-11-28) belum seluruhnya dipanggil dari `main()`. Argumen `--site-root`, `--route-manifest`, dan `--route-prefixes` juga belum diintegrasikan ke alur tersebut. Karena itu, contoh pemakaian berikut belum boleh dianggap sebagai bukti bahwa seluruh gate tersebut sudah dijalankan:
+Validator referensi `scripts/validate_content.py` sekarang menjalankan pemeriksaan frontmatter, relasi, registry, canonical uniqueness, dan slug/route pada entry point CLI. `--site-root` mengaktifkan aset/internal link; `--route-manifest` mengaktifkan route manifest, sitemap, dan redirect; `--route-prefixes` memuat override JSON. `--contract-registry` mendaftarkan collection proyek tambahan sesuai kontrak ekstensi v1. Opsi opsional hanya menjalankan gate terkait bila argumennya diberikan:
 
 ```bash
 python scripts/validate_content.py src/content --site-root . --route-manifest projects/nama-proyek/route-manifest.yml
 ```
 
-Route default dan format manifest, override prefix, serta batas otomatisasi tiap gate dijelaskan dalam [Validator Milestone 5](../VALIDATOR-MILESTONE-5.md). Workflow repository standar yang diaudit hanya menjalankan unit test `pytest -q`; smoke-test CLI belum tersedia. Status ini tidak mengurangi kriteria normatif QG-04/QG-07/QG-09/QG-13: setiap proyek tetap wajib membuktikan gate yang relevan melalui integrasi validator atau pemeriksaan proyek yang setara. Setiap proyek Astro wajib menambahkan pemindaian corpus miliknya, production build, serta audit hasil render untuk JSON-LD, SEO, dan accessibility. QG-12 tetap membutuhkan persetujuan reviewer manusia.
+Route default dan format manifest, override prefix, serta batas otomatisasi tiap gate dijelaskan dalam [Validator Milestone 5](../VALIDATOR-MILESTONE-5.md). Workflow repository standar menjalankan smoke-test `python scripts/validate_content.py --help` dan suite `pytest -q`, termasuk test integrasi CLI. Hasil workflow pada commit terbaru tetap harus diperiksa; konfigurasi workflow bukan bukti hasil lulus. Status ini tidak mengurangi kriteria normatif QG-04/QG-07/QG-09/QG-13: setiap proyek tetap wajib membuktikan gate yang relevan melalui integrasi validator atau pemeriksaan proyek yang setara. Setiap proyek Astro wajib menambahkan pemindaian corpus miliknya, production build, serta audit hasil render untuk JSON-LD, SEO, dan accessibility. QG-12 tetap membutuhkan persetujuan reviewer manusia.
 
 
 
