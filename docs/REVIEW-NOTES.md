@@ -288,7 +288,7 @@ Workflow menutup kesenjangan antara starter templates dan proses pemakaiannya. G
 - [x] Integrasi Milestone 5 ke CLI: canonical uniqueness, slug/route, asset/internal link bersyarat `--site-root`, route manifest/sitemap/redirect bersyarat `--route-manifest`.
 - [x] Argumen `--site-root`, `--route-manifest`, dan `--route-prefixes` diteruskan ke pemeriksaan terkait; error validasi menghasilkan exit code non-zero.
 - [x] Smoke-test CLI `--help` ditambahkan ke workflow CI; test integrasi CLI ditambahkan untuk canonical, internal link, route manifest, dan exit code.
-- [x] Schema Registry memberi status eksplisit `mapped` atau `declaration-only` untuk seluruh page-level type; test memastikan cakupan status lengkap.
+- [x] Schema Registry memberi status eksplisit `mapped` atau `declaration-only` untuk seluruh type pada scope page/block/entity; tipe declaration-only ditolak pada penggunaan dokumen/block sampai project mapping disediakan; test memastikan cakupan status lengkap.
 - [x] Mekanisme ekstensi kontrak v1 tersedia melalui `--contract-registry`, termasuk field wajib/tipe dasar, schema type, route prefix, dan relasi one/many.
 - [x] Fixture training/schedule dan contoh registry ditambahkan; batas validasi nested/domain-specific dijelaskan pada `docs/CONTRACT-EXTENSIONS.md`.
 - [ ] Verifikasi workflow CI hijau untuk commit terbaru belum tersedia; jangan menganggap konfigurasi workflow sebagai bukti test lulus.
