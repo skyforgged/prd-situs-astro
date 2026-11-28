@@ -760,7 +760,7 @@ collections:
         cardinality: many
   schedule:
     directory: schedules
-    requiredFields: [id, slug, title, schema, updatedDate, startDate]
+    requiredFields: [id, slug, title, schema, updatedDate, startDate, endDate]
     fieldTypes:
       id: positive_int
       slug: string
