@@ -2,9 +2,22 @@
 
 Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 
+## 2026-11-28
+
+### Fixed
+- `docs/REVIEW-NOTES.md`: status, versi, dan rujukan baris diselaraskan dengan Content Contract 1.5, Frontmatter Templates 1.4, dan Quality Gates 0.6; rujukan CI kini mengarah ke `quality/QUALITY-GATES.md:120`.
+- `projects/tnvcertification/CONTENT-CONTRACT-EVALUATION.md`: catatan status memperbarui tindak lanjut ke 1.5/1.4 tanpa mengubah objek snapshot 1.3/1.2.
+- `CHANGELOG.md`: entri adopsi Content Contract 1.4 dipulihkan agar tidak tertimpa entri 1.5.
+- `quality/QUALITY-GATES.md`: contoh kelulusan QG-08 memakai "page-level type yang valid (misalnya `WebPage`)", selaras dengan `content-contract/CONTENT-CONTRACT.md:123`; aturan gate tidak diubah.
+
+### Verification
+- `git diff --check` bersih; 27 berkas Markdown diperiksa menghasilkan 0 tautan lokal rusak dan 0 code fence tidak seimbang; rujukan baris pada `docs/REVIEW-NOTES.md` masih mengarah ke isi yang dimaksud.
+- Tidak ada aturan normatif yang diubah, sehingga versi dokumen tidak dinaikkan.
+
 ## 2026-11-27
 
 ### Added
+- Content Contract 1.4: katalog tipe Schema.org, Arsitektur tiga lapisan, Schema Registry berisi field wajib dan status dukungan Google, serta aturan JSON-LD graph. Field `intro` ditetapkan sebagai paragraf pembuka tersendiri pada Page, Article, dan Service, termasuk panduan `DefinedTerm` untuk halaman definisi.
 - Content Contract 1.5: memisahkan page-level schema dari entity-level `DefinedTerm`; halaman definisi menggunakan `schema.type` untuk `WebPage` dan `schema.mainEntity.type` untuk `DefinedTerm`. `DefinedTerm.name` dipetakan dari `title` dan `DefinedTerm.description` secara khusus dipetakan dari `intro`.
 
 ### Changed
@@ -19,7 +32,7 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 - Menghindari ambiguitas antara tipe schema halaman dan entitas utama yang didefinisikan halaman.
 - Mencegah penggunaan tipe Schema.org hanya karena tersedia di katalog; setiap tipe harus memiliki sumber data, batas penggunaan, dan verifikasi status.
 - Menurunkan kewajiban Schema Registry ke artefak proyek dan gate yang dapat diuji, bukan hanya pernyataan di kontrak konten.
-- Menandai laporan TNV Certification sebagai snapshot sebelum revisi agar tidak dibaca sebagai penolakan terhadap standar 1.4.
+- Menandai laporan TNV Certification sebagai snapshot sebelum revisi 1.4/1.5 agar tidak dibaca sebagai penolakan terhadap standar terbaru.
 
 ### Compatibility
 - Proyek yang sebelumnya memakai `schema.type: DefinedTerm` harus memindahkan deklarasi entitas ke `schema.mainEntity.type: DefinedTerm` dan mempertahankan page-level type pada `schema.type`.

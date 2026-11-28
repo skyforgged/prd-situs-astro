@@ -96,7 +96,7 @@ Rilis dapat diterima jika seluruh gate wajib berstatus lulus, build produksi suk
 | `intro` mengandung markup HTML atau Markdown | Gagal QG-01 |
 | Intro tidak dirender sebagai paragraf pembuka yang terlihat setelah judul halaman | Gagal QG-08 |
 | Page definisi memakai `schema.type: DefinedTerm` sebagai page-level type | Gagal QG-08 |
-| Page definisi memakai `schema.mainEntity.type: DefinedTerm` dengan `schema.type: WebPage` | Lulus QG-08 jika pemetaan dan graph valid |
+| Page definisi memakai `schema.mainEntity.type: DefinedTerm` dengan `schema.type` berupa page-level type yang valid (misalnya `WebPage`) | Lulus QG-08 jika pemetaan dan graph valid |
 | Article atau Service mendeklarasikan `schema.mainEntity.type: DefinedTerm` | Gagal QG-08; DefinedTerm pada kontrak ini hanya untuk Page glosarium/definisi |
 | `schema.mainEntity.type: DefinedTerm` tetapi intro tidak diawali judul dokumen dan kata "adalah" | Gagal QG-08 |
 | Judul pada pola intro berbeda hanya dalam kapitalisasi atau spasi berlebih setelah normalisasi | Lulus pemeriksaan pola QG-08 |
