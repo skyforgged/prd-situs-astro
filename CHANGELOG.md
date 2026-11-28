@@ -4,6 +4,18 @@ Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 
 ## 2026-11-28
 
+### Added — Validator milestone 4
+- Menambahkan Schema Registry referensi untuk scope block, page, dan entity; validator memeriksa tipe schema dokumen, scope mainEntity, properti schema yang dikenal, serta pasangan schema block dan component.
+- Menambahkan Block Registry referensi yang mengenali identifier block dari Content Contract dan katalog gabungan; memvalidasi component, props, tipe props, dan subset props spesifik komponen yang kontraknya eksplisit.
+- Menolak component, schema type, dan props yang tidak terdaftar.
+- Menambahkan suite pengujian Schema Registry dan Block Registry serta dokumentasi VALIDATOR-MILESTONE-4.md.
+
+### Scope and limitations
+- Katalog komponen lintas proyek adalah inventaris adopsi, bukan daftar implementasi wajib. Props yang belum memiliki kontrak lintas proyek eksplisit tetap harus ditetapkan pada registry proyek.
+- Validator belum menghasilkan atau memvalidasi graph JSON-LD hasil render. Validasi route, slug collision, aset, tautan, dan integrasi Quality Gates tetap menjadi Milestone 5.
+
+## 2026-11-28
+
 ### Added — Validator milestone 2
 - Validator mengenali kontrak Homepage, Menu, Page, Article, Service, dan Category dengan field wajib dan pemeriksaan tipe/struktur spesifik per jenis.
 - Ditambahkan validasi SEO fallback dan canonical, intro satu paragraf teks biasa, DefinedTerm pada Page, featuredImage, menu target/URL/enum/depth, serta bentuk dasar relasi numerik dan array ID unik.
