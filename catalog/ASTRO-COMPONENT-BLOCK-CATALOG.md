@@ -313,6 +313,92 @@ Contoh ini hanya untuk bentuk struktur. Ia tidak menyatakan bahwa semua proyek m
 
 ---
 
+## 3.2 Kontrak komponen lintas kategori yang telah diperiksa
+
+Bagian ini mencatat implementasi konkret yang diperiksa langsung pada file sumber. Props yang disebutkan di bawah adalah kontrak yang terlihat pada implementasi saat audit; bukan berarti seluruh komponen dengan nama serupa di tiga proyek memiliki API identik.
+
+### A. SEO, structured data, dan navigasi lokasi
+
+| Komponen | Proyek / file | API terverifikasi | Perilaku dan batasan |
+|---|---|---|---|
+| `SeoJsonLd` | SNI/TKDN — `src/components/SeoJsonLd.astro` | `data: Record<string, unknown>` | Serialisasi objek JSON-LD ke `application/ld+json`; karakter `<` di-escape menjadi `\\u003c`. Komponen ini hanya mencetak schema yang diberikan; tidak membangun graph, memvalidasi vocabulary, atau menentukan entitas. |
+| `HowTo` | SNI/TKDN — `src/components/HowTo.astro` | `title`, `description`, `steps: { title, text }[]` | Menghasilkan konten langkah berurutan dan JSON-LD `HowTo` dengan `HowToStep`. Kicker/catatan berasal dari `siteConfig`; id heading masih statis (`howto-title`), sehingga perlu diperbaiki jika dipakai lebih dari sekali pada satu halaman. |
+| `FAQ` | SNI/TKDN — `src/components/FAQ.astro` | `items: { question, answer }[]`, `title?` | FAQ terlihat menggunakan native `details/summary`. Judul default dan kicker bergantung pada `siteConfig`. Komponen visual ini tidak otomatis menyisipkan FAQPage JSON-LD pada file yang diperiksa. |
+| `Breadcrumbs` | TNV — `src/components/Breadcrumbs.astro` | `items: { label, href? }[]`, `lang?: "id" \| "en"` | Breadcrumb visual dengan `nav`, `ol`, dan `aria-current="page"` pada item akhir. Label navigasi bilingual. File ini tidak menghasilkan BreadcrumbList JSON-LD; schema harus ditangani terpisah. |
+
+**Keputusan arsitektur:** pisahkan komponen visual breadcrumb/FAQ dari generator JSON-LD. Satu komponen boleh merender keduanya hanya bila kontrak dan validasi data menjamin bahwa konten schema identik dengan konten yang benar-benar terlihat. `SeoJsonLd` sebaiknya tetap menjadi komponen output generik, sementara pembentuk schema per tipe entitas berada di helper/factory yang diuji.
+
+### B. Header, footer, dan navigasi
+
+| Komponen | Proyek / file | API terverifikasi | Perilaku dan batasan |
+|---|---|---|---|
+| `SiteHeader` | SLF — `src/components/shared/SiteHeader.astro` | `variant?: "default" \| "home"`, `ariaLabel?` | Memilih menu dan CTA dari `ui.nav` berdasarkan variant; logo dan alt dari konfigurasi brand. Tidak menerima daftar menu secara langsung. |
+| `SiteHeader` | SNI/TKDN — `src/components/shared/SiteHeader.astro` | `variant?`, `ariaLabel?` | Navigasi, brand, dan CTA dibaca dari `siteConfig`; menu seluler memakai native `details`. Active state membandingkan pathname secara persis. |
+| `SiteHeader` | TNV — `src/components/SiteHeader.astro` | `lang: string` | Menggunakan konfigurasi organisasi/navigation, menentukan active route dengan prefix untuk halaman layanan, serta menyertakan `LanguageSwitcher`. API dan perilaku multilingual spesifik proyek. |
+| `SiteFooter` | SLF — `src/components/shared/SiteFooter.astro` | `ariaLabel?`, `group?: "slf" \| "pbg"`, `serviceTitle?` | Mengambil collection layanan aktif untuk menyusun tagline dinamis; kontak, alamat, logo, dan navigasi berasal dari konfigurasi global. Menggunakan `getCollection`, sehingga bukan footer presentasional murni. |
+| `SiteFooter` | SNI/TKDN — `src/components/shared/SiteFooter.astro` | `ariaLabel?`, `brandCopy?` (string atau array) | Link layanan dan eksplorasi berasal dari `siteConfig`; menerima override copy brand. |
+| `SiteFooter` | TNV — `src/components/SiteFooter.astro` | `lang: string`, `description?` | Navigasi footer berkelompok dan diterjemahkan sesuai bahasa; organisasi dan pengaturan situs berasal dari modul konfigurasi. |
+
+**Keputusan arsitektur:** standardisasi struktur aksesibilitas (landmark, label navigasi, fokus keyboard, active state, mobile behavior), bukan memaksakan satu API header/footer. Data menu, bahasa, identitas brand, CTA, dan sumber kontak harus diinjeksi melalui konfigurasi/site adapter proyek.
+
+### C. Kartu artikel, layanan, dan program
+
+| Komponen | Proyek / file | API terverifikasi | Perilaku dan batasan |
+|---|---|---|---|
+| `ArticleCard` | SLF — `src/components/shared/ArticleCard.astro` | `article: CollectionEntry<"articles">`, `headingLevel?: 2 \| 3` | Mengonsumsi entry Astro Content langsung; URL dibentuk dari `article.data.slug`; tanggal memakai locale UI dan zona `Asia/Jakarta`. Alt gambar kosong pada implementasi ini, sehingga gambar kartu diperlakukan dekoratif. |
+| `ArticleCard` | TNV — `src/components/ArticleCard.astro` | `article: Article`, `headingLevel?: 2 \| 3` | Mengonsumsi model domain Article; URL dibentuk dari slug; gambar wajib memakai `featuredImage.src/alt`; tanggal mengikuti bahasa artikel dan UTC. |
+| `ServiceListBlock` | SLF — `src/components/shared/ServiceListBlock.astro` | `id?`, `eyebrow?`, `heading?`, `description?`, `variant?: "listing" \| "home"`, `columns?: 2 \| 3`, `showBenefits?: boolean` | Mengambil collection services sendiri, menyaring draft/status aktif, mengurutkan `order`, dan opsional mengambil tiga benefit pertama dari `feature-card-grid`. Sangat terikat pada schema collection dan slug layanan SLF. |
+| `ServiceCard` | TNV — `src/components/ServiceCard.astro` | `title`, `description`, `href`, `label?` | Kartu presentasional sederhana dengan label default “Layanan”. |
+| `ServiceCard` | SNI/TKDN — `src/components/ServiceCard.astro` | `title`, `description`, `href`, `eyebrow`, `number?` | Elemen akar berupa tautan; eyebrow wajib, nomor default `01`. Kontrak tidak sama dengan TNV. |
+| `TrainingCard` | TNV — `src/components/TrainingCard.astro` | `title`, `description`, `href`, `label?` | Kartu program pelatihan; label default “Program pelatihan”. |
+
+**Keputusan arsitektur:** kartu generik sebaiknya menerima view-model eksplisit (`title`, `summary`, `href`, `image?`, `date?`, `eyebrow?`) atau adapter dari model domain. Jangan membuat satu komponen generik bergantung langsung pada tiga bentuk data Article/Service yang berbeda.
+
+### D. Statistik, fitur, checklist, dan testimoni
+
+| Komponen | Proyek / file | API terverifikasi | Perilaku dan batasan |
+|---|---|---|---|
+| `StatsBlock` | SLF — `src/components/shared/StatsBlock.astro` | `id?`, `heading?`, `items: { value, label }[]`, `class?` | Komponen section; `class` merupakan object slot seperti `section`, `heading`, `grid`, `item`, `value`, dan `label`, bukan sekadar string CSS. |
+| `StatsGrid` | SLF — `src/components/shared/StatsGrid.astro` | `id: string`, `items: { value: string, label: string }[]` | Grid statistik presentasional; label aksesibilitas berasal dari `ui.stats`. |
+| `FeatureCardGrid` | SLF — `src/components/shared/FeatureCardGrid.astro` | `id`, `title`, `columns?: 2 \| 3`, `items: { title, description?, points? }[]` | Section fitur dengan heading dan daftar poin opsional. |
+| `ChecklistCard` | SLF — `src/components/shared/ChecklistCard.astro` | `id`, `title`, `description?`, `items: { label, detail?, required? }[]`, `note?` | Checklist informatif; teks label wajib berasal dari UI config. Tanda centang bersifat dekoratif, bukan input interaktif. |
+| `TestimonialGrid` | SLF — `src/components/shared/TestimonialGrid.astro` | `id`, `title`, `items: { quote, name, industry }[]` | Menampilkan kutipan dan atribusi. Tidak ada rating, foto, verifikasi identitas, atau schema review pada implementasi yang diperiksa. Jangan menambahkan klaim review terstruktur tanpa dasar dan kebijakan validasi. |
+
+### E. Interaksi dan elemen kontrol
+
+| Komponen | Proyek / file | API terverifikasi | Perilaku dan batasan |
+|---|---|---|---|
+| `Modal` | SLF — `src/components/shared/Modal.astro` | `id`, `open?: boolean`, `title?`, `size?: "sm" \| "md" \| "lg" \| "xl"`; slot konten | Menggunakan native `dialog`, `showModal()`, tombol penutup `form method="dialog"`, klik backdrop, dan trigger berbasis `data-modal-open`. Inisialisasi script mencari seluruh `[data-modal]`; perlu uji beberapa instance, focus return, Escape, dan integrasi navigasi keyboard saat adopsi. |
+| `Dropdown` | SLF — `src/components/shared/Dropdown.astro` | `label?`, `align?: "left" \| "right"`; slot | Menggunakan native `details/summary`; tanpa state JavaScript. Konten slot diposisikan absolut. Perlu memastikan perilaku tutup saat klik di luar bila kebutuhan UI mensyaratkannya. |
+| `Button` | SLF — `src/components/shared/Button.astro` | `variant?: "primary" \| "secondary" \| "ghost" \| "outline"`, `size?: "sm" \| "md" \| "lg"`, `disabled?`, `type?`; slot | Tombol HTML native; default variant primary, size md, type button. Bukan link; navigasi harus menggunakan komponen link terpisah. |
+| `MultiStepForm` | SLF — `src/components/shared/MultiStepForm.astro` | Kontrak tingkat atas telah dicatat pada §3.1; bentuk field/step rinci belum seluruhnya diverifikasi | Jangan mengadopsi sebelum schema field, validasi, state, tujuan submit, status penyimpanan, error/success, dan aksesibilitas keyboard diperiksa bersama script pendukung. |
+
+## 3.3 Matriks adopsi lintas proyek
+
+Status berikut adalah rekomendasi konsolidasi berdasarkan implementasi yang diperiksa, bukan klaim bahwa komponen sudah dipindahkan atau diuji di proyek target.
+
+| Kelompok | Status rekomendasi | Standar bersama yang perlu ditetapkan | Yang harus tetap spesifik proyek |
+|---|---|---|---|
+| Output JSON-LD | `approved-pattern` | Komponen output aman; escaping; satu sumber data antara konten terlihat dan schema; pengujian JSON parse dan schema | Factory untuk Organization, LocalBusiness, Service, Article, FAQPage, HowTo, BreadcrumbList, dan tipe domain lainnya |
+| FAQ / HowTo | `approved-with-adapter` | Kontrak item yang jelas, semantic HTML, heading unik, schema hanya untuk konten yang terlihat | Label UI, copy, dan tipe schema yang sesuai dengan konten aktual |
+| Breadcrumbs | `approved-pattern` | Item `label/href`, item terakhir current page, landmark dan urutan navigasi | Terjemahan, strategi URL, dan pembentukan BreadcrumbList |
+| Header / footer | `project-specific-shell` | Aksesibilitas, responsive behavior, active state, focus visible, semantic landmarks | Logo, menu, CTA, bahasa, alamat, kontak, footer copy dan sumber data |
+| Article / service / training cards | `approved-with-view-model` | Struktur kartu, heading level, link focus, alt gambar, tanggal valid | Adapter dari CollectionEntry Astro, model Article, Service, Training dan pola permalink |
+| Statistik / fitur / checklist | `candidate-shared` | Data-driven props, heading/id unik, semantic list, responsive grid | Token visual, label, dan aturan klaim angka |
+| Testimonial | `project-specific-until-governed` | Struktur kutipan dan atribusi yang jujur | Bukti persetujuan, identitas, rating, moderasi, dan kebijakan review |
+| Modal / dropdown / button | `approved-with-a11y-tests` | Native semantics, keyboard, focus, disabled, ukuran target, state konsisten | Design tokens, trigger convention, dan integrasi form/router |
+| Multi-step form | `specialized-component` | Schema field, validasi, keyboard, status, error handling dan submit contract | Alur bisnis, endpoint, persetujuan, penyimpanan, dan kebijakan data |
+
+### Aturan sebelum komponen dipromosikan menjadi standar bersama
+
+1. **API stabil:** props wajib/opsional, default, enum, slot, dan tipe data ditulis eksplisit.
+2. **Tidak mengunci konfigurasi:** komponen presentasional menerima data/config lewat props; akses global config atau content collection harus menjadi adapter yang disengaja.
+3. **Tidak mengunci model konten:** gunakan adapter dari collection/model domain ke view-model komponen.
+4. **SEO tidak boleh implisit:** komponen visual tidak dianggap menghasilkan structured data kecuali benar-benar menyisipkan JSON-LD dan memiliki tes.
+5. **Aksesibilitas dapat diuji:** heading hierarchy, landmark, label, keyboard, focus, alt text, dan state interaktif menjadi bagian acceptance criteria.
+6. **Multi-instance aman:** hindari id statis dan selector global yang menyebabkan benturan ketika komponen muncul lebih dari sekali.
+7. **Bukti implementasi:** catat file, repository, dan commit yang diperiksa; jangan menganggap kesamaan nama sebagai kesamaan kontrak.
+
 ## 4. Renderer, layout, dan komponen pendukung
 
 Bagian ini dicatat agar inventaris lengkap, tetapi item-item ini bukan block konten yang seharusnya ditulis langsung oleh editor.
