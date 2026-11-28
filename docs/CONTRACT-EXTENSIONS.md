@@ -24,6 +24,12 @@ collections:
       updatedDate: utc_datetime
       scheduleIds: positive_int_array
     schemaTypes: [Course]
+    schemaMappings:
+      Course:
+        fieldMapping:
+          name: title
+          description: description
+        requiredFields: [title, description]
     routePrefix: /training/
     relations:
       scheduleIds:
@@ -41,6 +47,13 @@ collections:
       updatedDate: utc_datetime
       startDate: string
     schemaTypes: [Event]
+    schemaMappings:
+      Event:
+        fieldMapping:
+          name: title
+          startDate: startDate
+          endDate: endDate
+        requiredFields: [title, startDate, endDate]
     routePrefix: /schedule/
 ```
 
@@ -56,7 +69,9 @@ Tipe field v1:
 - `string_array`
 - `positive_int_array`
 
-Relasi v1 mendukung kardinalitas `one` atau `many` dengan target kind yang diindeks berdasarkan ID dokumen. Target yang hilang atau ambigu menggagalkan validasi.
+Setiap `schemaType` wajib memiliki `schemaMappings` yang mendefinisikan `fieldMapping` (property Schema.org ke field sumber) dan `requiredFields`. Validator memeriksa bahwa field sumber dan field wajib mapping tersedia pada dokumen; mapping ini menjadi kontrak sumber bagi implementasi JSON-LD proyek, bukan generator JSON-LD itu sendiri. Tipe Schema.org yang diterima tanpa mapping ditolak.
+
+Relasi v1 mendukung kardinalitas `one` atau `many` dengan target kind yang diindeks berdasarkan ID dokumen. Target yang hilang atau ambigu menggagalkan validasi. Semua extension document tetap wajib memakai `id` integer positif yang unik secara global.
 
 ## Pemanggilan
 
@@ -71,7 +86,7 @@ Collection inti tetap dapat dipetakan dengan `--collection KIND=DIR`. Opsi terse
 
 ## Batasan v1
 
-- Tipe Schema.org hanya diperiksa terhadap daftar yang dinyatakan pada `schemaTypes`; validator referensi belum menghasilkan JSON-LD.
+- Tipe Schema.org diperiksa terhadap `schemaTypes` dan harus memiliki `schemaMappings`; validator referensi belum menghasilkan JSON-LD.
 - Field bertipe `object` dan `array` hanya diperiksa bentuk luarnya. Validasi nested object, discriminator block, refinement lintas-field (misalnya `endDate >= startDate`), dan semantik domain harus ditambahkan melalui kontrak proyek atau validator khusus.
 - Relasi hanya memeriksa ID positif, target kind, keberadaan, dan keunikan target. Tidak ada inferensi relasi otomatis.
 - Route dibangun dari `routePrefix` dan `slug`; redirect dan sitemap tetap diverifikasi melalui route manifest.
