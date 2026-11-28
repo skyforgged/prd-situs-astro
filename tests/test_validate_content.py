@@ -9,7 +9,7 @@ from validate_content import parse_frontmatter, validate_paths
 
 def write_md(path: Path, frontmatter: str) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(f"---\\n{frontmatter}\\n---\\n\\nKonten.", encoding="utf-8")
+    path.write_text(f"---\n{frontmatter}\n---\n\nKonten.", encoding="utf-8")
     return path
 
 
@@ -39,8 +39,8 @@ schema:
 
 
 def test_document_ids_are_global_across_files(tmp_path: Path):
-    first = write_md(tmp_path / "pages/a.md", "id: 9\\nschema:\\n  type: WebPage")
-    second = write_md(tmp_path / "articles/b.md", "id: 9\\nschema:\\n  type: Article")
+    first = write_md(tmp_path / "pages/a.md", "id: 9\nschema:\n  type: WebPage")
+    second = write_md(tmp_path / "articles/b.md", "id: 9\nschema:\n  type: Article")
     issues = validate_paths([first, second])
     assert any("duplicate global document ID 9" in issue.message for issue in issues)
 
@@ -65,7 +65,7 @@ blocks:
     "2026-11-26",
 ])
 def test_noncanonical_timestamps_are_rejected(tmp_path: Path, timestamp: str):
-    file = write_md(tmp_path / "page.md", f"id: 1\\nschema:\\n  type: WebPage\\nupdatedDate: '{timestamp}'")
+    file = write_md(tmp_path / "page.md", f"id: 1\nschema:\n  type: WebPage\nupdatedDate: '{timestamp}'")
     issues = validate_paths([file])
     assert any("ISO 8601 UTC seconds" in issue.message for issue in issues)
 
@@ -81,6 +81,6 @@ updatedDate: 2026-11-26T03:00:00Z""")
 
 
 def test_boolean_is_not_accepted_as_integer_id(tmp_path: Path):
-    file = write_md(tmp_path / "page.md", "id: true\\nschema:\\n  type: WebPage")
+    file = write_md(tmp_path / "page.md", "id: true\nschema:\n  type: WebPage")
     issues = validate_paths([file])
     assert any("positive integer" in issue.message for issue in issues)
