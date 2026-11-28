@@ -2,6 +2,15 @@
 
 Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 
+## 2026-11-28 — Koreksi hasil audit validator
+
+### Koreksi status Milestone 5
+- Fungsi validasi slug/route, canonical, aset/tautan, dan route manifest tersedia di kode serta memiliki unit test, tetapi pada kode yang diaudit entry point `main()` belum memanggil seluruh fungsi tersebut.
+- Argumen CLI `--site-root`, `--route-manifest`, dan `--route-prefixes` telah dideklarasikan, tetapi belum dipakai untuk mengaktifkan pemeriksaan terkait.
+- Workflow `.github/workflows/validator-tests.yml` hanya menjalankan `pytest -q`; klaim bahwa CI menjalankan smoke-test CLI `--help` tidak akurat.
+- Karena itu, entri Milestone 5 di bawah harus dibaca sebagai catatan penambahan fungsi dan rancangan penggunaan, bukan pernyataan bahwa integrasi CLI/CI telah selesai. Milestone 5 belum dapat dinyatakan selesai secara end-to-end.
+- Catatan ini memperbaiki status implementasi dan bukti verifikasi; tidak mengubah aturan normatif Quality Gates.
+
 ## 2026-11-28
 
 ### Added — Validator milestone 5
