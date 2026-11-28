@@ -20,6 +20,7 @@ collections:
       id: positive_int
       slug: string
       title: string
+      description: string
       schema: object
       updatedDate: utc_datetime
       scheduleIds: positive_int_array
