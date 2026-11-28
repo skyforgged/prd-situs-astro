@@ -242,6 +242,11 @@ def load_extension_contracts(path, content_dir):
                 raise ValueError("extension relation '%s.%s' targets undeclared field '%s.%s'"%(kind,field,target,target_field))
             if target in core_kinds and target_field != "id":
                 raise ValueError("extension relation '%s.%s' may target only document ID on a core collection"%(kind,field))
+            source_type=spec.get("fieldTypes",{}).get(field)
+            target_type="positive_int" if target_field=="id" else contracts[target].get("fieldTypes",{}).get(target_field)
+            normalized_source={"positive_int_array":"positive_int","string_array":"string"}.get(source_type,source_type)
+            if normalized_source and target_type and normalized_source != target_type:
+                raise ValueError("extension relation '%s.%s' source and target field types do not match"%(kind,field))
     return contracts,mapping
 
 
@@ -255,7 +260,7 @@ def _has_timezone(value):
 
 def _is_iso_date_or_datetime(value):
     try:
-        if re.fullmatch(r"\\d{4}-\\d{2}-\\d{2}",value):
+        if re.fullmatch(r"\d{4}-\d{2}-\d{2}",value):
             datetime.strptime(value,"%Y-%m-%d")
         else:
             datetime.fromisoformat(value.replace("Z","+00:00"))
@@ -328,7 +333,7 @@ def validate_extension_relations(documents,contracts):
             if is_many and len(targets)!=len(set(targets)):
                 issues.append(Issue(path,"extension relation '%s' must not contain duplicate values"%field)); continue
             for target_value in targets:
-                valid=nonempty(target_value) if source_type=="string" else posint(target_value)
+                valid=nonempty(target_value) if source_type in {"string","string_array"} else posint(target_value)
                 if not valid:
                     expected="non-empty strings" if source_type=="string" else "positive integer IDs"
                     issues.append(Issue(path,"extension relation '%s' must contain %s"%(field,expected))); continue
