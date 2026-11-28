@@ -1,14 +1,14 @@
 # Content Contract — PRD Astro
 
 > Status: Standar data konten  
-> Versi: 1.5
+> Versi: 1.6
 > Format sumber: Markdown + YAML frontmatter
 
 ## 1. Tujuan
 
 Dokumen ini mendefinisikan kontrak data untuk dokumen konten situs. Setiap jenis konten memiliki kontrak frontmatter tersendiri. Kontrak tidak disatukan menjadi satu skema universal; masing-masing dapat memiliki field wajib, opsional, dan aturan validasi sesuai fungsinya.
 
-Aturan lintas jenis konten seperti ID global, foreign key numerik, sumber Markdown, dan Schema.org mengikuti [Website Constitution](../constitution/WEBSITE-CONSTITUTION.md). Kerangka field frontmatter kosong untuk setiap jenis konten tersedia di [Frontmatter Templates](FRONTMATTER-TEMPLATES.md). Agen AI dan developer wajib merujuk template tersebut saat membuat dokumen baru, lalu mengisi nilainya sesuai kebutuhan dan kontrak.
+Aturan lintas jenis konten seperti ID global, kebijakan relasi, sumber Markdown, dan Schema.org mengikuti [Website Constitution](../constitution/WEBSITE-CONSTITUTION.md). Kerangka field frontmatter kosong untuk setiap jenis konten tersedia di [Frontmatter Templates](FRONTMATTER-TEMPLATES.md). Agen AI dan developer wajib merujuk template tersebut saat membuat dokumen baru, lalu mengisi nilainya sesuai kebutuhan dan kontrak.
 
 ## 2. Aturan umum semua kontrak
 
@@ -23,11 +23,13 @@ Semua dokumen konten—apa pun jenisnya—wajib mematuhi ketentuan berikut:
 | ID block | Wajib integer positif dan unik di dalam dokumen pemiliknya; tidak menggantikan ID dokumen global |
 | `component` | Wajib pada setiap block; harus terdaftar di block registry |
 | `schema` block | Opsional; object Schema.org jika block memang menyajikan konten yang sesuai |
-| Relasi | Foreign key numerik ke ID dokumen target, bukan slug atau judul |
+| Relasi | Collection inti menggunakan FK numerik ke ID dokumen target. Collection ekstensi mengikuti aturan relasi eksplisit pada Constitution dan extension registry; natural key hanya boleh sebagai pengecualian terdaftar dengan target field unik dan stabil |
 
 **Catatan tentang ID block:** ID global berlaku untuk identitas dokumen konten. ID block adalah identitas lokal dalam satu dokumen dan tidak ikut memakai ruang ID global dokumen. Kombinasi `document.id + block.id` harus cukup untuk mengidentifikasi block secara stabil.
 
 Field umum di atas tidak berarti semua jenis konten memakai daftar field yang sama. Field selain aturan lintas-kontrak ditetapkan per jenis dokumen di bagian berikut.
+
+**Batas penerapan relasi:** ketentuan FK numerik pada matriks dan kontrak enam collection inti tetap normatif untuk keenam collection tersebut. Collection ekstensi tidak boleh mengubah kontrak inti, tetapi dapat mendeklarasikan natural key melalui extension registry sesuai pengecualian pada Constitution. Pengecualian itu harus menetapkan target collection, `targetField`, kardinalitas, dan keunikan target; ID numerik global dokumen tetap wajib.
 
 ## 3. Kontrak Homepage
 
