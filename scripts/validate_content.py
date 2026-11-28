@@ -313,6 +313,20 @@ def validate_paths(paths,collection_map=None):
     return issues
 
 
+
+def validate_seo_uniqueness(documents):
+    issues=[]; canonical_seen={}
+    for path,data,kind in documents:
+        seo=data.get("seo",{}) if isinstance(data,dict) else {}
+        if not isinstance(seo,dict): continue
+        canonical=seo.get("canonical")
+        if nonempty(canonical):
+            normalized=canonical.rstrip("/")
+            if normalized in canonical_seen:
+                issues.append(Issue(path,"[QG-07 DUPLICATE_CANONICAL] canonical URL '%s' is also used by %s"%(canonical,canonical_seen[normalized])))
+            else: canonical_seen[normalized]=path
+    return issues
+
 def _route_for(kind, slug, prefixes):
     if kind == "homepage": return "/"
     prefix = prefixes.get(kind, {"page":"/", "article":"/articles/", "service":"/services/", "category":"/categories/"}.get(kind, "/"))
