@@ -4,7 +4,7 @@
 1. Baca `README.md` untuk peta standar.
 2. Patuhi `constitution/WEBSITE-CONSTITUTION.md` sebagai aturan tertinggi.
 3. Gunakan `content-contract/CONTENT-CONTRACT.md` untuk bentuk data Markdown.
-4. Baca `content-contract/FRONTMATTER-TEMPLATES.md` sebelum membuat atau merevisi dokumen konten; gunakan kerangka field kosong sebagai checklist kelengkapan frontmatter.
+4. Baca `content-contract/FRONTMATTER-TEMPLATES.md` sebelum membuat atau merevisi enam jenis konten inti. Jika proyek mengaktifkan collection ekstensi, baca kontrak dan template ekstensi terkait (misalnya `TRAINING-SCHEDULE-CONTRACT.md` dan `TRAINING-SCHEDULE-TEMPLATES.md`) sebelum membuat dokumennya.
 5. Gunakan `architecture/TECHNICAL-ARCHITECTURE.md` untuk keputusan implementasi Astro.
 6. Gunakan `architecture/CONTENT-AND-INFORMATION-ARCHITECTURE.md` saat menyusun sitemap, jenis halaman, navigasi, route, internal linking, listing, atau jalur konversi.
 7. Gunakan `quality/QUALITY-GATES.md` untuk verifikasi teknis dan editorial.
