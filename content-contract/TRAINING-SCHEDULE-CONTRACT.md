@@ -1,7 +1,7 @@
 # Kontrak Collection Training dan Schedule
 
 > Status: standar ekstensi domain siap diadopsi proyek
-> Versi: 1.0
+> Versi: 1.1
 > Basis: Project Collection Contract Extensions v1
 
 ## 1. Tujuan dan posisi dalam arsitektur
@@ -44,7 +44,9 @@ Relasi normatif:
 | schedule | `trainingSlug` | training.`trainingSlug` | one | Wajib; tepat satu target |
 | training | — | schedule | zero-to-many | Dibentuk melalui query balik schedule.trainingSlug |
 
-Gunakan `trainingSlug` hanya jika nilai tersebut unik, stabil, dan tidak berubah ketika judul/slug route berubah. Jika proyek memilih FK numerik, ganti relasi dengan `trainingId: positive_int` dan deklarasikan target `id`; jangan mempertahankan dua relasi sumber kebenaran tanpa aturan sinkronisasi.
+Untuk kontrak referensi ini, `schedule.trainingSlug` ditetapkan sebagai satu-satunya sumber kebenaran relasi schedule → training. Nilainya harus unik, stabil, tidak kosong, dan tidak berubah ketika judul atau slug route berubah. Registry harus mendeklarasikan `target: training`, `targetField: trainingSlug`, dan `cardinality: one`.
+
+Proyek yang memilih FK numerik boleh mengganti model tersebut melalui keputusan arsitektur/ADR: gunakan `trainingId: positive_int` dengan target `training.id`, lalu hapus `trainingSlug` dari relasi dan registry. Jangan mengaktifkan kedua field sebagai relasi paralel.
 
 Relasi balik training → schedule tidak perlu disimpan sebagai daftar ID karena dapat dihitung dari collection schedule. Jika cache relasi disimpan, perlakukan sebagai data turunan dan validasi konsistensinya.
 
