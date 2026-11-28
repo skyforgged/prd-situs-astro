@@ -104,11 +104,11 @@ Konfigurasi tersebut sengaja hanya mencakup kemampuan yang dapat dinyatakan exte
 python scripts/validate_content.py src/content \
   --site-root . \
   --contract-registry config/content-contracts.yml \
-  --route-manifest config/route-manifest.yml \\\n  --require-project-gates
+  --route-manifest config/route-manifest.yml \
+  --require-project-gates
 ```
 
 Collection inti tetap dapat dipetakan dengan `--collection KIND=DIR`. Opsi tersebut tetap terbatas pada enam kind inti; ekstensi didaftarkan melalui file registry.
-
 ## Batasan v1
 
 - Tipe Schema.org diperiksa terhadap `schemaTypes` dan harus memiliki `schemaMappings`; validator referensi belum menghasilkan JSON-LD.
