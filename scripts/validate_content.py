@@ -184,8 +184,109 @@ def parse_collection_args(values):
         result[str(Path(directory).resolve())]=kind
     return result
 
+def _relation_issue(issues, path, message):
+    issues.append(Issue(path, message))
+
+def validate_relations(documents):
+    """Resolve declared foreign keys against the complete, globally indexed corpus."""
+    issues=[]
+    by_id={}
+    for path,data,kind in documents:
+        docid=data.get("id")
+        if posint(docid): by_id.setdefault(docid,[]).append((path,data,kind))
+
+    def resolve(source_path, source_id, field, target_id, allowed, location):
+        if not posint(target_id): return
+        matches=by_id.get(target_id,[])
+        if not matches:
+            _relation_issue(issues,source_path,f"{location} references missing {field} target ID {target_id}")
+            return
+        if len(matches)>1:
+            _relation_issue(issues,source_path,f"{location} references ambiguous {field} target ID {target_id}; document ID is duplicated")
+            return
+        target_path,target_data,target_kind=matches[0]
+        if target_kind not in allowed:
+            expected="/".join(sorted(allowed))
+            _relation_issue(issues,source_path,f"{location} target ID {target_id} has kind '{target_kind}', expected {expected}")
+
+    parent_edges={}
+    for path,data,kind in documents:
+        docid=data.get("id")
+        if not posint(docid): continue
+
+        if kind=="page" and posint(data.get("parentPageId")):
+            target=data["parentPageId"]
+            resolve(path,docid,"parentPageId",target,{"page"},"parentPageId")
+            if target==docid:
+                _relation_issue(issues,path,f"parentPageId cannot reference the same Page ID {docid}")
+            else: parent_edges[docid]=target
+
+        if kind=="article":
+            for field,target_kind in (("relatedServiceId","service"),):
+                value=data.get(field)
+                if value is not None: resolve(path,docid,field,value,{target_kind},field)
+            for field,target_kind in (("categoryIds","category"),("relatedArticleIds","article")):
+                values=data.get(field,[])
+                if isinstance(values,list):
+                    for target in values: resolve(path,docid,field,target,{target_kind},field)
+            if data.get("authorId") is not None:
+                _relation_issue(issues,path,"authorId cannot be validated: Author/Person target contract and collection are not defined; omit it until that contract exists")
+            if docid in data.get("relatedArticleIds",[]) if isinstance(data.get("relatedArticleIds"),list) else False:
+                _relation_issue(issues,path,f"relatedArticleIds cannot reference the source Article itself (ID {docid})")
+
+        if kind=="service":
+            for field,target_kind in (("categoryIds","category"),("relatedServiceIds","service")):
+                values=data.get(field,[])
+                if isinstance(values,list):
+                    for target in values: resolve(path,docid,field,target,{target_kind},field)
+            if data.get("providerId") is not None:
+                _relation_issue(issues,path,"providerId cannot be validated: Organization/Provider target contract and collection are not defined; omit it until that contract exists")
+            if docid in data.get("relatedServiceIds",[]) if isinstance(data.get("relatedServiceIds"),list) else False:
+                _relation_issue(issues,path,f"relatedServiceIds cannot reference the source Service itself (ID {docid})")
+
+        if kind=="menu":
+            def menu_targets(items,where="items"):
+                if not isinstance(items,list): return
+                for i,item in enumerate(items):
+                    if not isinstance(item,dict): continue
+                    loc=f"{where}[{i}].pageId"
+                    if item.get("pageId") is not None:
+                        resolve(path,docid,"pageId",item["pageId"],{"homepage","page"},loc)
+                    menu_targets(item.get("children"),f"{where}[{i}].children")
+            menu_targets(data.get("items"))
+
+        # Relations declared on block examples in the Content Contract.
+        blocks=data.get("blocks",[])
+        if isinstance(blocks,list):
+            for i,block in enumerate(blocks):
+                if not isinstance(block,dict): continue
+                component=block.get("component")
+                if "serviceIds" in block:
+                    values=block["serviceIds"]
+                    if isinstance(values,list):
+                        for target in values: resolve(path,docid,"serviceIds",target,{"service"},f"blocks[{i}].serviceIds")
+                if component=="content-list" and block.get("categoryId") is not None:
+                    resolve(path,docid,"categoryId",block["categoryId"],{"category"},f"blocks[{i}].categoryId")
+
+    # A page hierarchy must be acyclic. Other related-content links may be reciprocal.
+    visiting=set(); visited=set()
+    def visit(node,trail):
+        if node in visiting:
+            cycle=trail[trail.index(node):]+[node] if node in trail else trail+[node]
+            for source in cycle[:-1]:
+                records=by_id.get(source,[])
+                if len(records)==1:
+                    _relation_issue(issues,records[0][0],f"parentPageId hierarchy contains a cycle: {' -> '.join(map(str,cycle))}")
+            return
+        if node in visited: return
+        visiting.add(node)
+        if node in parent_edges: visit(parent_edges[node],trail+[node])
+        visiting.remove(node); visited.add(node)
+    for node in parent_edges: visit(node,[])
+    return issues
+
 def validate_paths(paths,collection_map=None):
-    issues=[]; seen={}; collection_map=collection_map or {}
+    issues=[]; seen={}; collection_map=collection_map or {}; documents=[]
     for path in sorted(paths):
         data,error=parse_frontmatter(path)
         if error: issues.append(Issue(path,error)); continue
@@ -194,10 +295,12 @@ def validate_paths(paths,collection_map=None):
             try: path.resolve().relative_to(Path(directory)); kind=mapped_kind; break
             except ValueError: pass
         issues.extend(validate_document(path,data,kind))
+        documents.append((path,data,kind))
         docid=data.get("id")
         if posint(docid):
             if docid in seen: issues.append(Issue(path,f"duplicate global document ID {docid}; first used in {seen[docid]}"))
             else: seen[docid]=path
+    issues.extend(validate_relations(documents))
     return issues
 
 def main(argv=None):
