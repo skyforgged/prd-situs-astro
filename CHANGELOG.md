@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-11-28 — Kontrak collection Training dan Schedule
+
+### Added
+- Menetapkan `training` sebagai definisi program/kursus dan `schedule` sebagai pelaksanaan/batch, tanpa memaksakan keduanya ke enam kind inti.
+- Mendokumentasikan field, route prefix, identitas, relasi satu schedule ke satu training melalui natural key stabil, dan relasi balik training ke banyak schedule.
+- Mendefinisikan pemetaan Schema.org `Course` untuk training dan `Event` untuk schedule, dengan batasan agar properti tambahan hanya dirender bila sumber datanya tersedia.
+- Menambahkan aturan domain yang wajib divalidasi proyek: rentang tanggal, zona waktu IANA, status jadwal, pendaftaran, venue, akses online, dan kestabilan slug.
+- Menambahkan template frontmatter kosong untuk training dan schedule, serta menautkan dokumen dari README dan mekanisme extension contract.
+
+### Scope
+- Ini adalah kontrak referensi yang dapat diadopsi proyek. Tidak mengubah enam collection inti dan tidak mengklaim validator ekstensi v1 telah memvalidasi nested schema atau seluruh business rules.
+- Proyek tetap wajib menambahkan Zod/domain schema, fixture valid-invalid, renderer, dan pengujian JSON-LD hasil build.
+
 Semua perubahan standar yang berdampak pada proyek turunan dicatat di sini.
 
 
