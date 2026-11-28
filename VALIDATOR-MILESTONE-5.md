@@ -1,6 +1,6 @@
 # Validator Milestone 5 — Route, Asset, Link, dan Quality Gates
 
-> Status: integrasi fungsi Milestone 5 ke CLI dan smoke-test CI telah ditambahkan. Uji korpus penuh dan verifikasi hasil workflow tetap menjadi bukti terpisah yang harus dicatat.
+> Status: integrasi CLI diperketat dengan mode proyek lengkap; smoke-test dan test integrasi CI tersedia. Uji korpus nyata dan hasil workflow tetap merupakan bukti terpisah.
 
 ## Tujuan
 
@@ -40,10 +40,10 @@ Instal dependensi dan jalankan suite unit serta integrasi CLI:
 ```bash
 python -m pip install -r requirements-dev.txt
 pytest -q
-python scripts/validate_content.py src/content --site-root . --route-manifest projects/your-site/route-manifest.yml
+python scripts/validate_content.py src/content --site-root . --route-manifest projects/your-site/route-manifest.yml --require-project-gates
 ```
 
-Perintah di atas menjalankan pemeriksaan inti, route, canonical, aset/link, dan manifest yang dikonfigurasi. Opsi `--collection` tetap hanya menerima enam kind kontrak inti. Collection proyek tambahan didaftarkan melalui `--contract-registry` sesuai [Project Collection Contract Extensions](docs/CONTRACT-EXTENSIONS.md).
+Perintah di atas mewajibkan pemeriksaan inti, route, canonical, aset/link, serta manifest. Tanpa `--require-project-gates`, CLI berjalan dalam mode parsial untuk diagnosis dan memberi catatan bahwa QG-09/QG-13 dapat belum dijalankan. Opsi `--collection` tetap hanya menerima enam kind kontrak inti. Collection proyek tambahan didaftarkan melalui `--contract-registry` sesuai [Project Collection Contract Extensions](docs/CONTRACT-EXTENSIONS.md).
 
 Pemetaan enam collection inti dapat ditambahkan berulang:
 
@@ -154,3 +154,10 @@ Workflow sekarang menjalankan smoke-test `--help` dan suite pytest pada Python 3
 ## Penutupan milestone
 
 Integrasi Milestone 5 ke CLI dan smoke-test/integration test CI telah diterapkan. Penutupan operasional tetap mensyaratkan workflow hijau pada commit terbaru serta uji corpus proyek nyata. Registry ekstensi v1 adalah mekanisme generik awal, bukan pengganti validasi nested/domain-specific. Registry props yang belum memiliki kontrak universal, pemetaan route spesifik, rendered JSON-LD, build, accessibility browser, dan review editorial harus diselesaikan oleh setiap proyek melalui konfigurasi dan Quality Gates proyeknya.
+
+
+## Integrasi tahap 3/5 — mode proyek lengkap
+
+CLI menyediakan `--require-project-gates`. Opsi ini mensyaratkan `--site-root` dan `--route-manifest` agar validasi penerimaan tidak dapat diam-diam melewati pemeriksaan aset/internal link (QG-09) dan IA (QG-13). Mode parsial tetap tersedia untuk diagnosis, tetapi outputnya memberi peringatan.
+
+Output sukses menyebut pemeriksaan otomatis yang benar-benar dijalankan dan secara eksplisit menyatakan bahwa QG-10 (accessibility hasil render/browser), QG-11 (Astro production build), serta QG-12 (editorial approval) tidak dinyatakan lulus oleh CLI. CI repository standar menjalankan test integrasi mode lengkap menggunakan fixture; setiap proyek Astro tetap harus menjalankan command lengkap pada corpus dan root proyeknya sendiri.
