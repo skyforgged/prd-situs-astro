@@ -1,3 +1,9 @@
+## [Unreleased] — 2026-11-28
+
+### Added
+- Matriks traceability `docs/REQUIREMENTS-TRACEABILITY-MATRIX.md` dengan 34 requirement ID, referensi dokumen normatif, aturan implementasi, test/verifikasi, acceptance criteria, dan pemetaan QG-01–QG-13.
+- Tautan matriks ditambahkan ke README dan kewajiban pemeliharaannya ke AGENTS.md.
+
 # Changelog
 
 ## 2026-11-28 — Integrasi validator (3/5)
