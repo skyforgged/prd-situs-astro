@@ -16,7 +16,7 @@ title: Tentang Kami
 description: Profil perusahaan.
 intro: PT Contoh menyediakan layanan profesional untuk kebutuhan pelanggan.
 schema:
-  type: AboutPage
+  type: WebPage
 seo:
   title: Tentang Kami
   description: Profil perusahaan.
@@ -40,7 +40,7 @@ schema:
 
 def test_document_ids_are_global_across_files(tmp_path: Path):
     first = write_md(tmp_path / "pages/a.md", PAGE)
-    second = write_md(tmp_path / "articles/b.md", PAGE.replace("type: AboutPage", "type: Article").replace("id: 1", "id: 1"))
+    second = write_md(tmp_path / "articles/b.md", PAGE.replace("type: WebPage", "type: Article").replace("id: 1", "id: 1"))
     issues = validate_paths([first, second])
     assert any("duplicate global document ID 1" in issue.message for issue in issues)
 
@@ -162,7 +162,7 @@ def test_intro_rejects_multiple_paragraphs_and_markdown(tmp_path: Path):
     assert any("plain text" in issue.message for issue in issues)
 
 def test_defined_term_must_be_page_level_and_follow_title_is_definition(tmp_path: Path):
-    good = PAGE.replace("type: AboutPage", "type: WebPage\n  mainEntity:\n    type: DefinedTerm").replace(
+    good = PAGE.replace("type: WebPage", "type: WebPage\n  mainEntity:\n    type: DefinedTerm").replace(
         "PT Contoh menyediakan layanan profesional untuk kebutuhan pelanggan.",
         "Tentang Kami adalah penjelasan mengenai identitas, tujuan, dan ruang lingkup organisasi."
     )
@@ -498,17 +498,17 @@ updatedDate: 2026-11-26T03:00:00Z""")
     assert any("serviceIds must not contain duplicate IDs" in issue.message for issue in issues)
 
 def test_schema_registry_rejects_unknown_page_type(tmp_path: Path):
-    issues = validate_document(tmp_path / "pages/a.md", __import__("yaml").safe_load(PAGE.replace("AboutPage", "MadeUpPage")), "page")
+    issues = validate_document(tmp_path / "pages/a.md", __import__("yaml").safe_load(PAGE.replace("WebPage", "MadeUpPage")), "page")
     assert any("not an allowed page-level Schema.org type" in issue.message for issue in issues)
 
 
 def test_schema_registry_rejects_entity_type_as_page_type(tmp_path: Path):
-    issues = validate_document(tmp_path / "pages/a.md", __import__("yaml").safe_load(PAGE.replace("AboutPage", "Organization")), "page")
+    issues = validate_document(tmp_path / "pages/a.md", __import__("yaml").safe_load(PAGE.replace("WebPage", "Organization")), "page")
     assert any("not an allowed page-level Schema.org type" in issue.message for issue in issues)
 
 
 def test_schema_registry_allows_defined_term_only_as_page_main_entity(tmp_path: Path):
-    good = PAGE.replace("AboutPage", "WebPage").replace(
+    good = PAGE.replace("WebPage", "WebPage").replace(
         "PT Contoh menyediakan layanan profesional untuk kebutuhan pelanggan.",
         "Tentang Kami adalah penjelasan mengenai identitas organisasi."
     ).replace("type: WebPage", "type: WebPage\n  mainEntity:\n    type: DefinedTerm")
@@ -516,7 +516,7 @@ def test_schema_registry_allows_defined_term_only_as_page_main_entity(tmp_path: 
 
 
 def test_schema_registry_rejects_unknown_schema_properties(tmp_path: Path):
-    source = PAGE.replace("type: AboutPage", "type: AboutPage\n  name: Tidak boleh")
+    source = PAGE.replace("type: WebPage", "type: WebPage\n  name: Tidak boleh")
     issues = validate_document(tmp_path / "pages/a.md", __import__("yaml").safe_load(source), "page")
     assert any("schema has unsupported property 'name'" in issue.message for issue in issues)
 
@@ -660,7 +660,7 @@ def test_cli_runs_route_and_canonical_checks(tmp_path: Path):
     content = tmp_path / "content"
     page1 = write_md(content / "pages" / "one.md", PAGE.replace("canonical", "canonical"))
     page2_source = PAGE.replace("id: 1", "id: 2").replace("slug: tentang", "slug: about")
-    page2_source = page2_source.replace("  type: AboutPage", "  type: AboutPage")
+    page2_source = page2_source.replace("  type: WebPage", "  type: WebPage")
     page2 = write_md(content / "pages" / "two.md", page2_source)
     # Add duplicate canonical metadata to both documents.
     for file in (page1, page2):
@@ -870,3 +870,9 @@ collections:
     )
     assert result.returncode == 0, result.stdout + result.stderr
     assert "slug/routes" in result.stdout
+
+
+def test_schema_registry_rejects_declaration_only_page_type(tmp_path: Path):
+    source = PAGE.replace("type: WebPage", "type: AboutPage")
+    issues = validate_document(tmp_path / "pages/a.md", __import__("yaml").safe_load(source), "page")
+    assert any("declaration-only" in issue.message for issue in issues)
