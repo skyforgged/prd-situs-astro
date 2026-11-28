@@ -1,6 +1,7 @@
 # Frontmatter Templates — Training dan Schedule
 
 > Status: template ekstensi referensi
+> Versi: 1.1
 > Mengikuti: Project Collection Contract Extensions v1 dan Kontrak Collection Training dan Schedule 1.0
 
 Template ini sengaja menggunakan nama field tanpa nilai. Template bukan dokumen siap-publikasi. Pertahankan field wajib walaupun nilainya belum tersedia; jangan mengarang ID, tanggal, relasi, URL pendaftaran, lokasi, instruktur, atau data schema.
@@ -70,7 +71,7 @@ Ketentuan:
 - `type` bernilai `schedule`.
 - `scheduleId` adalah identifier bisnis, bukan ID global dokumen.
 - `publisherId` wajib hanya jika model proyek multi-publisher menggunakannya dan targetnya didefinisikan.
-- `trainingSlug` wajib menunjuk tepat satu dokumen training.
+- `trainingSlug` wajib menunjuk tepat satu dokumen training dan menjadi satu-satunya sumber kebenaran relasi pada model referensi.
 - `startDate` dan `endDate` menggunakan format ISO date atau datetime sesuai kontrak proyek.
 - `timezone` harus merupakan identifier IANA yang valid, misalnya `Asia/Jakarta`.
 - `dateLabel` adalah label tampilan yang harus konsisten dengan tanggal terstruktur.
@@ -80,7 +81,7 @@ Ketentuan:
 
 ## 3. Kerangka relasi
 
-Relasi referensi schedule ke training:
+Model referensi menggunakan natural key yang didaftarkan eksplisit pada extension registry. Relasi referensi schedule ke training:
 
 ```yaml
 # Di dokumen schedule
@@ -94,7 +95,7 @@ Target harus cocok tepat satu dokumen:
 trainingSlug:
 ```
 
-Relasi balik berupa query schedule berdasarkan `trainingSlug`; jangan menambahkan array scheduleIds ke training kecuali ada kebutuhan cache yang terdokumentasi dan divalidasi.
+Relasi balik berupa query schedule berdasarkan `trainingSlug`; jangan menambahkan `scheduleIds` atau `trainingId` paralel untuk relasi yang sama. Jika proyek memilih FK numerik sebagai pengganti, lakukan keputusan eksplisit dan hapus natural key dari relasi.
 
 ## 4. Checklist sebelum dokumen dianggap siap
 
