@@ -1071,6 +1071,6 @@ pubDate: '2026-11-26T10:00:00+07:00'
 updatedDate: '2026-11-27T10:00:00+07:00'
 status: invalid""")
     registry = Path(__file__).resolve().parents[1] / "examples" / "content-contracts" / "training-schedule.yml"
-    contracts, mapping = load_extension_contracts(registry, content.parent)
+    contracts, mapping = load_extension_contracts(registry, content)
     issues = validate_paths([item], mapping, contracts)
     assert any("field 'status' must be one of" in issue.message for issue in issues)
