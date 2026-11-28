@@ -4,7 +4,7 @@
 
 ## Batas dukungan validator dan proyek turunan
 
-Untuk klasifikasi lengkap kemampuan yang benar-benar tersedia, kontrak yang belum memiliki runtime, dan kewajiban proyek Astro turunan, lihat [Batas Kemampuan Standar dan Validator](docs/CAPABILITY-BOUNDARIES.md). Dokumen ini menjelaskan batas otomatisasi QG dan tidak boleh dibaca sebagai klaim bahwa seluruh aplikasi situs telah diimplementasikan.
+Untuk klasifikasi lengkap kemampuan yang benar-benar tersedia, kontrak yang belum memiliki runtime, dan kewajiban proyek Astro turunan, lihat [Batas Kemampuan Standar dan Validator](quality/CAPABILITY-BOUNDARIES.md). Dokumen ini menjelaskan batas otomatisasi QG dan tidak boleh dibaca sebagai klaim bahwa seluruh aplikasi situs telah diimplementasikan.
 
 ## Tujuan
 
@@ -47,7 +47,7 @@ pytest -q
 python scripts/validate_content.py src/content --site-root . --route-manifest projects/your-site/route-manifest.yml --require-project-gates
 ```
 
-Perintah di atas mewajibkan pemeriksaan inti, route, canonical, aset/link, serta manifest. Tanpa `--require-project-gates`, CLI berjalan dalam mode parsial untuk diagnosis dan memberi catatan bahwa QG-09/QG-13 dapat belum dijalankan. Opsi `--collection` tetap hanya menerima enam kind kontrak inti. Collection proyek tambahan didaftarkan melalui `--contract-registry` sesuai [Project Collection Contract Extensions](docs/CONTRACT-EXTENSIONS.md).
+Perintah di atas mewajibkan pemeriksaan inti, route, canonical, aset/link, serta manifest. Tanpa `--require-project-gates`, CLI berjalan dalam mode parsial untuk diagnosis dan memberi catatan bahwa QG-09/QG-13 dapat belum dijalankan. Opsi `--collection` tetap hanya menerima enam kind kontrak inti. Collection proyek tambahan didaftarkan melalui `--contract-registry` sesuai [Project Collection Contract Extensions](content-contract/CONTRACT-EXTENSIONS.md).
 
 Pemetaan enam collection inti dapat ditambahkan berulang:
 
