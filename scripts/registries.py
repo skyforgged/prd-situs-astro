@@ -78,6 +78,7 @@ def validate_schema_object(schema, scope, kind=None, component=None):
  if scope=="document":
   if st not in (PAGE_TYPES | ({"SiteNavigationElement"} if kind=="menu" else set()) | ({"Service"} if kind=="service" else set())): issues.append("schema.type '%s' is not an allowed page-level Schema.org type" % st)
   elif st not in SCHEMA_TYPE_STATUS: issues.append("schema.type '%s' has no explicit registry status" % st)
+  elif SCHEMA_TYPE_STATUS[st] == "declaration-only": issues.append("schema.type '%s' is declaration-only and cannot satisfy the core JSON-LD mapping contract; add a project Schema Registry mapping or choose a mapped type" % st)
   main=schema.get("mainEntity")
   if main is not None:
    if not isinstance(main,dict) or set(main)!={"type"} or main.get("type") not in ENTITY_TYPES:
