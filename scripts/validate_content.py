@@ -200,7 +200,7 @@ def load_extension_contracts(path, content_dir):
         if not isinstance(required,list) or any(not isinstance(x,str) for x in required):
             raise ValueError("extension '%s'.requiredFields must be an array of strings" % kind)
         allowed_types={"string","positive_int","boolean","object","array","utc_datetime","string_array","positive_int_array"}
-        if not isinstance(field_types,dict) or any(k not in allowed_types for k in field_types.values()):
+        if not isinstance(field_types,dict) or any(not isinstance(v,str) or v not in allowed_types for v in field_types.values()):
             raise ValueError("extension '%s'.fieldTypes contains an unsupported field type" % kind)
         if not isinstance(schema_types,list) or any(not isinstance(x,str) or not x for x in schema_types):
             raise ValueError("extension '%s'.schemaTypes must be an array of strings" % kind)
