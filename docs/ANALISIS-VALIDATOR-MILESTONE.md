@@ -195,13 +195,13 @@ Matriks ini adalah daftar pekerjaan korektif yang diturunkan dari temuan audit. 
 4. Kerjakan AUD-05 dan AUD-06 untuk membuktikan penerapan pada korpus nyata dan memastikan test terkait masuk ke CI.
 5. Terapkan AUD-07 sebagai standar pencatatan bukti untuk milestone berikutnya.
 
-## 6. Penilaian
+## 6. Penilaian saat audit awal (sebelum remediasi)
 
-Kelima milestone telah menghasilkan fondasi yang berarti: kontrak menjadi dapat diuji, relasi dapat diverifikasi, registry mulai memusatkan aturan, dan fungsi Quality Gates tersedia. Namun, status implementasi tidak boleh disamakan dengan status kesiapan operasional. Secara khusus, Milestone 5 belum selesai pada jalur CLI karena `main()` belum memanggil seluruh pemeriksaan yang diklaim; workflow CI juga belum memuat smoke-test CLI. Milestone 4 masih memiliki ketidaksinkronan antara daftar tipe dalam scope dan entri schema registry.
+Bagian ini merekam kesimpulan pada saat audit awal, bukan status implementasi terkini. Kelima milestone telah menghasilkan fondasi yang berarti: kontrak menjadi dapat diuji, relasi dapat diverifikasi, registry mulai memusatkan aturan, dan fungsi Quality Gates tersedia. Namun, status implementasi tidak boleh disamakan dengan status kesiapan operasional. Secara khusus, Milestone 5 belum selesai pada jalur CLI karena `main()` belum memanggil seluruh pemeriksaan yang diklaim; workflow CI juga belum memuat smoke-test CLI. Milestone 4 masih memiliki ketidaksinkronan antara daftar tipe dalam scope dan entri schema registry.
 
 Karena itu, berdasarkan bukti yang tersedia, Milestone 1–3 memiliki bukti implementasi dan test yang dicatat; Milestone 4 memerlukan konsistensi registry; dan Milestone 5 belum layak dinyatakan selesai secara end-to-end. Korpus `pusattraining` menambah kebutuhan desain: `training` dan `schedule` merupakan collection domain yang sah, tetapi belum memiliki kontrak dalam enam jenis inti. Validator PRD tidak dapat dijalankan langsung terhadap korpus tersebut sampai kontrak tambahan dan mekanisme ekstensi ditetapkan.
 
-## 7. Batas verifikasi
+## 7. Batas verifikasi saat audit awal
 
 Catatan ini disusun dengan membaca isi berkas, riwayat git, dan status check GitHub Actions. Tidak ada build Astro, validator corpus nyata, atau pytest lokal yang dijalankan. Pemeriksaan terhadap proyek pusattraining hanya berupa pembacaan berkas dan metadata GitHub API; tidak ada test, `astro sync`, maupun build yang dijalankan di proyek tersebut. Tidak ada aturan normatif yang diubah oleh catatan ini.
 
@@ -209,6 +209,8 @@ Catatan ini disusun dengan membaca isi berkas, riwayat git, dan status check Git
 ## 8. Status tindak lanjut setelah audit (2026-11-28)
 
 Bagian ini memperbarui status pekerjaan tanpa mengubah tabel historis "Status saat audit" pada Bagian 5.
+
+**Status terkini:** AUD-01 sampai AUD-04 telah ditangani pada repository PRD dan disertai test; AUD-05 baru memiliki fixture representatif, bukan hasil uji seluruh korpus; AUD-06 tetap tertahan oleh hak akses read-only pada repository pusattraining; AUD-07 diterapkan melalui commit bermakna. Hasil CI hijau untuk commit terbaru belum terverifikasi. Rincian bukti dan batasnya ada pada tabel berikut.
 
 | ID | Status tindak lanjut | Bukti / batas |
 |---|---|---|
