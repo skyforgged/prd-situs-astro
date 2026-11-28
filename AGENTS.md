@@ -1,7 +1,7 @@
 # Instruksi Agen — PRD Situs Astro
 
 ## Baca sebelum bekerja
-- Sebelum mengklaim fitur/quality gate telah didukung, baca [`docs/CAPABILITY-BOUNDARIES.md`](docs/CAPABILITY-BOUNDARIES.md). Bedakan bukti VALIDATOR, CONTRACT, PROJECT, dan MANUAL; jangan menyamakan kontrak dengan implementasi runtime.
+- Sebelum mengklaim fitur/quality gate telah didukung, baca [`quality/CAPABILITY-BOUNDARIES.md`](quality/CAPABILITY-BOUNDARIES.md). Bedakan bukti VALIDATOR, CONTRACT, PROJECT, dan MANUAL; jangan menyamakan kontrak dengan implementasi runtime.
 
 - Untuk perubahan standar, kontrak, validator, template, atau quality gate, periksa [`docs/REQUIREMENTS-TRACEABILITY-MATRIX.md`](docs/REQUIREMENTS-TRACEABILITY-MATRIX.md). Pertahankan ID requirement; perbarui matriks bila sumber normatif atau bukti berubah. Jangan mengklaim gate PROJECT/MANUAL lulus dari test repository standar.
 
