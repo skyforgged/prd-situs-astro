@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 import yaml
+from registries import validate_schema_object, validate_block
 
 FRONTMATTER_RE = re.compile(r"\A---\s*\r?\n(.*?)\r?\n---(?:\r?\n|\Z)", re.DOTALL)
 ALIASES = {
@@ -81,9 +82,10 @@ def validate_document(path,data,kind=None):
     if kind not in required_fields: err(f"unknown document contract kind '{kind}'"); return out
     required(required_fields[kind]); string_fields(("slug","title","description"))
     schema=data.get("schema")
-    if not isinstance(schema,dict) or not nonempty(schema.get("type")): err("field 'schema' must be an object with a non-empty string 'type'")
-    elif schema.get("mainEntity") is not None and (not isinstance(schema["mainEntity"],dict) or not nonempty(schema["mainEntity"].get("type"))):
-        err("field 'schema.mainEntity' must be an object with a non-empty string 'type'")
+    if not isinstance(schema,dict) or not nonempty(schema.get("type")):
+        err("field 'schema' must be an object with a non-empty string 'type'")
+    else:
+        for message in validate_schema_object(schema, "document", kind=kind): err(message)
     if kind in {"homepage","page","article","service","category"}:
         seo=data.get("seo")
         if not isinstance(seo,dict): err("field 'seo' must be an object")
@@ -153,7 +155,7 @@ def validate_document(path,data,kind=None):
                 if not posint(bid): err(f"{p}.id must be a positive integer")
                 elif bid in ids: err(f"duplicate block ID {bid} within this document")
                 else: ids.add(bid)
-                if not nonempty(b.get("component")): err(f"{p}.component must be a non-empty string")
+                for message in validate_block(b): err(f"{p}: {message}")
     scalar_rel={"article":("authorId","relatedServiceId"),"service":("providerId",)}.get(kind,())
     for f in scalar_rel:
         if f in data and data[f] is not None and not posint(data[f]): err(f"field '{f}' must be a positive integer")
